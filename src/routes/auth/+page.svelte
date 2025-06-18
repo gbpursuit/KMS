@@ -86,7 +86,7 @@
 				</button>
 			</div>
 
-            <div class="flex flex-col gap-1 {isRegistering ? "morph-enter" : "absolute opacity-0"}">
+            <div class="flex flex-col gap-1 {isRegistering ? "relative morph-enter" : "absolute opacity-0"}">
                 <label for="confirmpassword">Confirm Password<span class="text-red-500"> *</span></label>
                 <input bind:value={confirmpassword} type={showconfirmpassword ? 'text' : 'password'}
                     id="confirmpassword" name="confirmpassword"

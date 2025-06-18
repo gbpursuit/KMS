@@ -1,24 +1,24 @@
-<nav class="fixed flex flex-col w-full h-[450px] bottom-0 bg-[#F5F5F5]">
+<nav class="flex flex-col w-full h-[400px] bottom-0 bg-[#F5F5F5]">
 	<!-- Contents -->
 	<div class="flex gap-2 sm:gap-5 md:gap-15 lg:gap-25 h-[80%] px-3 md:px-0">
 		<div class="hello flex w-1/2 h-full p-2 justify-end items-center">
-			<div class="flex flex-col w-[250px] md:w-[300px] h-full">
+			<div class="flex flex-col w-[250px] md:w-[300px] transition-width duration-300 ease-in-out h-full">
 				<div class="flex-grow w-full"></div>
-				<div class="flex flex-col w-full h-[85%] gap-3">
+				<div class="flex flex-col w-full h-[87%] gap-3">
 					<div class="flex h-[40px] items-center gap-1">
 						<img src="/NISMED.png" alt="NISMED logo" class = "h-full object-cover">
 						<h1 class="text-xl font-bold">UP NISMED</h1>
 					</div>
-					<p class="font-light text-sm md:text-base">
+					<p class="font-light text-[13px] md:text-base">
 						The National Institute for Science and Mathematics Education Development is a research unit and an extension arm of the University of the Philippines attached to the College of Education whose goal is to raise the level of teaching and learning of science and mathematics in the Philippine educational system.
 					</p>
 				</div>
 			</div>
 		</div>
 		<div class="flex w-1/2 p-2 justify-start items-center">
-			<div class="flex flex-col w-[250px] md:w-[300px] h-full">
+			<div class="flex flex-col w-[250px] md:w-[300px] transition-width duration-300 ease-in-out h-full">
 				<div class="flex-grow w-full"></div>
-				<div class="flex flex-col w-full h-[85%]">
+				<div class="flex flex-col w-full h-[87%]">
 					<h1 class="text-lg mb-3 font-semibold">CONTACT US</h1>
 					<p class="text-sm md:text-base mb-3 font-light">Address: Quirino Avenue cor Velasquez Street, U.P. Diliman, Quezon City, Philippines</p>
 					<p class="text-sm md:text-base mb-3 font-light">Mail: nismed.upd@up.edu.ph</p>
