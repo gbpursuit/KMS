@@ -9,6 +9,11 @@
 		.split('/')
 		.filter(Boolean); 
 	$:console.log(currentPath)
+
+	function gotoAuth(e: Event) {
+		e?.preventDefault();
+		window.open("/auth", "_blank")
+	}
 </script>
 
 <nav class="fixed flex flex-col w-full h-[120px] top-0">
@@ -21,9 +26,9 @@
 		<div class="flex justify-center items-center gap-3">
 			{#if currentPath === '/'}
 				<div class="flex justify-center items-center text black gap-2">
-					<button class="cursor-pointer hover:underline">Login</button>
+					<button class="cursor-pointer hover:underline" on:click={gotoAuth}>Login</button>
 					<span>/</span>
-					<button class="cursor-pointer hover:underline">Register</button>
+					<button class="cursor-pointer hover:underline" on:click={gotoAuth}>Register</button>
 				</div>
 			{/if}
 			<button class="flex justify-center items-center w-10 h-10 p-1 border-2 border-black rounded-full">
@@ -39,7 +44,7 @@
 					<span>></span>
 					<a 
 						href={"/" + pathParts.slice(0, i + 1).join('/')}
-						class="hover:underline capitalize"
+						class="hover:underline capitalize text-yellow-500"
 					>
 						{decodeURIComponent(part)}
 					</a>

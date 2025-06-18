@@ -5,7 +5,7 @@
 	import Footer from '../lib/Footer.svelte';
 
 	let { children } = $props();
-	const currentPath = page.url.pathname;
+	const currentPath = $derived(page.url.pathname);
 	const status = page.status;
 </script>
 

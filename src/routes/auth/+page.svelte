@@ -32,14 +32,11 @@
 	}
 
     // Submit Form
-    let num: number = 0;
+    // let num: number = 0;
     function submit_form(e: Event) {
         e?.preventDefault();
         window.open('/modules', '_blank');
-        num++;
     }
-
-    $: console.log(num);
 </script>
 
 <svelte:head>
