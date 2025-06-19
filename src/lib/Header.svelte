@@ -3,6 +3,9 @@
     import { faMagnifyingGlass, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 	import { faUser, faCheck, faBagShopping, faComment } from '@fortawesome/free-solid-svg-icons';
     import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
+	import { smoothScrollTo } from '$lib/function';
+	// import { setContext } from 'svelte';
+
 
     let grids = [
         {name: "Unassigned", count: "350", icon: faUser},
@@ -12,37 +15,59 @@
     ]
 
 	export let currentPath: string;
-	// let value: string = '';
-
 	let isOpen = false;
 
+	import value from "$lib/value.json";
+
+	interface valueString {
+		[key: string]: { 
+			title: string;
+		};
+	}
+
+	const v: valueString = value;
+
 	$: pathParts = currentPath
-		.split('/')
-		.filter(Boolean); 
-	$:console.log(currentPath)
+		.split(/[/\-]/)
+		.filter(Boolean)
+		.map(part => v[part]?.title ?? part);
+	$: console.log(pathParts);
 
 	function gotoAuth(e: Event) {
 		e?.preventDefault();
-		window.open("/auth", "_blank")
+		window.location.href = '/auth';
 	}
 
-	// function open_link(link:string, e: Event) {
-	// 	e?.preventDefault();
-	// 	value = link;
-	// 	window.open(link, "_blank");
-	// }
+	function functionZ(link: string, e: Event) {
+		e?.preventDefault();
 
-	// $: console.log(value);
+		if (link === '/modules') {
+			const current = get(page).url.pathname;
+			if (current === '/') {
+				smoothTo('modules');
+			} else {
+				goto('/').then(() => {
+					// wait for the page to render
+					setTimeout(() => smoothTo('modules'), 100);
+				});
+			}
+			return;
+		}
+
+		goto(link);
+	}
 </script>
 
-<nav class="fixed flex flex-col w-full h-[50dvh] top-0">
+<nav class="fixed z-[10] flex flex-col w-full min-h-[120px] top-0">
 	<div class="flex z-10 w-full h-[70px] px-[20px] sm:px-[30px] md:px-[40px] lg:px-[50px] py-[8px] bg-white">
 		<div class="flex items-center justify-center gap-2">
 			<img src="/NISMED.png" alt="NISMED Logo" class="h-full object-cover">
-			<div class="flex flex-col text-black">
+			<button class="flex flex-col text-black"
+			on:click = {() => window.location.href = "/"}
+			>
 				<h1 class="text-4xl font-bold  ">UP NISMED</h1>
 				<h1 class="text-xs font-bold ">Knowledge Management System</h1>
-			</div>
+			</button>
 
 		</div>
 		<div class="flex-grow"></div>
@@ -67,7 +92,8 @@
 					<span>></span>
 					<a 
 						href={"/" + pathParts.slice(0, i + 1).join('/')}
-						class="hover:underline capitalize text-yellow-500"
+						class="hover:underline capitalize {part === 'modules' ? 'text-white' : 'text-yellow-500'}"
+						on:click={(e) => functionZ("/" + pathParts.slice(0, i + 1).join('/'), e) }
 					>
 						{decodeURIComponent(part)}
 					</a>
@@ -89,15 +115,15 @@
 			</div>
 		</div>
 	</div>
-	<div class="relative z-5 flex w-full flex-grow">
-		<div class="{isOpen ? 'translate-y-0' : '-translate-y-[calc(50dvh)]'} absolute w-full flex-grow bg-red-500 shadow-[0_15px_20px_rgba(0,0,0,0.25)] transition duration-600 ease-in-out">
+	<div class="{isOpen ? 'h-[calc(45dvh-120px)]' : 'h-0'} relative z-5 flex w-full transition-height duration-600 ease-in-out">
+		<div class="{isOpen ? 'translate-y-0' : '-translate-y-[calc(40dvh)]'} absolute w-full h-full shadow-[0_15px_20px_rgba(0,0,0,0.25)] transition duration-600 ease-in-out">
 			<div class="flex w-full h-[100%] bg-[#1B663E] justify-center items-center">
-				<div class="flex flex-col w-full h-full px-15 py-13 gap-1">
+				<div class="flex flex-col w-full h-full px-15 py-2 gap-1">
 					<div class="flex-grow w-full"></div>
 					<div class="flex w-full h-[20%] items-center">
-						<h1 class="text-4xl font-semibold text-white text-shadow-[0_5px_5px_rgb(0_0_0_/_0.5)]">Summary Table List</h1>
+						<h1 class="text-3xl font-semibold text-white text-shadow-[0_5px_5px_rgb(0_0_0_/_0.5)]">Summary Table List</h1>
 					</div>
-					<div class="grid grid-rows-1 grid-cols-4 items-center w-full h-[80%] gap-10 py-4">
+					<div class="grid grid-rows-1 grid-cols-4 items-center w-full h-[80%] gap-10 py-7">
 						{#each grids as g} 
 							<div class="flex w-full h-full rounded-2xl bg-white px-2 py-12 shadow-[0_15px_20px_rgba(0,0,0,0.18)]">
 								<div class="flex justify-center items-center h-full w-[30%]">

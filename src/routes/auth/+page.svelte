@@ -31,12 +31,16 @@
 		}, 250); 
 	}
 
-    // Submit Form
-    // let num: number = 0;
+    export let data: { id: string | null }
+
+    let dataString: string = '';
     function submit_form(e: Event) {
         e?.preventDefault();
-        window.open('/modules', '_blank');
+        dataString = '/modules' + (data && data.id ? `-${data.id}` : '');
+        window.location.href = dataString;
+        // window.open(dataString, '_blank');
     }
+
 </script>
 
 <svelte:head>

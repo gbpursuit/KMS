@@ -7,6 +7,7 @@
 	let { children } = $props();
 	const currentPath = $derived(page.url.pathname);
 	const status = page.status;
+	
 </script>
 
 {#if currentPath !== '/auth' && status < 400}
