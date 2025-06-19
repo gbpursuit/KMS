@@ -2,6 +2,8 @@
     import '@fortawesome/fontawesome-svg-core/styles.css';
     import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
     import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
+    import { smoothScrollTo } from '$lib/functions/function';
+    import { goto } from '$app/navigation';
 
     let isRegistering = false;
     let leaving = false;
@@ -33,12 +35,18 @@
 
     export let data: { id: string | null }
 
+    // Mano - mano pa
     let dataString: string = '';
     function submit_form(e: Event) {
         e?.preventDefault();
-        dataString = '/modules' + (data && data.id ? `-${data.id}` : '');
-        window.location.href = dataString;
-        // window.open(dataString, '_blank');
+        if(data && data.id) {
+            goto(`/modules-${data.id}`)
+        } else {
+            goto(`/modules-${data.id}`)
+            goto('/').then(() => {
+                setTimeout(() => smoothScrollTo('modules'), 100);
+            });
+        }
     }
 
 </script>

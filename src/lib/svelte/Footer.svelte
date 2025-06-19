@@ -42,8 +42,8 @@
 				<p class = "flex font-light p-1 md:p-0 items-center justify-center border-r border-black/10 border-b md:border-b-0 ">Copyright 2020 - 2025</p>
 				<p class = "flex font-light p-1 md:p-0 items-center justify-center border-r border-black/10 border-b md:border-b-0 ">UP NISMED</p>
 				<p class = "flex font-light p-1 md:p-0 items-center justify-center border-r border-black/10 ">All Rights Reserved</p>
-				<div class="flex flex-row gap-[1px] items-center justify-center">
-					<p class = "flex font-light p-2 md:p-0 ">Powered by</p>
+				<div class="flex flex-row gap-2 items-center justify-center">
+					<p class = "flex font-light py-2 pl-2 md:p-0 ">Powered by</p>
 					<button class="underline">WordPress</button>
 				</div>
 			</div>

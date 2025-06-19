@@ -1,10 +1,13 @@
 <script lang='ts'>
     import '@fortawesome/fontawesome-svg-core/styles.css';
-    import { faMagnifyingGlass, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
+    import { faMagnifyingGlass, faSortDown } from '@fortawesome/free-solid-svg-icons';
 	import { faUser, faCheck, faBagShopping, faComment } from '@fortawesome/free-solid-svg-icons';
     import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
-	import { smoothScrollTo } from '$lib/function';
+	import { smoothScrollTo } from '$lib/functions/function';
 	// import { setContext } from 'svelte';
+
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 
 
     let grids = [
@@ -17,7 +20,7 @@
 	export let currentPath: string;
 	let isOpen = false;
 
-	import value from "$lib/value.json";
+	import value from "$lib/data/value.json";
 
 	interface valueString {
 		[key: string]: { 
@@ -27,38 +30,40 @@
 
 	const v: valueString = value;
 
-	$: pathParts = currentPath
+	$: pathIdParts = currentPath
+		.split(/[/\-]/)
+		.filter(Boolean)
+
+	$: pathNameParts = currentPath
 		.split(/[/\-]/)
 		.filter(Boolean)
 		.map(part => v[part]?.title ?? part);
-	$: console.log(pathParts);
 
 	function gotoAuth(e: Event) {
 		e?.preventDefault();
 		window.location.href = '/auth';
 	}
 
+	// Mano mano pa
 	function functionZ(link: string, e: Event) {
 		e?.preventDefault();
 
 		if (link === '/modules') {
-			const current = get(page).url.pathname;
+			const current = page.url.pathname;
 			if (current === '/') {
-				smoothTo('modules');
+				smoothScrollTo('modules');
 			} else {
 				goto('/').then(() => {
-					// wait for the page to render
-					setTimeout(() => smoothTo('modules'), 100);
+					setTimeout(() => smoothScrollTo('modules'), 100);
 				});
 			}
 			return;
 		}
-
 		goto(link);
 	}
 </script>
 
-<nav class="fixed z-[10] flex flex-col w-full min-h-[120px] top-0">
+<nav id="topbar"class="fixed z-[10] flex flex-col w-full min-h-[120px] top-0">
 	<div class="flex z-10 w-full h-[70px] px-[20px] sm:px-[30px] md:px-[40px] lg:px-[50px] py-[8px] bg-white">
 		<div class="flex items-center justify-center gap-2">
 			<img src="/NISMED.png" alt="NISMED Logo" class="h-full object-cover">
@@ -88,14 +93,14 @@
 		<div class="flex w-full px-[20px] sm:px-[30px] md:px-[40px] lg:px-[50px] py-[8px]">
 			<div class="flex items-center justify-center gap-2">
 				<a href="/" class="hover:underline">Home</a>
-				{#each pathParts as part, i}
+				{#each pathIdParts as part, i}
 					<span>></span>
 					<a 
-						href={"/" + pathParts.slice(0, i + 1).join('/')}
+						href={"/" + pathIdParts.slice(0, i + 1).join('-')}
 						class="hover:underline capitalize {part === 'modules' ? 'text-white' : 'text-yellow-500'}"
-						on:click={(e) => functionZ("/" + pathParts.slice(0, i + 1).join('/'), e) }
+						on:click={(e) => functionZ("/" + pathIdParts.slice(0, i + 1).join('-'), e) }
 					>
-						{decodeURIComponent(part)}
+						{decodeURIComponent(pathNameParts[i])}
 					</a>
 				{/each}
 			</div>

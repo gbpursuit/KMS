@@ -1,8 +1,8 @@
 <script>
 	import '../app.css';
 	import { page } from '$app/state';
-	import Header from '../lib/Header.svelte';
-	import Footer from '../lib/Footer.svelte';
+	import Header from '../lib/svelte/Header.svelte';
+	import Footer from '../lib/svelte/Footer.svelte';
 
 	let { children } = $props();
 	const currentPath = $derived(page.url.pathname);
