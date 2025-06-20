@@ -47,7 +47,7 @@
                     left: '0',
                     right: '0',
                     zIndex: '8',
-                    transition: 'all 0.3s ease-in-out'
+                    transition: 'width 0.3s ease-in-out, height 0.3s ease-in-out'
                 });
                 hidden.style.display = 'flex';
                 isFixed = true;
