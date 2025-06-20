@@ -2,37 +2,117 @@
   "1": {
     "path": "Research",
     "items": [
-      { "name": "Research Module 1" },
-      { "name": "Research Module 2" },
-      { "name": "Research Module 3" },
-      { "name": "Research Module 4" },
-      { "name": "Research Module 5" }
+      { 
+        "id": "1", 
+        "path": "Research Module 1",
+        "title": "...",
+        "name": "....."
+      },
+      { 
+        "id": "2", 
+        "path": "Research Module 2",
+        "title": "...",
+        "name": "....."
+      },
+      { 
+        "id": "3", 
+        "path": "Research Module 3",
+        "title": "...",
+        "name": "....."
+      },
+      { 
+        "id": "4", 
+        "path": "Research Module 4",
+        "title": "...",
+        "name": "....."
+      },
+      { 
+        "id": "5", 
+        "path": "Research Module 5",
+        "title": "...",
+        "name": "....."
+      }
     ]
   },
   "2": {
     "path": "Curriculum Development",
     "items": [
-      { "name": "CD Module 1" },
-      { "name": "CD Module 2" },
-      { "name": "CD Module 3" }
+      { 
+        "id": "1", 
+        "path": "CD Module 1",
+        "title": "...",
+        "name": "....."
+      },
+      { 
+        "id": "2", 
+        "path": "CD Module 2",
+        "title": "...",
+        "name": "....."
+      },
+      { 
+        "id": "3", 
+        "path": "CD Module 3",
+        "title": "...",
+        "name": "....."
+      }
     ]
   },
   "3": {
     "path": "Professional Development",
     "items": [
-      { "name": "PD Module 1" },
-      { "name": "PD Module 2" },
-      { "name": "PD Module 3" },
-      { "name": "PD Module 4" },
-      { "name": "PD Module 5" }
+      { 
+        "id": "1", 
+        "path": "PD Module 1",
+        "title": "...",
+        "name": "....."
+      },
+      { 
+        "id": "2", 
+        "path": "PD Module 2",
+        "title": "...",
+        "name": "....."
+      },
+      { 
+        "id": "3", 
+        "path": "PD Module 3",
+        "title": "...",
+        "name": "....."
+      },
+      { 
+        "id": "4", 
+        "path": "PD Module 4",
+        "title": "...",
+        "name": "....."
+      },
+      { 
+        "id": "5", 
+        "path": "PD Module 5",
+        "title": "...",
+        "name": "....."
+      }
     ]
   },
   "4": {
     "path": "Extension",
     "items": [
-      { "name": "Extension Module 1" },
-      { "name": "Extension Module 2" },
-      { "name": "Extension Module 3" }
+      { 
+        "id": "1", 
+        "path": "Extension Module 1",
+        "title": "...",
+        "name": "....."
+      },
+      { 
+        "id": "2", 
+        "path": "Extension Module 2",
+        "title": "...",
+        "name": "....."
+      },
+      { 
+        "id": "3", 
+        "path": "Extension Module 3",
+        "title": "...",
+        "name": "....."
+      }
     ]
   }
 }

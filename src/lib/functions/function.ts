@@ -8,7 +8,6 @@ export function smoothScrollTo(targetId:string, baseSpeed = 0.5) {
 
 	const topbar = document.getElementById('topbar');
 	const offset = topbar?.offsetHeight ?? 0;
-    console.log(offset);
 
     const start = window.scrollY; 
     const end = target.getBoundingClientRect().top + start - offset;

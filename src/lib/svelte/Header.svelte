@@ -4,11 +4,9 @@
 	import { faUser, faCheck, faBagShopping, faComment } from '@fortawesome/free-solid-svg-icons';
     import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import { smoothScrollTo } from '$lib/functions/function';
-	// import { setContext } from 'svelte';
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-
 
     let grids = [
         {name: "Unassigned", count: "350", icon: faUser},
@@ -17,74 +15,36 @@
         {name: "Unassigned", count: "350", icon: faComment}
     ]
 
-	export let currentPath: string;
 	let isOpen = false;
 
-	import modules from "$lib/data/modules.json";
-	import training from "$lib/data/training.json";
+	export let currentPath: string;
+	import { currentModule, selectedModuleItem } from '$lib/functions/module';
 
-	interface CONTENT {
-		name: string;
+	let pathNameParts: string[] = [];
+	let pathIdParts: string[] = [];
 
-	}
-	interface MODULE {
-		[key: string]: { 
-			path: string;
-			items: CONTENT[];
-		};
-	}
+	$: {
+		const parts = currentPath.split(/[/\-]/).filter(Boolean);
+		pathIdParts = [...parts];
+		pathNameParts = parts.map((part) => {
+			if (part === 'modules') return 'Modules';
+			if (!isNaN(Number(part)) && $currentModule) return $currentModule.path;
+			return part;
+		});
 
-	const moduleContent: MODULE = modules;
-
-	interface TRAIN {
-		[key: string]: {
-			path:string;
-			title:string;
-		};
-	}
-
-	const trainContent: TRAIN = training;
-
-	// const parts = currentPath.split(/[/\-]/).filter(Boolean);
-
-	// $: pathIdParts = parts.filter(p => p !== 'train');
-
-	// $: pathNameParts = pathIdParts.map((part, index) => {
-	// 	const originalIndex = parts.indexOf(part);
-	// 	const prev = parts[originalIndex - 1];
-
-	// 	if (prev === 'train' && trainContent[part]) {
-	// 		return trainContent[part].path;
-	// 	}
-
-	// 	// Otherwise, fall back to moduleContent or raw part
-	// 	return moduleContent[part]?.path ?? part;
-	// });
-
-	const parts = currentPath.split(/[/\-]/).filter(Boolean);
-
-	$: pathIdParts = parts;
-	$: pathNameParts = pathIdParts.map((part, index, arr) => {
-		const prev = currentPath.split(/[/\-]/).filter(Boolean)[index - 1]; 
-		console.log(prev);
-		if (prev === 'train' && trainContent[part]) {
-			return trainContent[part].path;
+		if ($selectedModuleItem) {
+			pathNameParts = [...pathNameParts, $selectedModuleItem.path];	
+			pathIdParts = [...pathIdParts, $selectedModuleItem.id];
 		}
-		return moduleContent[part]?.path ?? part;
-	});
+	}
 
-	$: console.log(currentPath);
-	$: console.log(moduleContent);
-	$: console.log(pathNameParts);
-	$: console.log(pathIdParts);
-
-	function gotoAuth(e: Event) {
+	function go_auth(e: Event) {
 		e?.preventDefault();
 		window.location.href = '/auth';
 	}
 
 	// Mano mano pa
-	function functionZ(link: string, e: Event) {
+	function click_function(link: string, e: Event) {
 		e?.preventDefault();
 
 		if (link === '/modules') {
@@ -100,6 +60,16 @@
 		}
 		goto(link);
 	}
+
+	function get_href(i: number) {
+		const isLast = i === pathIdParts.length - 1;
+		if (isLast && $selectedModuleItem) {
+			const modules = pathIdParts.slice(0, i).join('-');
+			return `/${modules}?itemId=${$selectedModuleItem.id}`;
+		}
+		return `/${pathIdParts.slice(0, i + 1).join('-')}`;
+	}
+
 </script>
 
 <nav id="topbar"class="fixed z-10 flex flex-col w-full min-h-[120px] top-0">
@@ -118,9 +88,9 @@
 		<div class="flex justify-center items-center gap-3">
 			{#if currentPath === '/'}
 				<div class="flex justify-center items-center text black gap-2">
-					<button class="cursor-pointer hover:underline" on:click={gotoAuth}>Login</button>
+					<button class="cursor-pointer hover:underline" on:click={go_auth}>Login</button>
 					<span>/</span>
-					<button class="cursor-pointer hover:underline" on:click={gotoAuth}>Register</button>
+					<button class="cursor-pointer hover:underline" on:click={go_auth}>Register</button>
 				</div>
 			{/if}
 			<button class="flex justify-center items-center w-10 h-10 p-1 border-2 border-black rounded-full">
@@ -135,9 +105,9 @@
 				{#each pathIdParts as part, i}
 					<span>></span>
 					<a 
-						href={"/" + pathIdParts.slice(0, i + 1).join('-')}
+						href={get_href(i)}
 						class="hover:underline capitalize {part === 'modules' ? 'text-white' : 'text-yellow-500'}"
-						on:click={(e) => functionZ("/" + pathIdParts.slice(0, i + 1).join('-'), e) }
+						on:click={(e) => click_function(get_href(i), e) }
 					>
 						{decodeURIComponent(pathNameParts[i])}
 					</a>
