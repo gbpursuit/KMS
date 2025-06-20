@@ -7,15 +7,8 @@
 
 	import type { PageProps } from './$types';
 	let { data } : PageProps = $props();
-	import value from "$lib/data/value.json";
 
 	import {onMount} from 'svelte';
-
-	interface valueString {
-		[key: string]: { 
-			title: string;
-		};
-	}
 
 	// Possible type of database content
 	// interface databaseTrainingModules {
@@ -24,8 +17,6 @@
 	// 		content: string[]
 	// 	}
 	// }
-
-	const v: valueString = value;
 
 	onMount(() => {
 		console.log( data );
@@ -71,8 +62,8 @@
 
 <!-- bind:value={searchTerm} -->
 
-<div class="flex w-full h-[calc(230dvh-120px)] mt-[120px] justify-center items-center">
-	<div class="flex flex-col w-[65%] h-[85%] gap-10">
+<div class="flex flex-col w-full min-h-[calc(100dvh-120px)] mt-[120px] justify-center items-center">
+	<div class="flex flex-col w-[65%] flex-grow gap-10 py-20">
 		<div class="flex w-full h-[5%] justify-center items-center">
 			<h1 class="text-4xl font-semibold">All Training Modules</h1>
 			<div class="flex-grow"></div>
@@ -89,7 +80,41 @@
 		<div class="flex w-full h-[90%]">
 			<!-- Populate dynamically once we have data storage -->
 			<div id="griditems" class="grid grid-cols-1 grid-flow-row w-full h-full gap-7">
-				<div class="scroll-card opacity-0 flex w-full rounded-3xl gap-2 border-2 border-gray-100">
+				{#each data.items as item}
+					<div class="scroll-card opacity-0 flex w-full rounded-3xl gap-2 border-2 border-gray-100">
+						<div class="flex h-full w-[45%] border-r border-gray-200 bg-cover bg-center bg-no-repeat rounded-l-3xl rounded-r-none " style="background-image: url({'/NISMEDfrontpage.jpg'})"></div>
+						<div class="flex h-full flex-grow p-2 pr-5">
+							<div class="flex flex-col w-full h-full rounded-3xl gap-2">
+								<h1 class="text-lg font-semibold">{item.name}</h1>
+								<div class="flex flex-col w-full h-full gap-1">
+									<div class="flex gap-2 items-center">
+										<p class = "font-light text-sm">Module Completeness</p>
+									</div>
+									<div class="flex gap-2 items-center">
+										<FontAwesomeIcon icon = {faChartSimple} class = "text-[var(--font-green)]"/>
+										<p class="font-light text-sm">Project Leader</p>
+									</div>
+									<div class="flex gap-2 items-center">
+										<FontAwesomeIcon icon = {faGraduationCap} class = "text-[var(--font-green)]"/>
+										<p class="font-light text-sm">Number of total Participants</p>
+									</div>
+									<div class="flex gap-2 items-center">
+										<FontAwesomeIcon icon = {faFile} class = "text-[var(--font-green)]"/>
+										<p class="font-light text-sm">Type of Training</p>
+									</div>
+									<div class="flex gap-2 items-center">
+										<FontAwesomeIcon icon = {faClock} class = "text-[var(--font-green)]"/>
+										<p class="font-light text-sm">Date</p>
+									</div>
+								</div>
+								<div class="relative flex w-full h-full border-t border-gray-200 justify-center items-center">
+									<button class="flex h-full p-1 font-medium hover:text-[var(--font-green)] hover:tracking-wide transition-all duration-300 ease-in-out cursor-pointer">View More</button>
+								</div>
+							</div>
+						</div>		
+					</div>
+				{/each}
+				<!-- <div class="scroll-card opacity-0 flex w-full rounded-3xl gap-2 border-2 border-gray-100">
 					<div class="flex h-full w-[45%] border-r border-gray-200 bg-cover bg-center bg-no-repeat rounded-l-3xl rounded-r-none " style="background-image: url({'/NISMEDfrontpage.jpg'})"></div>
 					<div class="flex h-full flex-grow p-2 pr-5">
 						<div class="flex flex-col w-full h-full rounded-3xl gap-2">
@@ -248,7 +273,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</div>
 		<!-- Fix pagination once data storage is available -->

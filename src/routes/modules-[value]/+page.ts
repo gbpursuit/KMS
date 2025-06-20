@@ -1,16 +1,27 @@
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
-import value from "$lib/data/value.json";
+import modules from "$lib/data/modules.json";
 
-interface valueString {
+interface CONTENT {
+    name: string;
+
+}
+
+interface MODULE {
     [key: string]: { 
         title: string;
+        items: CONTENT[];
     };
 }
 
-const v: valueString = value;
+const moduleContent: MODULE = modules;
 
 export const load: PageLoad = ({ params }) => {
-    let titleContent = v[params.value];
-    return titleContent
+    let content = moduleContent[params.value];
+
+	if (!content) {
+		throw error(404, 'Module not found');
+	}
+
+    return content
 }
