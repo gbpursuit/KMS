@@ -65,7 +65,7 @@
 
 <nav id="topbar"class="fixed z-10 flex flex-col w-full min-h-[120px] top-0">
 	<div class="flex z-10 w-full h-[70px] px-[20px] sm:px-[30px] md:px-[40px] lg:px-[50px] py-[8px] bg-white">
-		<div class="flex items-center justify-center gap-2">
+		<div class="flex items-center gap-2">
 			<img src="/NISMED.png" alt="NISMED Logo" class="h-full object-cover">
 			<button class="flex flex-col text-black"
 			on:click = {() => window.location.href = "/"}
@@ -138,7 +138,7 @@
 								</div>
 								<div class="flex flex-col justify-center items-start h-full w-[70%]">
 									<p class = "text-lg text-[#A3AED0]">{g.name}</p>
-									<p class = "text-[#1B663E] text-3xl font-[750]">{g.count}</p>
+									<p class = "text-[#1B663E] text-3xl font-bold">{g.count}</p>
 								</div>
 							</div>
 						{/each}
