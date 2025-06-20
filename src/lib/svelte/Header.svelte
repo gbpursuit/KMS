@@ -20,24 +20,63 @@
 	export let currentPath: string;
 	let isOpen = false;
 
-	import value from "$lib/data/value.json";
+	import modules from "$lib/data/modules.json";
+	import training from "$lib/data/training.json";
 
-	interface valueString {
+	interface CONTENT {
+		name: string;
+
+	}
+	interface MODULE {
 		[key: string]: { 
-			title: string;
+			path: string;
+			items: CONTENT[];
 		};
 	}
 
-	const v: valueString = value;
+	const moduleContent: MODULE = modules;
 
-	$: pathIdParts = currentPath
-		.split(/[/\-]/)
-		.filter(Boolean)
+	interface TRAIN {
+		[key: string]: {
+			path:string;
+			title:string;
+		};
+	}
 
-	$: pathNameParts = currentPath
-		.split(/[/\-]/)
-		.filter(Boolean)
-		.map(part => v[part]?.title ?? part);
+	const trainContent: TRAIN = training;
+
+	// const parts = currentPath.split(/[/\-]/).filter(Boolean);
+
+	// $: pathIdParts = parts.filter(p => p !== 'train');
+
+	// $: pathNameParts = pathIdParts.map((part, index) => {
+	// 	const originalIndex = parts.indexOf(part);
+	// 	const prev = parts[originalIndex - 1];
+
+	// 	if (prev === 'train' && trainContent[part]) {
+	// 		return trainContent[part].path;
+	// 	}
+
+	// 	// Otherwise, fall back to moduleContent or raw part
+	// 	return moduleContent[part]?.path ?? part;
+	// });
+
+	const parts = currentPath.split(/[/\-]/).filter(Boolean);
+
+	$: pathIdParts = parts;
+	$: pathNameParts = pathIdParts.map((part, index, arr) => {
+		const prev = currentPath.split(/[/\-]/).filter(Boolean)[index - 1]; 
+		console.log(prev);
+		if (prev === 'train' && trainContent[part]) {
+			return trainContent[part].path;
+		}
+		return moduleContent[part]?.path ?? part;
+	});
+
+	$: console.log(currentPath);
+	$: console.log(moduleContent);
+	$: console.log(pathNameParts);
+	$: console.log(pathIdParts);
 
 	function gotoAuth(e: Event) {
 		e?.preventDefault();

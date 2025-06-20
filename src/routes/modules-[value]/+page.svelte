@@ -57,7 +57,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.title}</title> 
+	<title>{data.path}</title> 
 </svelte:head>
 
 <!-- bind:value={searchTerm} -->

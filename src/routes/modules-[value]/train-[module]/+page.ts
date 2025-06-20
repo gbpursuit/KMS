@@ -1,3 +1,4 @@
+import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 import training from "$lib/data/training.json"; 
 

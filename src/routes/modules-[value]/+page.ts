@@ -9,7 +9,7 @@ interface CONTENT {
 
 interface MODULE {
     [key: string]: { 
-        title: string;
+        path: string;
         items: CONTENT[];
     };
 }

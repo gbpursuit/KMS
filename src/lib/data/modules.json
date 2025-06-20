@@ -1,6 +1,6 @@
 {
   "1": {
-    "title": "Research",
+    "path": "Research",
     "items": [
       { "name": "Research Module 1" },
       { "name": "Research Module 2" },
@@ -10,7 +10,7 @@
     ]
   },
   "2": {
-    "title": "Curriculum Development",
+    "path": "Curriculum Development",
     "items": [
       { "name": "CD Module 1" },
       { "name": "CD Module 2" },
@@ -18,7 +18,7 @@
     ]
   },
   "3": {
-    "title": "Professional Development",
+    "path": "Professional Development",
     "items": [
       { "name": "PD Module 1" },
       { "name": "PD Module 2" },
@@ -28,7 +28,7 @@
     ]
   },
   "4": {
-    "title": "Extension",
+    "path": "Extension",
     "items": [
       { "name": "Extension Module 1" },
       { "name": "Extension Module 2" },
