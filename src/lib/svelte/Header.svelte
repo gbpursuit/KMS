@@ -76,7 +76,7 @@
 	<div class="flex z-10 w-full h-[70px] px-[20px] sm:px-[30px] md:px-[40px] lg:px-[50px] py-[8px] bg-white">
 		<div class="flex items-center gap-2">
 			<img src="/NISMED.png" alt="NISMED Logo" class="h-full object-cover">
-			<button class="flex flex-col text-black"
+			<button class="flex flex-col text-black cursor-pointer"
 			on:click = {() => window.location.href = "/"}
 			>
 				<h1 class="text-4xl font-bold  ">UP NISMED</h1>
@@ -88,9 +88,9 @@
 		<div class="flex justify-center items-center gap-3">
 			{#if currentPath === '/'}
 				<div class="flex justify-center items-center text black gap-2">
-					<button class="cursor-pointer hover:underline" on:click={go_auth}>Login</button>
+					<button class="cursor-pointer underline-container" on:click={go_auth}>Login</button>
 					<span>/</span>
-					<button class="cursor-pointer hover:underline" on:click={go_auth}>Register</button>
+					<button class="cursor-pointer underline-container" on:click={go_auth}>Register</button>
 				</div>
 			{/if}
 			<button class="flex justify-center items-center w-10 h-10 p-1 border-2 border-black rounded-full">
@@ -101,12 +101,12 @@
 	<div class="flex z-10 w-full h-[50px] bg-[#1B663E] text-white">
 		<div class="flex w-full px-[20px] sm:px-[30px] md:px-[40px] lg:px-[50px] py-[8px]">
 			<div class="flex items-center justify-center gap-2">
-				<a href="/" class="hover:underline">Home</a>
+				<a href="/" class="underline-container">Home</a>
 				{#each pathIdParts as part, i}
 					<span>></span>
 					<a 
 						href={get_href(i)}
-						class="hover:underline capitalize {part === 'modules' ? 'text-white' : 'text-yellow-500'}"
+						class="underline-container capitalize {part === 'modules' ? 'text-white' : 'text-yellow-500'}"
 						on:click={(e) => click_function(get_href(i), e) }
 					>
 						{decodeURIComponent(pathNameParts[i])}

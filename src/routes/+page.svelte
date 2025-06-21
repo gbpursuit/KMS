@@ -67,6 +67,7 @@
         };
 
         window.addEventListener('scroll', stick);
+        stick();
     });
 
 </script>

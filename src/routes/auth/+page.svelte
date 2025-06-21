@@ -133,11 +133,7 @@
             <!-- Switch Forms -->
             <div class="text-center text-sm text-black p-1 {leaving ? "morph-leave" : "morph-enter"}">
                 {isRegistering ? 'Already have an account?' : 'Don\'t have an account yet?'}
-                <button type="button" class="relative cursor-pointer pb-1
-                after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2.5px] 
-                after:w-0 after:bg-current after:transition-width after:duration-300 
-                hover:after:left-0 hover:after:w-full
-                "
+                <button type="button" class="underline-container"
                 on:click={toggle_mode}
                 >{isRegistering ? 'Login' : 'Signup'}</button>
             </div>
