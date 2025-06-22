@@ -42,7 +42,7 @@
         if(data && data.id) {
             goto(`/modules-${data.id}`)
         } else {
-            goto(`/modules-${data.id}`)
+            // goto(`/modules-${data.id}`)
             goto('/').then(() => {
                 setTimeout(() => smoothScrollTo('modules'), 100);
             });

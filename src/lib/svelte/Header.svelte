@@ -76,13 +76,16 @@
 	<div class="flex z-10 w-full h-[70px] px-[20px] sm:px-[30px] md:px-[40px] lg:px-[50px] py-[8px] bg-white">
 		<div class="flex items-center gap-2">
 			<img src="/NISMED.png" alt="NISMED Logo" class="h-full object-cover">
-			<button class="flex flex-col text-black cursor-pointer"
+            <a href="/" class="flex flex-col text-black cursor-pointer">
+				<h1 class="text-4xl font-bold  ">UP NISMED</h1>
+				<h1 class="text-xs font-bold ">Knowledge Management System</h1>
+            </a>
+			<!-- <button class="flex flex-col text-black cursor-pointer"
 			on:click = {() => window.location.href = "/"}
 			>
 				<h1 class="text-4xl font-bold  ">UP NISMED</h1>
 				<h1 class="text-xs font-bold ">Knowledge Management System</h1>
-			</button>
-
+			</button> -->
 		</div>
 		<div class="flex-grow"></div>
 		<div class="flex justify-center items-center gap-3">
