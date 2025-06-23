@@ -46,6 +46,16 @@
 		goto(`?itemId=${id}`);
 	}
 
+	let activeTab: string = $state('Overview');
+	const tabs = ['Overview', 'Participants', 'Personnel', 'Materials', 'Evaluation'];
+
+	const tabContent: Record<string, string> = {
+		'Overview': 'No data yet for Overview.',
+		'Participants': 'No data yet for Participants.',
+		'Personnel': 'No data yet for Personnel.',
+		'Materials': `No data yet for Materials`,
+		'Evaluation': 'No data yet for Evaluation.'
+	};
 </script>
 
 <svelte:head>
@@ -127,9 +137,58 @@
 		</div>
 	</div>
 {:else}
-	<div class="flex w-full h-screen bg-red-500">
+	<div class="flex w-full justify-center min-h-[calc(100dvh-120px)] mt-[120px] px-4 flex-col items-center gap-10">
+		<!-- Tabs + Content Box -->
+		<div class="w-full max-w-[900px] bg-white border border-black/10 rounded-xl shadow-sm overflow-hidden">
+			<!-- Tabs -->
+			<div class="flex border-b border-gray-200 w-full">
+				{#each tabs as tab, i}
+					<button 
+						onclick={() => activeTab = tab}
+						class="font-exo flex-1 flex justify-center items-center px-4 py-3 text-sm transition-all duration-200 ease-in-out"
+						class:text-[#185A37]={activeTab === tab}
+						class:bg-[#F7F7F7]={activeTab === tab}
+						class:border-[#AFAFAF]={activeTab === tab}
+						class:font-bold={activeTab === tab}
 
+						class:text-black-500={activeTab !== tab}
+						class:font-semibold={activeTab !== tab}
+						class:hover:text-[#185A37]={activeTab !== tab}
+						class:border-transparent={activeTab !== tab}
+					>
+						{tab}
+					</button>
+				{/each}
+			</div>
+
+
+			<!-- Content Area -->
+			<div class="p-6 text-[15px] text-gray-800 leading-relaxed bg-[#F7F7F7]">
+				{@html tabContent[activeTab]}
+			</div>
+		</div>
+
+		<!-- Comment Section (Outside Tab Container) -->
+		<div class="w-full max-w-[900px] px-6">
+			<h3 class="font-semibold mb-1">Leave A Comment</h3>
+			<p class="text-sm text-gray-600 mb-4">Let us know your thoughts about the Module.</p>
+
+			<form class="flex flex-col gap-3">
+				<input type="text" placeholder="Name*" class="p-2 border border-gray-300 rounded" />
+				<textarea placeholder="Comment" rows="4" class="p-2 border border-gray-300 rounded min-h-[45px]"></textarea>
+ 
+				<!-- <label class="flex gap-2 items-start text-sm text-gray-700">
+					<input type="checkbox" />
+					<span>Save my name, email in this browser for the next time I comment</span>
+				</label> -->
+
+				<button type="submit" class="w-max px-5 py-2 bg-orange-400 text-white rounded hover:bg-[#FF782D] transition mb-5">
+					Post Comment
+				</button>
+			</form>
+		</div>
 	</div>
+
 {/if}
 
 <style>

@@ -66,8 +66,8 @@
             }
         };
 
-        window.addEventListener('scroll', stick);
-        stick();
+        // window.addEventListener('scroll', stick);
+        // stick();
     });
 
 </script>
