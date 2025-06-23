@@ -4,6 +4,7 @@
     import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
     import { smoothScrollTo } from '$lib/functions/function';
     import { goto } from '$app/navigation';
+	import { ROUTE } from '../routes';
 
     let isRegistering = false;
     let leaving = false;
@@ -40,10 +41,10 @@
     function submit_form(e: Event) {
         e?.preventDefault();
         if(data && data.id) {
-            goto(`/modules-${data.id}`)
+            goto(`${ROUTE.MODULES}-${data.id}`)
         } else {
             // goto(`/modules-${data.id}`)
-            goto('/').then(() => {
+            goto(ROUTE.ROOT).then(() => {
                 setTimeout(() => smoothScrollTo('modules'), 100);
             });
         }

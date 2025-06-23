@@ -19,6 +19,7 @@
 
 	export let currentPath: string;
 	import { currentModule, selectedModuleItem } from '$lib/functions/module';
+	import { ROUTE } from '../../routes/routes';
 
 	let pathNameParts: string[] = [];
 	let pathIdParts: string[] = [];
@@ -40,19 +41,19 @@
 
 	function go_auth(e: Event) {
 		e?.preventDefault();
-		window.location.href = '/auth';
+		window.location.href = ROUTE.AUTH;
 	}
 
 	// Mano mano pa
 	function click_function(link: string, e: Event) {
 		e?.preventDefault();
 
-		if (link === '/modules') {
+		if (link === ROUTE.MODULES) {
 			const current = page.url.pathname;
-			if (current === '/') {
+			if (current === ROUTE.ROOT) {
 				smoothScrollTo('modules');
 			} else {
-				goto('/').then(() => {
+				goto(ROUTE.ROOT).then(() => {
 					setTimeout(() => smoothScrollTo('modules'), 100);
 				});
 			}
@@ -89,7 +90,7 @@
 		</div>
 		<div class="flex-grow"></div>
 		<div class="flex justify-center items-center gap-3">
-			{#if currentPath === '/'}
+			{#if currentPath === ROUTE.ROOT}
 				<div class="flex justify-center items-center text black gap-2">
 					<button class="cursor-pointer underline-container" on:click={go_auth}>Login</button>
 					<span>/</span>
