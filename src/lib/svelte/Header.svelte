@@ -103,13 +103,13 @@
 	</div>
 	<div class="flex z-10 w-full h-[50px] bg-[#1B663E] text-white">
 		<div class="flex w-full px-[20px] sm:px-[30px] md:px-[40px] lg:px-[50px] py-[8px]">
-			<div class="flex items-center justify-center gap-2">
+			<div class="flex w-[70%] items-center items-center gap-2">
 				<a href="/" class="underline-container">Home</a>
 				{#each pathIdParts as part, i}
 					<span>></span>
 					<a 
 						href={get_href(i)}
-						class="underline-container capitalize {part === 'modules' ? 'text-white' : 'text-yellow-500'}"
+						class="underline-container capitalize truncate overflow-hidden whitespace-nowrap max-w-[200px] block {part === 'modules' ? 'text-white' : 'text-yellow-500'}"
 						on:click={(e) => click_function(get_href(i), e) }
 					>
 						{decodeURIComponent(pathNameParts[i])}
@@ -117,7 +117,7 @@
 				{/each}
 			</div>
 			<div class="flex-grow"></div>
-			<div class="flex justify-center items-center gap-3">
+			<div class="flex w-[25%] justify-center items-center gap-3">
 				<div class="flex justify-center items-center text black">
 					<span class = "text-lg">Summary</span>
 				</div>
@@ -135,8 +135,7 @@
 	<div class="{isOpen ? 'h-[calc(40dvh-120px)]' : 'h-0'} relative z-9 flex w-full transition-height duration-600 ease-in-out">
 		<div class="{isOpen ? 'translate-y-0' : '-translate-y-[calc(40dvh)]'} absolute w-full h-full shadow-[0_15px_20px_rgba(0,0,0,0.1)] transition duration-600 ease-in-out">
 			<div class="flex w-full h-[100%] bg-[#1B663E] justify-center items-center">
-				<div class="flex flex-col w-full h-full px-15 py-2 gap-1">
-					<div class="flex-grow w-full"></div>
+				<div class="flex flex-col w-full h-[90%] px-15 py-2 gap-1">
 					<div class="flex w-full h-[20%] items-center">
 						<h1 class="text-3xl font-semibold text-white text-shadow-[0_5px_5px_rgb(0_0_0_/_0.5)]">Summary Table List</h1>
 					</div>

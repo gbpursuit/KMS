@@ -139,16 +139,14 @@
 {:else}
 	<div class="flex w-full justify-center min-h-[calc(100dvh-120px)] mt-[120px] px-4 flex-col items-center gap-10">
 		<!-- Tabs + Content Box -->
-		<div class="w-full max-w-[900px] bg-white border border-black/10 rounded-xl shadow-sm overflow-hidden">
+		<div class="flex flex-col w-full max-w-[900px] bg-white border border-black/10 rounded-xl shadow-sm overflow-hidden ">
 			<!-- Tabs -->
-			<div class="flex border-b border-gray-200 w-full">
+			<div class="flex w-full">
 				{#each tabs as tab, i}
 					<button 
 						onclick={() => activeTab = tab}
-						class="font-exo flex-1 flex justify-center items-center px-4 py-3 text-sm transition-all duration-200 ease-in-out 
-						{activeTab === tab
-							? 'text-[#185A37] bg-[#F7F7F7] border-[#AFAFAF] font-bold'
-							: 'text-black-500 font-semibold hover:text-[#185A37] border-transparent'}"	
+						class="font-exo flex-1 flex justify-center items-center px-4 py-3 text-sm transition-colors duration-300 ease-in-out font-semibold
+						{activeTab === tab ? 'text-[#185A37] bg-[#F7F7F7] border-b-0 border-[#AFAFAF]/50' : 'text-black border-t-0 border border-black/10'}"
 					>
 						{tab}
 					</button>
@@ -169,7 +167,7 @@
 
 			<form class="flex flex-col gap-3">
 				<input type="text" placeholder="Name*" class="p-2 border border-gray-300 rounded" />
-				<textarea placeholder="Comment" rows="4" class="p-2 border border-gray-300 rounded min-h-[45px]"></textarea>
+				<textarea placeholder="Comment" rows="4" class="p-2 border border-gray-300 rounded min-h-[45px] max-h-[300px]"></textarea>
  
 				<!-- <label class="flex gap-2 items-start text-sm text-gray-700">
 					<input type="checkbox" />
