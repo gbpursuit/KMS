@@ -145,16 +145,10 @@
 				{#each tabs as tab, i}
 					<button 
 						onclick={() => activeTab = tab}
-						class="font-exo flex-1 flex justify-center items-center px-4 py-3 text-sm transition-all duration-200 ease-in-out"
-						class:text-[#185A37]={activeTab === tab}
-						class:bg-[#F7F7F7]={activeTab === tab}
-						class:border-[#AFAFAF]={activeTab === tab}
-						class:font-bold={activeTab === tab}
-
-						class:text-black-500={activeTab !== tab}
-						class:font-semibold={activeTab !== tab}
-						class:hover:text-[#185A37]={activeTab !== tab}
-						class:border-transparent={activeTab !== tab}
+						class="font-exo flex-1 flex justify-center items-center px-4 py-3 text-sm transition-all duration-200 ease-in-out 
+						{activeTab === tab
+							? 'text-[#185A37] bg-[#F7F7F7] border-[#AFAFAF] font-bold'
+							: 'text-black-500 font-semibold hover:text-[#185A37] border-transparent'}"	
 					>
 						{tab}
 					</button>
