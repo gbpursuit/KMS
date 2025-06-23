@@ -117,7 +117,7 @@
 				{/each}
 			</div>
 			<div class="flex-grow"></div>
-			<div class="flex w-[25%] justify-center items-center gap-3">
+			<div class="flex w-[25%] justify-end items-center gap-3">
 				<div class="flex justify-center items-center text black">
 					<span class = "text-lg">Summary</span>
 				</div>
