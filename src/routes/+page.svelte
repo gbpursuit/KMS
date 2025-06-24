@@ -13,7 +13,7 @@
     function handleButton(e: Event, id: number, check: boolean) {
         e?.preventDefault();
         if (!check) {
-            window.location.href = `/auth?content=${id}`;;
+            window.location.href = `/auth?content=${id}`;
             return;
         }
         window.location.href = `/modules-${id}`;
