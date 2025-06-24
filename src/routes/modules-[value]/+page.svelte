@@ -137,12 +137,56 @@
 		</div>
 	</div>
 {:else}
-	<div class="flex w-full justify-center min-h-[calc(100dvh-120px)] mt-[120px] px-4 flex-col items-center gap-10">
+<!-- Top Bar -->
+<div class="flex flex-col w-full min-h-[calc(100dvh-120px)] mt-[120px] items-center">
+	<div class="flex flex-col justify-center w-full h-[245px] bg-[#1B663E] text-white px-6 py-4 mb-10">
+		<!-- Progress Bar -->
+		<!-- This is still fixed -->
+		<div class="flex items-center gap-3 text-sm font-light text-yellow-400 mb-2">
+			<p class="text-sm font-semibold">23 of 50</p>
+			<div class="relative w-40 h-[6px] bg-gray-200 rounded-full overflow-hidden">
+				<div class="absolute top-0 left-0 h-full bg-yellow-500" style="width: 46%"></div>
+			</div>
+		</div>
+
+		<!-- Page title -->
+		<!-- This is still fixed -->
+		<h1 class="text-3xl font-semibold text-white max-w-[700px]">
+			The Ultimate Guide To The Best WordPress LMS Plugin
+		</h1>
+
+		<!-- Metadata icons -->
+		<div class="flex flex-wrap items-center gap-6 mt-3 text-sm text-white mt-6">
+			<div class="flex items-center gap-2">
+				<FontAwesomeIcon icon={faGraduationCap} class="text-yellow-400" />
+				<!-- This is still fixed -->
+				<span>Number of Total Participants</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<FontAwesomeIcon icon={faChartSimple} class="text-yellow-400" />
+				<!-- This is still fixed -->
+				<span>Project Leader</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<FontAwesomeIcon icon={faFile} class="text-yellow-400" />
+				<!-- This is still fixed -->
+				<span>Type of Training</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<FontAwesomeIcon icon={faClock} class="text-yellow-400" />
+				<!-- This is still fixed -->
+				<span>Date</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- Content Area -->
+	<div class="flex w-full justify-center px-4 flex-col items-center gap-10">
 		<!-- Tabs + Content Box -->
 		<div class="flex flex-col w-full max-w-[900px] bg-white border border-black/10 rounded-xl shadow-sm overflow-hidden ">
 			<!-- Tabs -->
 			<div class="flex w-full">
-				{#each tabs as tab, i}
+				{#each tabs as tab}
 					<button 
 						onclick={() => activeTab = tab}
 						class="font-exo flex-1 flex justify-center items-center px-4 py-3 text-sm transition-colors duration-300 ease-in-out font-semibold
@@ -153,14 +197,13 @@
 				{/each}
 			</div>
 
-
-			<!-- Content Area -->
+			<!-- Tab Content -->
 			<div class="p-6 text-[15px] text-gray-800 leading-relaxed bg-[#F7F7F7]">
 				{@html tabContent[activeTab]}
 			</div>
 		</div>
 
-		<!-- Comment Section (Outside Tab Container) -->
+		<!-- Comment Section -->
 		<div class="w-full max-w-[900px] px-6">
 			<h3 class="font-semibold mb-1">Leave A Comment</h3>
 			<p class="text-sm text-gray-600 mb-4">Let us know your thoughts about the Module.</p>
@@ -168,19 +211,13 @@
 			<form class="flex flex-col gap-3">
 				<input type="text" placeholder="Name*" class="p-2 border border-gray-300 rounded" />
 				<textarea placeholder="Comment" rows="4" class="p-2 border border-gray-300 rounded min-h-[45px] max-h-[300px]"></textarea>
- 
-				<!-- <label class="flex gap-2 items-start text-sm text-gray-700">
-					<input type="checkbox" />
-					<span>Save my name, email in this browser for the next time I comment</span>
-				</label> -->
-
 				<button type="submit" class="w-max px-5 py-2 bg-orange-400 text-white rounded hover:bg-[#FF782D] transition mb-5">
 					Post Comment
 				</button>
 			</form>
 		</div>
 	</div>
-
+</div>
 {/if}
 
 <style>
