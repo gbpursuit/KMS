@@ -83,16 +83,16 @@
 
 <div id = "modules" class="flex flex-col w-full h-[70dvh]">
     <div class="flex flex-col w-full h-full justify-center items-center py-10">
-        <div class="flex w-[90%] h-[30%] p-2">
-            <div class="flex flex-col w-[60%] h-full gap-2  justify-center">
+        <div class="flex w-[90%] max-h-full p-2 flex-wrap items-center justify-center">
+            <div class="flex flex-col w-full gap-2 justify-center">
                 <h1 class="text-3xl font-semibold text-[var(--font-green)] text-shadow-[0_2px_5px_rgb(0_0_0_/_0.1)]">About KMS</h1>
                 <p class="font-light text-[var(--font-green)] text-shadow-[0_2px_5px_rgb(0_0_0_/_0.1)] mt-2">
-                <strong>Knowledge Management System (KMS)</strong> is a digital platform designed to centralize, organize, and make accessible key information and outputs from NISMED’s core programs. The KMS enhances documentation, collaboration, and knowledge sharing across departments.
+                    <strong>Knowledge Management System (KMS)</strong> is a digital platform designed to centralize, organize, and make accessible key information and outputs from NISMED’s core programs. The KMS enhances documentation, collaboration, and knowledge sharing across departments.
                 </p>
-                
+
                 <h1 class="text-3xl font-semibold text-[var(--font-green)] text-shadow-[0_2px_5px_rgb(0_0_0_/_0.1)]">Programs</h1>
                 <p class="font-light text-[var(--font-green)] text-shadow-[0_2px_5px_rgb(0_0_0_/_0.1)]">
-                Explore our current programs available at UP NISMED, aimed at advancing research, curriculum innovation, professional development, and community extension in science and mathematics education. 
+                    Explore our current programs available at UP NISMED, aimed at advancing research, curriculum innovation, professional development, and community extension in science and mathematics education. 
                 </p>
             </div>
         </div>
