@@ -2,6 +2,8 @@
     import '@fortawesome/fontawesome-svg-core/styles.css';
     import { faAtom, faClipboard, faPersonChalkboard, faPalette } from '@fortawesome/free-solid-svg-icons';
     import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
+    
+	import { ROUTE } from './routes';
 
     let modules = [
         {id: 1, name: "Research", text: "24 Courses", icon: faAtom, allowed: false},
@@ -19,67 +21,13 @@
         window.location.href = `${ROUTE.MODULES}-${id}`;
     }
 
-    import { onMount } from 'svelte';
-	import { ROUTE } from './routes';
-
-    onMount(() => {
-        const landing = document.getElementById('landing');
-        const hidden = document.getElementById('hidden');
-        const modules = document.getElementById('modules');
-
-        if (!landing || !hidden || !modules) return;
-
-        let isFixed = false;
-        let triggerY = window.innerHeight * 0.4;
-
-        const updateTriggerY = () => {
-            triggerY = window.innerHeight * 0.40;
-        };
-        window.addEventListener('resize', updateTriggerY);
-
-        const stick = () => {
-            const landBottom = landing.getBoundingClientRect().bottom;
-            const modulesTop = modules.getBoundingClientRect().top;
-
-            if (!isFixed && landBottom <= triggerY) {
-                Object.assign(landing.style, {
-                    position: 'fixed',
-                    bottom: '60dvh',
-                    left: '0',
-                    right: '0',
-                    zIndex: '8',
-                    transition: 'width 0.3s ease-in-out, height 0.3s ease-in-out'
-                });
-                hidden.style.display = 'flex';
-                isFixed = true;
-            }
-
-            if (isFixed && modulesTop >= triggerY) {
-                Object.assign(landing.style, {
-                    position: 'static',
-                    bottom: '',
-                    left: '',
-                    right: '',
-                    zIndex: '',
-                });
-                hidden.style.display = 'none';
-                isFixed = false;
-            }
-        };
-
-        // window.addEventListener('scroll', stick);
-        // stick();
-    });
-
 </script>
 
 <svelte:head>
-	<title>UP Nismed Kms</title>
+	<title>UP Nismed KMS</title>
 </svelte:head>
 
 <div id="landing" class="flex w-full h-[calc(100dvh-120px)] mt-[120px] bg-cover bg-center bg-no-repeat" style="background-image:url({'/NISMEDfrontpage.jpg'})"></div>
-
-<div id="hidden" class="hidden w-full h-screen bg-white"></div>
 
 <div id = "modules" class="flex flex-col w-full h-[70dvh]">
     <div class="flex flex-col w-full h-full justify-center items-center py-10">
