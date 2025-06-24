@@ -13,13 +13,14 @@
     function handleButton(e: Event, id: number, check: boolean) {
         e?.preventDefault();
         if (!check) {
-            window.location.href = `/auth?content=${id}`;
+            window.location.href = `${ROUTE.AUTH}?content=${id}`;
             return;
         }
-        window.location.href = `/modules-${id}`;
+        window.location.href = `${ROUTE.MODULES}-${id}`;
     }
 
     import { onMount } from 'svelte';
+	import { ROUTE } from './routes';
 
     onMount(() => {
         const landing = document.getElementById('landing');
