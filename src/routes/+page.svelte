@@ -1,7 +1,7 @@
 <script lang='ts'>
 	import Heading from '$lib/svelte/Heading.svelte';
 	import Paragraph from '$lib/svelte/Paragraph.svelte';
-import ProgramCard from '$lib/svelte/ProgramCard.svelte';
+  import ProgramCard from '$lib/svelte/ProgramCard.svelte';
     import '@fortawesome/fontawesome-svg-core/styles.css';
     import { faAtom, faClipboard, faPersonChalkboard, faPalette } from '@fortawesome/free-solid-svg-icons';
 
@@ -21,7 +21,7 @@ import ProgramCard from '$lib/svelte/ProgramCard.svelte';
 <div id="landing" class="flex w-full h-[calc(100dvh-120px)] mt-[120px] bg-cover bg-center bg-no-repeat" style="background-image:url({'/NISMEDfrontpage.jpg'})"></div>
 
 <div id = "modules" class="flex flex-col w-full h-full">
-    <div class="flex flex-col w-full h-full justify-center items-center py-10 gap-10">
+    <div class="flex flex-col w-full h-full justify-center items-center px-16 py-10 gap-10">
         <div class="flex w-[90%] max-h-full p-2 flex-wrap items-center justify-center ">
             <div class="flex flex-col w-full gap-2 justify-center">
                 <Heading>About KMS</Heading>
@@ -35,7 +35,8 @@ import ProgramCard from '$lib/svelte/ProgramCard.svelte';
                 </Paragraph>
             </div>
         </div>
-        <div class="grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 w-[90%] h-[70%] place-items-center">
+        <div class="grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 w-[90%] h-[70%] place-items-center gap-6">
+
                 {#each modules as m}
                     <ProgramCard program={m}/>
                 {/each}
