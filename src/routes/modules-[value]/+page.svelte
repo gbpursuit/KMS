@@ -4,12 +4,19 @@
 	import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 	import { faChartSimple, faGraduationCap, faFile, faClock} from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
+	import { writable, derived } from 'svelte/store';
 
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 
 	import { currentModule, selectedModuleItem } from '$lib/functions/module';
 	import type { PageProps } from './$types';
+
+	import Overview from '$lib/svelte/Overview.svelte';
+	import Participants from '$lib/svelte/Participants.svelte';
+	import Personnel from '$lib/svelte/Personnel.svelte';
+	import Highlights from '$lib/svelte/Highlights.svelte';
+	import Evaluation from '$lib/svelte/Evaluation.svelte';
 
 	let { data } : PageProps = $props();
 
@@ -46,16 +53,21 @@
 		goto(`?itemId=${id}`);
 	}
 
-	let activeTab: string = $state('Overview');
-	const tabs = ['Overview', 'Participants', 'Personnel', 'Materials', 'Evaluation'];
+	const tabs = ['Overview', 'Participants', 'Personnel', 'Highlights', 'Evaluation'];
+	const activeTab = writable('Overview');
 
-	const tabContent: Record<string, string> = {
-		'Overview': 'No data yet for Overview.',
-		'Participants': 'No data yet for Participants.',
-		'Personnel': 'No data yet for Personnel.',
-		'Materials': `No data yet for Materials`,
-		'Evaluation': 'No data yet for Evaluation.'
+	const tabContent: Record<string, any> = {
+		'Overview': Overview,
+		'Participants': Participants,
+		'Personnel': Personnel,
+		'Highlights': Highlights,
+		'Evaluation': Evaluation
 	};
+
+	const CurrentComponent = derived(activeTab, ($activeTab) => tabContent[$activeTab]);
+	onMount(() => {
+		console.log(CurrentComponent);
+	})
 </script>
 
 <svelte:head>
@@ -136,6 +148,7 @@
 			</div>
 		</div>
 	</div>
+
 {:else}
 <!-- Top Bar -->
 <div class="flex flex-col w-full min-h-[calc(100dvh-120px)] mt-[120px] items-center">
@@ -183,23 +196,34 @@
 	<!-- Content Area -->
 	<div class="flex w-full justify-center px-4 flex-col items-center gap-10">
 		<!-- Tabs + Content Box -->
-		<div class="flex flex-col w-full max-w-[900px] bg-white border border-black/10 rounded-xl shadow-sm overflow-hidden ">
+		<div class="flex flex-col w-full max-w-[900px] bg-white border border-black/10 rounded-xl shadow-sm overflow-hidden">
 			<!-- Tabs -->
 			<div class="flex w-full">
 				{#each tabs as tab}
-					<button 
-						onclick={() => activeTab = tab}
-						class="font-exo flex-1 flex justify-center items-center px-4 py-3 text-sm transition-colors duration-300 ease-in-out font-semibold
-						{activeTab === tab ? 'text-[#185A37] bg-[#F7F7F7] border-b-0 border-[#AFAFAF]/50' : 'text-black border-t-0 border border-black/10'}"
-					>
-						{tab}
-					</button>
+					{#if $activeTab === tab}
+						<button
+							onclick={() => activeTab.set(tab)}
+							class="font-exo flex-1 flex justify-center items-center px-4 py-3 text-sm transition-colors duration-300 ease-in-out font-semibold text-[#185A37] bg-[#F7F7F7] border-b-0 border-[#AFAFAF]/50"
+						>
+							{tab}
+						</button>
+					{:else}
+						<button
+							onclick={() => activeTab.set(tab)}
+							class="font-exo flex-1 flex justify-center items-center px-4 py-3 text-sm transition-colors duration-300 ease-in-out font-semibold text-black border-t-0 border border-black/10"
+						>
+							{tab}
+						</button>
+					{/if}
 				{/each}
 			</div>
 
 			<!-- Tab Content -->
 			<div class="p-6 text-[15px] text-gray-800 leading-relaxed bg-[#F7F7F7]">
-				{@html tabContent[activeTab]}
+				{#if $CurrentComponent}
+					{@const Comp = $CurrentComponent}
+					<Comp />
+				{/if}
 			</div>
 		</div>
 
