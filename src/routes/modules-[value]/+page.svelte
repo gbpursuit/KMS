@@ -68,6 +68,39 @@
 	onMount(() => {
 		console.log(CurrentComponent);
 	})
+
+	let showModal: boolean = $state(false);
+
+	let projectLeader: string = $state('');
+	let participants: number | '' = $state('');
+	let trainingType: string = $state('');
+	let trainingDate: string = $state('');
+	let trainingImage: File | null = null;
+
+	function handleFileChange(event: Event): void {
+		const target = event.target as HTMLInputElement;
+		if (target.files && target.files.length > 0) {
+		trainingImage = target.files[0];
+		}
+	}
+
+	function handleSubmit(): void {
+		const formData = {
+		projectLeader,
+		participants,
+		trainingType,
+		trainingDate,
+		trainingImage
+		};
+
+		console.log('Submitted Data:', formData);
+		showModal = false;
+	}
+
+	const inputClass = "transition-all duration-300 outline-none border-2 border-[#1B663E] shadow-[3px_4px_0px_1px_#1B663E] px-3 py-2 rounded text-sm text-black focus:translate-y-1 focus:shadow-[1px_2px_0px_0px_#1B663E]";
+	const labelClass = "font-semibold text-[#0C2D1C]";
+	const fieldClass = "flex flex-col gap-1 transition-all duration-300";
+
 </script>
 
 <svelte:head>
@@ -75,6 +108,58 @@
 </svelte:head>
 
 <!-- bind:value={searchTerm} -->
+
+
+{#if showModal}
+	<!-- Backdrop -->
+	<div role="button" tabindex="0" aria-label="Close modal"
+		class="fixed inset-0 bg-[#030B07]/70 z-40 transition-opacity duration-300 ease-in-out"
+		onclick={() => showModal = false}
+		onkeydown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') showModal = false; }}
+	></div>
+
+	<!-- Modal -->
+	<div class="fixed top-1/2 left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl border-2 border-[#1B663E] shadow-[3px_4px_0px_1px_#1B663E] w-[85%] max-w-xl px-10 py-10 transition-all duration-300 ease-in-out">
+		<h2 class="text-2xl font-extrabold text-center text-[#185A37] mb-1 transition-colors duration-300">Add Training Module</h2>
+		<p class="text-sm text-center font-semibold text-[#1B663E] mb-4 transition-opacity duration-300">Complete the form below</p>
+		<div class="h-[1px] bg-[#AFAFAF] mb-6"></div>
+
+		<form class="flex flex-col gap-5">
+			<div class={fieldClass}>
+				<label class={labelClass}>Project Leader</label>
+				<input type="text" bind:value={projectLeader} class={inputClass} />
+			</div>
+
+			<div class={fieldClass}>
+				<label class={labelClass}>Number of Participants</label>
+				<input type="number" bind:value={participants} class={inputClass} />
+			</div>
+
+			<div class={fieldClass}>
+				<label class={labelClass}>Type of Training</label>
+				<input type="text" bind:value={trainingType} class={inputClass} />
+			</div>
+
+			<div class={fieldClass}>
+				<label class={labelClass}>Date</label>
+				<input type="date" bind:value={trainingDate} class={inputClass} />
+			</div>
+
+			<div class={fieldClass}>
+				<label class={labelClass}>Upload Image</label>
+				<input type="file" accept="image/*" onchange={handleFileChange}
+					class="file:border-0 file:py-2 file:px-4 file:rounded file:bg-[#1B663E] file:text-white file:font-semibold text-sm transition-all duration-300" />
+			</div>
+
+			<div class="flex justify-end gap-3 pt-4">
+				<button type="button" onclick={() => showModal = false}
+					class="bg-[#AFAFAF] text-black font-semibold px-4 py-2 rounded-lg hover:bg-[#999999] transition-all duration-200">Cancel</button>
+				<button type="button" onclick={handleSubmit}
+					class="bg-[#185A37] text-white font-semibold px-4 py-2 rounded-lg hover:bg-[#0C2D1C] transition-all duration-200">Submit</button>
+			</div>
+		</form>
+	</div>
+{/if}
 
 {#if !data.selectedItem}
 	<div class="flex flex-col w-full min-h-[calc(100dvh-120px)] mt-[120px] justify-center items-center">
@@ -146,6 +231,10 @@
 				</div>
 				<div class="flex-grow"></div>
 			</div>
+			<button onclick={() => showModal = true} class="w-full bg-[#185A37] text-white rounded-xl p-2 mt-4 transition duration-300 ease-in-out hover:bg-[#146e47] hover:scale-[1.01]">
+				Add Training Module
+			</button>
+
 		</div>
 	</div>
 
@@ -243,6 +332,7 @@
 	</div>
 </div>
 {/if}
+
 
 <style>
     :global(.animate-appear) {
