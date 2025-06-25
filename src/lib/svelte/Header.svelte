@@ -9,8 +9,8 @@
 	import { page } from '$app/state';
 
     let grids = [
-        {name: "Unassigned", count: "350", icon: faUser},
-        {name: "Unassigned", count: "350", icon: faCheck},
+        {name: "Participants Count", count: "350", icon: faUser},
+        {name: "Teachers Trained", count: "350", icon: faCheck},
         {name: "Unassigned", count: "350", icon: faBagShopping},
         {name: "Unassigned", count: "350", icon: faComment}
     ]
@@ -97,9 +97,15 @@
 					<button class="cursor-pointer underline-container" on:click={go_auth}>Register</button>
 				</div>
 			{/if}
-			<button class="flex justify-center items-center w-10 h-10 p-1 border-2 border-black rounded-full">
-				<FontAwesomeIcon icon={faMagnifyingGlass} />
+			<button
+			class="group flex justify-center items-center w-8 h-8 p-1 border-2 border-[#185A37] rounded-full bg-white text-white font-bold transition-all duration-300 hover:bg-[#1B663E] hover:border-[#1B663E] opacity-0"
+			>
+			<FontAwesomeIcon
+				icon={faMagnifyingGlass}
+				class="text-[#1B663E] text-sm transition-all duration-300 group-hover:text-white group-hover:scale-110"
+			/>
 			</button>
+
 		</div>
 	</div>
 	<div class="flex z-10 w-full h-[50px] bg-[#1B663E] text-white">
@@ -133,26 +139,39 @@
 			</div>
 		</div>
 	</div>
-	<div class="{isOpen ? 'h-[calc(40dvh-120px)]' : 'h-0'} relative z-9 flex w-full transition-height duration-600 ease-in-out">
-		<div class="{isOpen ? 'translate-y-0' : '-translate-y-[calc(40dvh)]'} absolute w-full h-full shadow-[0_15px_20px_rgba(0,0,0,0.1)] transition duration-600 ease-in-out">
-			<div class="flex w-full h-[100%] bg-[#1B663E] justify-center items-center">
-				<div class="flex flex-col w-full h-[90%] px-15 py-2 gap-1">
-					<div class="flex w-full h-[20%] items-center">
-						<h1 class="text-3xl font-semibold text-white text-shadow-[0_5px_5px_rgb(0_0_0_/_0.5)]">Summary Table List</h1>
+	<div class="{isOpen ? 'h-[calc(65dvh-120px)]' : 'h-0'} relative z-9 flex w-full transition-height duration-600 ease-in-out">
+		<div class="{isOpen ? 'translate-y-0' : '-translate-y-[calc(65dvh)]'} absolute w-full shadow-[0_15px_20px_rgba(0,0,0,0.1)] transition duration-600 ease-in-out overflow-hidden">
+			<div class="flex w-full bg-[#1B663E] justify-center items-start py-6 px-6 pb-12 overflow-hidden">
+				<div class="flex flex-col w-full max-w-[1280px] gap-6 overflow-hidden">
+					<div class="flex items-center justify-right">
+						<h1 class="text-xl sm:text-2xl md:text-3xl font-semibold text-white text-shadow-[0_5px_5px_rgba(0,0,0,0.5)] truncate">
+							Summary Table List
+						</h1>
 					</div>
-					<div class="grid grid-rows-1 grid-cols-4 items-center w-full h-[80%] gap-10 py-7">
-						{#each grids as g} 
-							<div class="flex w-full h-full rounded-2xl bg-white px-2 py-12 shadow-[0_15px_20px_rgba(0,0,0,0.18)]">
-								<div class="flex justify-center items-center h-full w-[30%]">
-									<div class="flex justify-center items-center p-1 rounded-full w-15 h-15 bg-[#F4F7FE] text-2xl">
-										<FontAwesomeIcon icon={g.icon} />
-									</div>
-								</div>
-								<div class="flex flex-col justify-center items-start h-full w-[70%]">
-									<p class = "text-lg text-[#A3AED0]">{g.name}</p>
-									<p class = "text-[#1B663E] text-3xl font-bold">{g.count}</p>
+
+					<div class="flex flex-wrap justify-center items-start gap-6 w-full">
+						{#each grids as g}
+						<div class="flex flex-shrink w-full sm:w-[45%] md:w-[30%] xl:w-[22%] min-w-0 rounded-md bg-white px-6 py-5 shadow-[0_2px_4px_rgba(0,0,0,0.15),_0_15px_20px_rgba(0,0,0,0.18)] transition-transform hover:scale-[1.03]">
+							<div class="flex justify-center items-center w-1/4 min-w-[50px] text-[#185A37]">
+  								<div class="flex justify-center items-center bg-[#F4F7FE] rounded-full w-12 h-12 md:w-14 md:h-14 text-lg md:text-2xl text-[#1B663E]" title="{g.name}">
+									<FontAwesomeIcon icon={g.icon} />
 								</div>
 							</div>
+							<div class="flex flex-col justify-center items-start w-3/4 min-w-0 pl-4">
+							<p class="text-sm md:text-base text-[#185A37] font-semibold truncate w-full" title="{g.name}">
+								{g.name}
+							</p>
+							<div class="flex items-baseline gap-2 mt-1">
+								<p class="text-[#1B663E] text-xl md:text-2xl font-bold break-words w-full">{g.count}</p>
+								<span class="text-sm text-green-500 font-semibold whitespace-nowrap">
+								↑ 12%
+								</span>
+							</div>
+							<span class="mt-1 inline-block px-2 py-0.5 text-[11px] font-medium bg-[#E9F7EF] text-[#1B663E] rounded">
+								Placeholder
+							</span>
+							</div>
+						</div>
 						{/each}
 					</div>
 				</div>
