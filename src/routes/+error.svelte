@@ -1,7 +1,6 @@
 <script>
-	export let error;
-	export let status;
+	import { page } from '$app/state';
 </script>
 
-<h1>{status}</h1>
-<p>{error?.message || 'Something went wrong.'}</p>
+<h1>{page.status}</h1>
+<p>{page.error?.message || 'An unknown error occured'}</p>
