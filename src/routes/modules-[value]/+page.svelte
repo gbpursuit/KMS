@@ -97,7 +97,7 @@
 		showModal = false;
 	}
 
-	const inputClass = "transition-all duration-300 outline-none border-2 border-[#1B663E] shadow-[3px_4px_0px_1px_#1B663E] px-3 py-2 rounded text-sm text-black focus:translate-y-1 focus:shadow-[1px_2px_0px_0px_#1B663E]";
+	const inputClass = "transition-all duration-300 outline-none border-2 border-[#1B663E] shadow-[0px_4px_1px_0px_#1B663E] px-3 py-2 rounded text-sm text-black focus:translate-y-1 focus:shadow-[1px_2px_0px_0px_#1B663E]";
 	const labelClass = "font-semibold text-[#0C2D1C]";
 	const fieldClass = "flex flex-col gap-1 transition-all duration-300";
 
