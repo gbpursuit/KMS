@@ -18,7 +18,13 @@
 	<title>UP Nismed KMS</title>
 </svelte:head>
 
-<div id="landing" class="flex w-full h-[calc(100dvh-120px)] mt-[120px] bg-cover bg-center bg-no-repeat" style="background-image:url({'/NISMEDfrontpage.jpg'})"></div>
+<div id="landing" class="relative flex items-center justify-center w-full h-[calc(100dvh-120px)] mt-[120px] bg-cover bg-center bg-no-repeat" style="background-image: url('/NISMEDfrontpage.jpg');">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>
+
+    <div class="relative w-[90%] max-w-4xl mx-auto bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl border border-white/20 px-8 py-6 animate-fade-in-up transition-all duration-1000 ease-out">
+    <Heading style="home-title">Knowledge Management System</Heading>
+    </div>
+</div>
 
 <div id = "modules" class="flex flex-col w-full h-full">
     <div class="flex flex-col w-full h-full justify-center items-center px-16 py-10 gap-10">
@@ -44,4 +50,19 @@
     </div>
 </div>
 
-<style></style>
+<style>
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 1s ease-out forwards;
+  }
+</style>
