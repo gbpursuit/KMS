@@ -1,7 +1,4 @@
 <script lang='ts'>
-    import '@fortawesome/fontawesome-svg-core/styles.css';
-    import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-    import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
     import { smoothScrollTo } from '$lib/functions/function';
     import { goto } from '$app/navigation';
 	import { ROUTE } from '../routes';
@@ -26,7 +23,6 @@
     export let data: { id: string | null }
 
     // Mano - mano pa
-    let dataString: string = '';
     function submitForm(e: Event) {
         e?.preventDefault();
         if(data && data.id) {
