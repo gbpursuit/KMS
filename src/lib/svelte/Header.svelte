@@ -1,19 +1,34 @@
 <script lang='ts'>
     import '@fortawesome/fontawesome-svg-core/styles.css';
     import { faMagnifyingGlass, faSortDown } from '@fortawesome/free-solid-svg-icons';
-	import { faUser, faCheck, faBagShopping, faComment } from '@fortawesome/free-solid-svg-icons';
+	import { faUser, faBook, faLaptop } from '@fortawesome/free-solid-svg-icons';
     import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import { smoothScrollTo } from '$lib/functions/function';
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 
-    let grids = [
-        {name: "Participants Count", count: "350", icon: faUser},
-        {name: "Teachers Trained", count: "350", icon: faCheck},
-        {name: "Unassigned", count: "350", icon: faBagShopping},
-        {name: "Unassigned", count: "350", icon: faComment}
-    ]
+	let grids = [
+		{
+			name: "Teachers Trained",
+			count: "2039",
+			icon: faUser,
+			label: "2024 Total",
+		},
+		{
+			name: "Trainings Count",
+			count: "35",
+			icon: faBook,
+			label: "Past Year",
+		},
+		{
+			name: "Online Courses",
+			count: "89",
+			icon: faLaptop,
+			label: "Available Now",
+		},
+	];
+
 
 	let isOpen = false;
 
@@ -151,27 +166,25 @@
 
 					<div class="flex flex-wrap justify-center items-start gap-6 w-full">
 						{#each grids as g}
-						<div class="flex flex-shrink w-full sm:w-[45%] md:w-[30%] xl:w-[22%] min-w-0 rounded-md bg-white px-6 py-5 shadow-[0_2px_4px_rgba(0,0,0,0.15),_0_15px_20px_rgba(0,0,0,0.18)] transition-transform hover:scale-[1.03]">
-							<div class="flex justify-center items-center w-1/4 min-w-[50px] text-[#185A37]">
-  								<div class="flex justify-center items-center bg-[#F4F7FE] rounded-full w-12 h-12 md:w-14 md:h-14 text-lg md:text-2xl text-[#1B663E]" title="{g.name}">
-									<FontAwesomeIcon icon={g.icon} />
+							<div class="flex flex-shrink w-full sm:w-[45%] md:w-[30%] xl:w-[22%] min-w-0 rounded-md bg-white px-6 py-5 shadow-[0_2px_4px_rgba(0,0,0,0.15),_0_15px_20px_rgba(0,0,0,0.18)] transition-transform hover:scale-[1.03]">
+								<div class="flex justify-center items-center w-1/4 min-w-[50px] text-[#185A37]">
+									<div class="flex justify-center items-center bg-[#F4F7FE] rounded-full w-12 h-12 md:w-14 md:h-14 text-lg md:text-2xl text-[#1B663E]" title="{g.name}">
+										<FontAwesomeIcon icon={g.icon} />
+									</div>
+								</div>
+								<div class="flex flex-col justify-center items-start w-3/4 min-w-0 pl-4">
+								<p class="text-sm md:text-base text-[#185A37] font-semibold truncate w-full" title="{g.name}">
+									{g.name}
+								</p>
+								<div class="flex items-baseline gap-1 mt-1 justify-center items-center">
+									<p class="text-[#1B663E] text-xl md:text-2xl font-bold break-words">{g.count}</p>
+								</div>
+
+								<span class="mt-1 inline-block px-2 py-0.5 text-[11px] font-medium bg-[#E9F7EF] text-[#1B663E] rounded">
+									{g.label}
+								</span>
 								</div>
 							</div>
-							<div class="flex flex-col justify-center items-start w-3/4 min-w-0 pl-4">
-							<p class="text-sm md:text-base text-[#185A37] font-semibold truncate w-full" title="{g.name}">
-								{g.name}
-							</p>
-							<div class="flex items-baseline gap-2 mt-1">
-								<p class="text-[#1B663E] text-xl md:text-2xl font-bold break-words w-full">{g.count}</p>
-								<span class="text-sm text-green-500 font-semibold whitespace-nowrap">
-								↑ 12%
-								</span>
-							</div>
-							<span class="mt-1 inline-block px-2 py-0.5 text-[11px] font-medium bg-[#E9F7EF] text-[#1B663E] rounded">
-								Placeholder
-							</span>
-							</div>
-						</div>
 						{/each}
 					</div>
 				</div>
