@@ -3,7 +3,6 @@ import { createHandlers } from '$lib/functions/specificHandle';
 
 export const { GET, POST } = createHandlers('program', {
     include: {
-        pd: true,
         _count: {
             select: {  // return the count of pd items
                 research: true,
