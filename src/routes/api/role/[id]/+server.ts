@@ -9,7 +9,8 @@ export const { GET, PUT, DELETE } = createHandlers('role', {
             }
         }
     },
-    logPrefix: 'role'
+    logPrefix: 'role',
+    errorHandle: 'Role',
 })
 
 // export const PUT: RequestHandler = async ({ params, request }) => {

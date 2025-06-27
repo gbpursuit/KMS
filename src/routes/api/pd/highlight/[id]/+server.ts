@@ -26,5 +26,6 @@ import { createHandlers } from '$lib/functions/specificHandle';
 // };
 
 export const { GET, PUT, DELETE } = createHandlers('highlight', {
-    logPrefix: 'highlight'
+    logPrefix: 'highlight',
+    errorHandle: 'Highlight'
 })

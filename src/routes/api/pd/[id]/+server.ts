@@ -26,5 +26,6 @@ import { createHandlers } from '$lib/functions/specificHandle';
 // }
 
 export const { GET, PUT, DELETE } = createHandlers('professionalDevelopment', {
-    logPrefix: 'pd'
+    logPrefix: 'pd',
+    errorHandle: 'Professional Development'
 })

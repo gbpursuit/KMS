@@ -37,5 +37,6 @@ export const { GET, PUT, DELETE } = createHandlers('account', {
             }
         }
     },
-    logPrefix: 'account'
+    logPrefix: 'account',
+    errorHandle: 'Account'
 })

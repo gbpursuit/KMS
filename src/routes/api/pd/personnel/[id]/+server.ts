@@ -25,9 +25,10 @@ import { createHandlers } from '$lib/functions/specificHandle';
 //     }
 // }
 
-export const { GET, DELETE } = createHandlers('personnel', {
+export const { GET, PUT, DELETE } = createHandlers('personnel', {
     include: {
         personnelonpd: true
     },
-    logPrefix: 'personnel'
+    logPrefix: 'personnel',
+    errorHandle: 'Personnel',
 })

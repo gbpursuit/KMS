@@ -6,7 +6,7 @@ export const POST: RequestHandler = async({ request }) => {
     try {
         let item = await request.json();
         if(!item) {
-            return data.json({ error: 'POST: Participant and PD ID is required'}, {status:400});
+            return data.json({ error: 'Participant and PD ID is required. Add Failed.'}, {status:400});
         }
 
         let participantonpd = await data.PRISMA.participantOnPd.create({
@@ -23,7 +23,7 @@ export const DELETE: RequestHandler = async({ request }) => {
     try {
         let item = await request.json();
         if(!item) {
-            return data.json({ error: 'DELETE: Participant and PD ID is required'}, {status:400});
+            return data.json({ error: 'Participant and PD ID is required. Delete Failed.'}, {status:400});
         }
 
         let participantonpd = await data.PRISMA.participantOnPd.delete({

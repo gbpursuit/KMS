@@ -3,7 +3,8 @@ import { createHandlers } from '$lib/functions/specificHandle';
 
 export const { GET, PUT, DELETE } = createHandlers('program', {
     include: {pd: true},
-    logPrefix: 'program'
+    logPrefix: 'program',
+    errorHandle: 'Program',
 })
 
 // export const PUT: RequestHandler = async ({ params, request }) => {

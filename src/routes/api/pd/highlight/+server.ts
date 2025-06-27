@@ -3,6 +3,7 @@ import { createHandlers } from '$lib/functions/specificHandle';
 
 export const { GET, POST } = createHandlers('highlight', {
     logPrefix: 'pd/highlight',
+    errorHandle: 'Entire Highlight',
     useMany: true
 })
 

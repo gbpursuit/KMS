@@ -14,6 +14,7 @@ export const { GET, POST } = createHandlers('program', {
         }
     },
     logPrefix: 'program',
+    errorHandle: 'Entire Program',
     useMany: true
 })
 

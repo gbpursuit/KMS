@@ -10,6 +10,7 @@ export const { GET, POST } = createHandlers('role', {
         }
     },
     logPrefix: 'role',
+    errorHandle: 'Entire Role',
     useMany: true
 })
 

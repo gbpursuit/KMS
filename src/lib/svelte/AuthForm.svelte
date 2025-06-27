@@ -72,9 +72,9 @@
             <Input bind:password={loginPassword} style={errorStyle} type="password" id="password" name="password" maxlength={maxCharacters}/>
         </div>
 
-        <!-- Ayusin nalang tong part na to since ayoko magtagal masyado sa frontend HAHAHA -->
+        <!-- Ayusin nalang tong part na to since ayoko magtagal masyado sa frontend HAHAHA pwede ring maging asset if gusto mo -->
         <!-- <div class="{errorStyle ? 'flex' : 'hidden'} justify-center">
-            <Heading style="error">Invalid Login: {errorMessage}</Heading>
+            <Heading style="error">Invalid {type}: {errorMessage}</Heading>
         </div> -->
 
         <Button style="submit" type="submit">Login</Button>
@@ -86,30 +86,35 @@
         <div class="flex flex-row gap-4">
             <div class="flex flex-col gap-1">
                 <Label forLabel="firstName" required> First Name </Label>
-                <Input type="text" id="firstName" name="firstName" maxlength={maxCharacters}/>
+                <Input style={errorStyle} type="text" id="firstName" name="firstName" maxlength={maxCharacters}/>
             </div>
 
             <div class="flex flex-col gap-1">
                 <Label forLabel="lastName" required> Last Name </Label>
-                <Input type="text" id="lastName" name="lastName" maxlength={maxCharacters}/>
+                <Input style={errorStyle} type="text" id="lastName" name="lastName" maxlength={maxCharacters}/>
             </div>
         </div>
 
         <div class="flex flex-col gap-1">
             <Label forLabel="username" required> Username </Label>
-            <Input type="text" id="signupUsername" name="username" maxlength={maxCharacters}/>
+            <Input style={errorStyle} type="text" id="signupUsername" name="username" maxlength={maxCharacters}/>
         </div>
 
         <div class="flex flex-col gap-1">
             <Label forLabel="password" required> Password </Label>
-            <Input type="password" id="signupPassword" name="password" maxlength={maxCharacters}/>
+            <Input style={errorStyle} type="password" id="signupPassword" name="password" maxlength={maxCharacters}/>
         </div>
         
         <div class="flex flex-col gap-1">
             <Label forLabel="confirmPassword" required> Confirm Password </Label>
-            <Input type="password" id="confirmPassword" name="confirmPassword" maxlength={maxCharacters}/>
+            <Input style={errorStyle} type="password" id="confirmPassword" name="confirmPassword" maxlength={maxCharacters}/>
         </div>
 
+        <!-- Ayusin nalang tong part na to since ayoko magtagal masyado sa frontend HAHAHA pwede ring maging asset if gusto mo -->
+        <!-- <div class="{errorStyle ? 'flex' : 'hidden'} justify-center">
+            <Heading style="error">Invalid {type}: {errorMessage}</Heading>
+        </div> -->
+        
         <Button style="submit" type="submit">Signup</Button>
     </form>
 </div>

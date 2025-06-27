@@ -28,5 +28,6 @@ export const { GET, PUT, DELETE } = createHandlers('participant', {
     include: {
         participantonpd: true
     },
-    logPrefix: 'participant'
+    logPrefix: 'participant',
+    errorHandle: 'Participant',
 })

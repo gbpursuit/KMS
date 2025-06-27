@@ -14,6 +14,7 @@ export const { GET, POST } = createHandlers('account', {
         }
     },
     logPrefix: 'account',
+    errorHandle: 'Entire Account',
     useMany: true
 })
 

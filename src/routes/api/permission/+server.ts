@@ -3,6 +3,7 @@ import { createHandlers } from '$lib/functions/specificHandle';
 
 export const { GET, POST } = createHandlers('permission', {
     logPrefix: 'permission',
+    errorHandle: 'Entire Permission',
     useMany: true
 })
 

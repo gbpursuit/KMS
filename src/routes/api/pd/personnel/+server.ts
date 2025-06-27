@@ -4,6 +4,7 @@ import { createHandlers } from '$lib/functions/specificHandle';
 export const { GET, POST } = createHandlers('personnel', {
     include: {personnelonpd: true},
     logPrefix: 'pd/personnel',
+    errorHandle: 'Entire Personnel',
     useMany: true
 })
 

@@ -8,30 +8,31 @@ const SECRET = 'super-secret'; // replace with env var
 const { sign, verify } = jsonwebtoken;
 
 export async function registerUser(item: Record<string, any>) {
-    let hashed = await hash(item.password, 10);
     try {
+        let hashed = await hash(item.password, 10);
         let existing = await data.PRISMA.account.findUnique({
             where: {
                 username: item.username
             }
         })
-
+        
         if(existing) throw new Error('User already exists');
 
-        // return existing;
-        // let user = await addData('account', {
-        //     id: data.id,
-        //     username: data.username,
-        //     firstName: data.firstName,
-        //     lastName: data.lastName,
-        //     acctName: data.acctName,
-        //     password: hashed,
-        //     roleId: 1
-        // });
+        if (item.password !== item.confirmPassword) throw new Error ('Passwords do not match');
+        let user = await addData('account', {
+            id: item.id,
+            username: item.username,
+            firstName: item.firstName,
+            lastName: item.lastName,
+            acctName: item.acctName,
+            password: hashed,
+            roleId: 1
+        });
 
-        // return user;
+        return user;
     } catch (err) {
-        throw new Error('Registration failed');
+		console.error('Registration failed:', err);
+		throw err;
     }
 }
 
@@ -51,9 +52,8 @@ export async function loginUser(item: Record<string, any>) {
 
         return user;
     } catch (err) {
-        if(err) throw err;
-        
-        throw new Error('Login failed');
+		console.error('Login failed:', err);
+		throw err;
     }
 }
 
