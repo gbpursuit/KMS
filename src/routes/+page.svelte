@@ -1,16 +1,26 @@
 <script lang='ts'>
-	import Heading from '$lib/svelte/Heading.svelte';
-	import Paragraph from '$lib/svelte/Paragraph.svelte';
+  import Heading from '$lib/svelte/Heading.svelte';
+  import Paragraph from '$lib/svelte/Paragraph.svelte';
   import ProgramCard from '$lib/svelte/ProgramCard.svelte';
-    import '@fortawesome/fontawesome-svg-core/styles.css';
-    import { faAtom, faClipboard, faPersonChalkboard, faPalette } from '@fortawesome/free-solid-svg-icons';
+  import '@fortawesome/fontawesome-svg-core/styles.css';
+  import { faAtom, faClipboard, faPersonChalkboard, faPalette } from '@fortawesome/free-solid-svg-icons';
 
-    let modules = [
-        {id: 1, name: "Research", text: "24 Courses", icon: faAtom, allowed: false},
-        {id: 2, name: "Curriculum Development", text: "38 Courses", icon: faClipboard, allowed: false},
-        {id: 3, name: "Professional Development", text: "38 Courses", icon: faPersonChalkboard, allowed: false},
-        {id: 4, name: "Extension", text: "38 Courses", icon: faPalette, allowed: false},
-    ]
+  import { onMount } from 'svelte';
+  import { getData } from '$lib/functions/database';
+  import { type ProgramPD } from '$lib/functions/module';
+
+  let programList: ProgramPD[] = [];
+  let iconMap: Record<string, any> = {
+    'Research': faAtom,
+    'Curriculum Development': faClipboard,
+    'Professional Development': faPersonChalkboard,
+    'Extension': faPalette
+  };
+
+  onMount(async () => {
+    let rawPrograms: ProgramPD[] = await getData('program');
+    programList = rawPrograms.map((p) => ({...p, icon: iconMap[p.name]}));
+  });
 
 </script>
 
@@ -43,8 +53,8 @@
         </div>
         <div class="grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 w-[90%] h-[70%] place-items-center gap-6">
 
-                {#each modules as m}
-                    <ProgramCard program={m}/>
+                {#each programList as program}
+                    <ProgramCard program={program}/>
                 {/each}
         </div>
     </div>

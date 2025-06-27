@@ -24,24 +24,42 @@ html {
     scroll-behavior: smooth;
 }
 
-.underline-container {
+/* Middle */
+.custom-underline {
     position: relative;
-    cursor: pointer;
-    padding-bottom: 0.125rem;
 }
 
-.underline-container::after {
-    position: absolute;
-    content: '';
+.custom-underline.middle::after {
+    content: "";
+    positioN: absolute;
+    height: 2px;
+    bottom: 0;
     left: 50%;
-    bottom: 0%;
-    height: 2.5px;
     width: 0%;
-    transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
-    background-color: currentColor;
+    background: currentColor;
+    transition: width 0.3s ease, left 0.3s ease;
 }
 
-.underline-container:hover::after {
-    left: 0%;
+.custom-underline.middle:hover::after {
+    left: 0;
     width: 100%;
+}
+
+/* Left to Right */
+.custom-underline.leftRight::after {
+  content: "";
+  position: absolute;
+  height: 1.5px;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: right;
+  background: currentColor;
+  transition: transform 0.3s ease-out;
+}
+
+.custom-underline.leftRight:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }

@@ -1,6 +1,15 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/state';
+	// export let error: Error;
+	// export let status: number;
 
+	// import { onMount } from 'svelte';
+
+	// onMount(() => {
+	// 	console.log(error);
+	// 	console.log(status);
+	// })
+ 
 </script>
 
 

@@ -1,38 +1,77 @@
+<!-- This is called after +page.ts -->
 <script lang='ts'>
     import { smoothScrollTo } from '$lib/functions/function';
     import { goto } from '$app/navigation';
 	import { ROUTE } from '../routes';
-	import Form from '$lib/svelte/Form.svelte';
+	import Form from '$lib/svelte/AuthForm.svelte';
 	import Heading from '$lib/svelte/Heading.svelte';
+    import { addData } from '$lib/functions/database';
+    import { onMount } from 'svelte';
 
     let isSigningUp = false;
     let leaving = false;
     let formType = "login";
 
 	function toggleMode() {
+
         leaving = true;
-		setTimeout(() => {
-			isSigningUp = !isSigningUp;
+        setTimeout(() => {
+            isSigningUp = !isSigningUp;
             leaving = false;
-		}, 250);
-        if(formType == 'login') formType = 'signup'
-        else formType = 'login'
-        console.log('From page', formType)
+
+            formType = formType === 'login' ? 'signup' : 'login';
+            setTimeout(() => {
+                const form = document.getElementById(formType) as HTMLFormElement | null;
+                form?.reset();
+            }, 0);
+        }, 250);
 	}   
 
     export let data: { id: string | null }
+    let isError: boolean = false;
+    let errorMessage: string = '';
 
-    // Mano - mano pa
-    function submitForm(e: Event) {
+    async function submitForm(e: Event) {
         e?.preventDefault();
-        if(data && data.id) {
-            goto(`${ROUTE.MODULES}-${data.id}`)
-        } else {
-            // goto(`/modules-${data.id}`)
-            goto(ROUTE.ROOT).then(() => {
-                setTimeout(() => smoothScrollTo('modules'), 100);
-            });
+        let form = e.target as HTMLFormElement;
+
+        try {
+            let formData = new FormData(form);
+            let item = Object.fromEntries(formData) as Record<string, string>;
+            let endpoint = formType === 'login' ? 'auth/login' : 'auth/register';
+
+            if (Object.values(item).some(value => !value)) {
+                console.log(item);
+                errorMessage = "Please fill in all fields"
+                throw new Error (errorMessage);
+            }
+
+            let result = await addData(endpoint, item);
+            console.log(result)
+
+            if (result.ok) {
+                form.reset();
+                if(data && data.id) {
+                    goto(`${ROUTE.MODULES}-${data.id}`)
+                } else {
+                    goto(ROUTE.ROOT).then(() => {
+                        setTimeout(() => smoothScrollTo('modules'), 100);
+                    });
+                }
+            } else {
+                errorMessage = result.result.error
+                throw new Error (errorMessage);
+            }
+        } catch(err) {
+            console.error(err);
+
+            isError = true;
+            setTimeout(() => {
+                isError = false;
+                errorMessage = '';
+            }, 1500);
         }
+
     }
 
 </script>
@@ -60,12 +99,12 @@
             </Heading>
         </div>
         
-        <Form bind:type="{formType}" onSubmit={submitForm}></Form>
+        <Form bind:type="{formType}" errorStyle="{isError}" errorMessage="{errorMessage}" onSubmit={submitForm}></Form>
 
         <!-- Switch Forms -->
         <div class="text-center text-sm text-black p-1 {leaving ? "morph-leave" : "morph-enter"}">
             {isSigningUp ? 'Already have an account?' : 'Don\'t have an account yet?'}
-            <button type="button" class="underline-container"
+            <button type="button" class="custom-underline middle"
             on:click={toggleMode}
             >{isSigningUp ? 'Login' : 'Signup'}</button>
         </div>

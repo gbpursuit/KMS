@@ -1,4 +1,5 @@
 import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import type { Program, ProfessionalDevelopment } from '@prisma/client';
 import { writable, type Writable } from 'svelte/store';
 
 export interface CONTENT {
@@ -13,12 +14,16 @@ export interface ModuleData {
 	items: CONTENT[];
 }
 
-export interface Program {
-	id: number,
-	name: string,
-	text: string,
-	icon: IconDefinition,
-	allowed: boolean
+
+export interface ProgramPD extends Program {
+	pd: ProfessionalDevelopment[];
+	_count: { 
+		research: number;
+		cd: number;
+		pd: number;
+		extension: number; 
+	};
+	icon: IconDefinition;
 }
 
 export const currentModule: Writable<ModuleData | null> = writable(null);

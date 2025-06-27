@@ -107,9 +107,9 @@
 		<div class="flex justify-center items-center gap-3">
 			{#if currentPath === ROUTE.ROOT}
 				<div class="flex justify-center items-center text black gap-2">
-					<button class="cursor-pointer underline-container" on:click={go_auth}>Login</button>
+					<button class="cursor-pointer custom-underline leftRight" on:click={go_auth}>Login</button>
 					<span>/</span>
-					<button class="cursor-pointer underline-container" on:click={go_auth}>Register</button>
+					<button class="cursor-pointer custom-underline leftRight" on:click={go_auth}>Register</button>
 				</div>
 			{/if}
 			<button
@@ -126,12 +126,12 @@
 	<div class="flex z-10 w-full h-[50px] bg-[#1B663E] text-white">
 		<div class="flex w-full px-[20px] sm:px-[30px] md:px-[40px] lg:px-[50px] py-[8px]">
 			<div class="flex w-[70%] items-center gap-2">
-				<a href="/" class="underline-container">Home</a>
+				<a href="/" class="custom-underline middle">Home</a>
 				{#each pathIdParts as part, i}
 					<span>></span>
 					<a 
 						href={get_href(i)}
-						class="underline-container capitalize truncate overflow-hidden whitespace-nowrap max-w-[200px] block {part === 'modules' ? 'text-white' : 'text-yellow-500'}"
+						class="custom-underline middle capitalize truncate overflow-hidden whitespace-nowrap max-w-[200px] block {part === 'modules' ? 'text-white' : 'text-yellow-500'}"
 						on:click={(e) => click_function(get_href(i), e) }
 					>
 						{decodeURIComponent(pathNameParts[i])}

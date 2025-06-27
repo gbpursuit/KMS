@@ -6,6 +6,9 @@
         case 'form':
             styleValue = "font-semibold text-3xl"
             break;
+        case 'error':
+            styleValue =  "font-medium text-sm text-red-500"
+            break;
         case 'home-title':
             styleValue =  "relative text-white text-[8vw] md:text-5xl font-extrabold text-center px-4 py-2 animate-fade-in-up transition-all duration-1000 ease-out tracking-wide drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]"
             break;
