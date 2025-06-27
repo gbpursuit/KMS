@@ -59,15 +59,15 @@ export function createHandlers(
 
     const POST: RequestHandler = async ({ request }) => {
         try {
-            let data = await request.json();
-            if(!data) {
+            let item = await request.json();
+            if(!item) {
                 throw error(400, `${errorHandle} data is missing`)
             }
 
-            let item = await (data.PRISMA[modelName] as any).create({
-                data: data
+            let added = await (data.PRISMA[modelName] as any).create({
+                data: item
             });
-            return data.json(item);
+            return data.json(added);
         } catch (err:any) {
             console.error(`POST /api/${logPrefix} error:`, err);
             if (err?.status) throw err;
@@ -81,17 +81,17 @@ export function createHandlers(
             throw error(400, `Invalid ${errorHandle} ID. Update Failed.`);
         }
         try {
-            let data = await request.json();
-            if(!data) {
+            let item = await request.json();
+            if(!item) {
                 throw error(400, `PUT: ${logPrefix} data is missing`);
             }
 
-            let item = await (data.PRISMA[modelName] as any).update({
+            let updated = await (data.PRISMA[modelName] as any).update({
                 where: {id},
-                data: data
+                data: item
             });
 
-            return data.json(item);
+            return data.json(updated);
         } catch (err: any) {
             console.error(`PUT /api/${logPrefix}/[id] error:`, err);
             if (err?.status) throw err;

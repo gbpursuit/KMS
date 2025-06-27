@@ -19,16 +19,19 @@ export async function registerUser(item: Record<string, any>) {
         if(existing) throw new Error('User already exists');
 
         if (item.password !== item.confirmPassword) throw new Error ('Passwords do not match');
-        let user = await addData('account', {
-            id: item.id,
-            username: item.username,
-            firstName: item.firstName,
-            lastName: item.lastName,
-            acctName: item.acctName,
-            password: hashed,
-            roleId: 1
-        });
 
+        let acctName = `${item.firstName.trim()} ${item.lastName.trim()}`.trim()
+        let user = await data.PRISMA.account.create({
+            data: {
+				username: item.username,
+				firstName: item.firstName,
+				lastName: item.lastName,
+				acctName: acctName,
+				password: hashed,
+				roleId: 1
+            }
+        });
+        
         return user;
     } catch (err) {
 		console.error('Registration failed:', err);
@@ -38,7 +41,6 @@ export async function registerUser(item: Record<string, any>) {
 
 export async function loginUser(item: Record<string, any>) {
     try {
-        // let user = await getData(`account/${data.id}`);
         let user = await data.PRISMA.account.findUnique({
             where: {
                 username: item.username
@@ -58,6 +60,7 @@ export async function loginUser(item: Record<string, any>) {
 }
 
 export function createSession(userId: number, cookies: Cookies) {
+
     let duration = 7200; // 2 hours
     let token = sign({ userId }, SECRET, {expiresIn: duration});
     cookies.set('session', token, {
@@ -74,7 +77,17 @@ export async function getUserFromCookie(cookies: Cookies) {
 
     try {
         let decoded = verify(token, SECRET) as { userId: number };
-        let user = await getData(`account/${decoded.userId}`);
+        let user = await data.PRISMA.account.findUnique({
+            where: { id: decoded.userId },
+			include: {
+				role: {
+					include: {
+						perms: { include: { perms: true } }
+					}
+				}
+			}
+        })
+        console.log("User:", user);
 
         return user;
     } catch (err) {

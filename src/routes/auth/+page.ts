@@ -7,7 +7,7 @@ export const load: PageLoad = async ({ url, parent, fetch }) => {
 	let { user } = await parent();
 	let id = url.searchParams.get('content');
 
-	console.log('User', user);
+	// console.log('User', user);
 
 	if(user) {
 		throw redirect(302, `/modules-${id ?? ''}`)
@@ -15,6 +15,7 @@ export const load: PageLoad = async ({ url, parent, fetch }) => {
 
 	if(id) {
 		let program = await getData(`program/${id}`, fetch);
+		console.log(program);
 		if(!program) {
 			throw error (400, 'Invalid Program');
 		}

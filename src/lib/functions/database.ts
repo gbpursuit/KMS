@@ -4,7 +4,7 @@
 import { error as svelteError } from '@sveltejs/kit';
 
 export async function getData(type: string, fetchFn?: typeof fetch) {
-	const useFetch = fetchFn ?? fetch;
+	let useFetch = fetchFn ?? fetch;
 
 	const res = await useFetch(`/api/${type}`);
 	if (!res.ok) {
@@ -17,6 +17,7 @@ export async function getData(type: string, fetchFn?: typeof fetch) {
 
 // POST data
 export async function addData(type: string, data: Record<string, any>) {
+
     let res = await fetch(`/api/${type}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
