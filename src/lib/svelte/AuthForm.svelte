@@ -40,10 +40,6 @@
         let lastName = document.getElementById('lastName')
         let signupUsername = document.getElementById('signupUsername')
 
-        let signupForm = document.getElementById('signup')
-        
-        if(signupForm) signupForm.hidden = true
-
         const letters = new RegExp("^[A-Za-z]*$")
         const lettersNumbers = new RegExp("^[A-Za-z0-9]*$")
 
