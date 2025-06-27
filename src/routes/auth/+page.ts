@@ -6,8 +6,7 @@ import { getData } from '$lib/functions/database';
 export const load: PageLoad = async ({ url, parent, fetch }) => {
 	let { user } = await parent();
 	let id = url.searchParams.get('content');
-
-	// console.log('User', user);
+	let view = url.searchParams.get('view');
 
 	if(user) {
 		throw redirect(302, `/modules-${id ?? ''}`)
@@ -21,5 +20,5 @@ export const load: PageLoad = async ({ url, parent, fetch }) => {
 		}
 	}
 
-	return { id };
+	return { id, view };
 };

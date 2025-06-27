@@ -5,6 +5,7 @@
     import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import { smoothScrollTo } from '$lib/functions/function';
 
+	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 
@@ -33,6 +34,7 @@
 	let isOpen = false;
 
 	export let currentPath: string;
+	export let user: any;
 	import { currentModule, selectedModuleItem } from '$lib/functions/module';
 	import { ROUTE } from '../../routes/routes';
 
@@ -40,6 +42,7 @@
 	let pathIdParts: string[] = [];
 
 	$: {
+		console.log(user);
 		const parts = currentPath.split(/[/\-]/).filter(Boolean);
 		pathIdParts = [...parts];
 		pathNameParts = parts.map((part) => {
@@ -54,9 +57,9 @@
 		}
 	}
 
-	function go_auth(e: Event) {
+	function go_auth(e: Event, view: 'login' | 'register' = 'login') {
 		e?.preventDefault();
-		window.location.href = ROUTE.AUTH;
+		window.location.href = `${ROUTE.AUTH}?view=${view}`;
 	}
 
 	// Mano mano pa
@@ -86,6 +89,19 @@
 		return `/${pathIdParts.slice(0, i + 1).join('-')}`;
 	}
 
+	onMount(() => {
+		const target = new URLSearchParams(window.location.search).get('scroll');
+		if (target) {
+			setTimeout(() => {
+				smoothScrollTo(target);
+
+				let url = new URL(window.location.href);
+				url.searchParams.delete('scroll');
+				window.history.replaceState({}, '', url);
+			}, 100);
+		}
+	});
+
 </script>
 
 <nav id="topbar"class="fixed z-10 flex flex-col w-full min-h-[120px] top-0">
@@ -105,11 +121,11 @@
 		</div>
 		<div class="flex-grow"></div>
 		<div class="flex justify-center items-center gap-3">
-			{#if currentPath === ROUTE.ROOT}
+			{#if !user}
 				<div class="flex justify-center items-center text black gap-2">
-					<button class="cursor-pointer custom-underline leftRight" on:click={go_auth}>Login</button>
+					<button class="cursor-pointer custom-underline leftRight" on:click={(e) => go_auth(e)}>Login</button>
 					<span>/</span>
-					<button class="cursor-pointer custom-underline leftRight" on:click={go_auth}>Register</button>
+					<button class="cursor-pointer custom-underline leftRight" on:click={(e) => go_auth(e, 'register')}>Register</button>
 				</div>
 			{/if}
 			<button

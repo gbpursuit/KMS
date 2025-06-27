@@ -9,6 +9,8 @@ const { sign, verify } = jsonwebtoken;
 
 export async function registerUser(item: Record<string, any>) {
     try {
+        if (item.password !== item.confirmPassword) throw new Error ('Passwords do not match');
+
         let hashed = await hash(item.password, 10);
         let existing = await data.PRISMA.account.findUnique({
             where: {
@@ -16,9 +18,7 @@ export async function registerUser(item: Record<string, any>) {
             }
         })
         
-        if(existing) throw new Error('User already exists');
-
-        if (item.password !== item.confirmPassword) throw new Error ('Passwords do not match');
+        if(existing) throw new Error('Username is already taken');
 
         let acctName = `${item.firstName.trim()} ${item.lastName.trim()}`.trim()
         let user = await data.PRISMA.account.create({

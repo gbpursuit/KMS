@@ -8,9 +8,14 @@
     import { addData } from '$lib/functions/database';
     import { onMount } from 'svelte';
 
+    export let data: { 
+        id: string | null;
+        view: string;
+    }
+
     let isSigningUp = false;
     let leaving = false;
-    let formType = "login";
+    let formType: 'login' | 'signup' = data.view === 'register' ? 'signup' : 'login';
     let formHeight: number | undefined = 0
 
 	function toggleMode() {
@@ -28,7 +33,6 @@
         }, 250);
 	}   
 
-    export let data: { id: string | null }
     let isError: boolean = false;
     let errorMessage: string = '';
 
@@ -53,11 +57,10 @@
             if (result.ok) {
                 form.reset();
                 if(data && data.id) {
-                    goto(`${ROUTE.MODULES}-${data.id}`)
+                    // goto(`${ROUTE.MODULES}-${data.id}`)
+                    window.location.href = `${ROUTE.ROOT}-${data.id}`;
                 } else {
-                    goto(ROUTE.ROOT).then(() => {
-                        setTimeout(() => smoothScrollTo('modules'), 100);
-                    });
+                    window.location.href = `${ROUTE.ROOT}?scroll=modules`;
                 }
             } else {
                 errorMessage = result.result.error
@@ -92,6 +95,14 @@
         if(logo && heading && form && toggle) {
             formHeight = sumHeight([logo, heading, form, toggle])
         }
+
+        let validViews = ['login', 'register'];
+        if (!validViews.includes(data.view)) {
+            let url = new URL(window.location.href);
+            url.searchParams.set('view', 'login');
+            window.history.replaceState({}, '', url);
+        }
+
     })
 
 </script>
