@@ -4,6 +4,7 @@
 	import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 	import { faChartSimple, faGraduationCap, faFile, faClock} from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
+	import { writable, derived } from 'svelte/store';
 
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
@@ -11,9 +12,11 @@
 	import { currentModule, selectedModuleItem } from '$lib/functions/module';
 	import type { PageProps } from './$types';
 
-	import Tab from '$lib/svelte/Tab.svelte';
-	import TabContent from '$lib/svelte/TabContent.svelte';
-	import { writable } from 'svelte/store';
+	import Overview from '$lib/svelte/Overview.svelte';
+	import Participants from '$lib/svelte/Participants.svelte';
+	import Personnel from '$lib/svelte/Personnel.svelte';
+	import Highlights from '$lib/svelte/Highlights.svelte';
+	import Evaluation from '$lib/svelte/Evaluation.svelte';
 
 	let { data } : PageProps = $props();
 
@@ -50,10 +53,21 @@
 		goto(`?itemId=${id}`);
 	}
 
-	const tabs = ['Overview', 'Participants', 'Personnel', 'Highlights', 'Evaluation', 'Appendix'];
+	const tabs = ['Overview', 'Participants', 'Personnel', 'Highlights', 'Evaluation'];
+	const activeTab = writable('Overview');
 
-	let editable: boolean = $state(false)
-	let activeTab = $state(writable(tabs[0]))
+	const tabContent: Record<string, any> = {
+		'Overview': Overview,
+		'Participants': Participants,
+		'Personnel': Personnel,
+		'Highlights': Highlights,
+		'Evaluation': Evaluation
+	};
+
+	const CurrentComponent = derived(activeTab, ($activeTab) => tabContent[$activeTab]);
+	onMount(() => {
+		console.log(CurrentComponent);
+	})
 
 	let showModal: boolean = $state(false);
 
@@ -83,7 +97,7 @@
 		showModal = false;
 	}
 
-	const inputClass = "transition-all duration-300 outline-none border-2 border-[#1B663E] shadow-[0px_4px_2px_0px_#1B663E] px-3 py-2 rounded text-sm text-black focus:translate-y-1 focus:shadow-[0px_2px_0px_0px_#1B663E]";
+	const inputClass = "transition-all duration-300 outline-none border-2 border-[#1B663E] shadow-[0px_4px_1px_0px_#1B663E] px-3 py-2 rounded text-sm text-black focus:translate-y-1 focus:shadow-[1px_2px_0px_0px_#1B663E]";
 	const labelClass = "font-semibold text-[#0C2D1C]";
 	const fieldClass = "flex flex-col gap-1 transition-all duration-300";
 
@@ -105,11 +119,11 @@
 	></div>
 
 	<!-- Modal -->
-	<div class="fixed top-1/2 left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl border-2 border-[#1B663E] shadow-[0px_4px_1px_0px_#1B663E] w-[85%] max-w-xl px-10 py-10 transition-all duration-300 ease-in-out">
+	<div class="fixed top-1/2 left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl border-2 border-[#1B663E] shadow-[3px_4px_0px_1px_#1B663E] w-[85%] max-w-xl px-10 py-10 transition-all duration-300 ease-in-out">
 		<h2 class="text-2xl font-extrabold text-center text-[#185A37] mb-1 transition-colors duration-300">Add Training Module</h2>
 		<p class="text-sm text-center font-semibold text-[#1B663E] mb-4 transition-opacity duration-300">Complete the form below</p>
-		<div class="h-[1px] bg-[#002e14] mb-6"></div>
- 
+		<div class="h-[1px] bg-[#AFAFAF] mb-6"></div>
+
 		<form class="flex flex-col gap-5">
 			<div class={fieldClass}>
 				<label class={labelClass}>Project Leader</label>
@@ -244,7 +258,7 @@
 		</h1>
 
 		<!-- Metadata icons -->
-		<div class="flex flex-wrap items-center gap-6 mt-8 text-sm text-white">
+		<div class="flex flex-wrap items-center gap-6 mt-3 text-sm text-white mt-6">
 			<div class="flex items-center gap-2">
 				<FontAwesomeIcon icon={faGraduationCap} class="text-yellow-400" />
 				<!-- This is still fixed -->
@@ -273,10 +287,33 @@
 		<!-- Tabs + Content Box -->
 		<div class="flex flex-col w-full max-w-[900px] bg-white border border-black/10 rounded-xl shadow-sm overflow-hidden">
 			<!-- Tabs -->
-			 <Tab tabs={tabs} bind:activeTab={activeTab}/>
+			<div class="flex w-full">
+				{#each tabs as tab}
+					{#if $activeTab === tab}
+						<button
+							onclick={() => activeTab.set(tab)}
+							class="font-exo flex-1 flex justify-center items-center px-4 py-3 text-sm transition-colors duration-300 ease-in-out font-semibold text-[#185A37] bg-[#F7F7F7] border-b-0 border-[#AFAFAF]/50"
+						>
+							{tab}
+						</button>
+					{:else}
+						<button
+							onclick={() => activeTab.set(tab)}
+							class="font-exo flex-1 flex justify-center items-center px-4 py-3 text-sm transition-colors duration-300 ease-in-out font-semibold text-black border-t-0 border border-black/10"
+						>
+							{tab}
+						</button>
+					{/if}
+				{/each}
+			</div>
 
 			<!-- Tab Content -->
-			<TabContent activeTab={activeTab} bind:editable={editable}/>
+			<div class="p-6 text-[15px] text-gray-800 leading-relaxed bg-[#F7F7F7]">
+				{#if $CurrentComponent}
+					{@const Comp = $CurrentComponent}
+					<Comp />
+				{/if}
+			</div>
 		</div>
 
 		<!-- Comment Section -->
