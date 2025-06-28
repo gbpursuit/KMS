@@ -20,6 +20,7 @@
                     prev: temp.prev,
                     next: temp
                 }
+                temp.prev = true
                 currentContent = prev
             }
             else {
