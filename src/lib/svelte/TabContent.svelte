@@ -1,27 +1,44 @@
 <script lang="ts">
-	import { derived, writable, type Writable } from "svelte/store";
-	import Overview from "./Overview.svelte";
-	import Participants from "./Participants.svelte";
-	import Personnel from "./Personnel.svelte";
-	import Highlights from "./Highlights.svelte";
-	import Evaluation from "./Evaluation.svelte";
+	import { writable, type Writable } from "svelte/store";
 	import Button from "./Button.svelte";
 	import Paragraph from "./Paragraph.svelte";
-	import Appendix from "./Appendix.svelte";
 	import type { EditableContent } from "$lib/functions/tab-content";
 	import ActiveTab from "./ActiveTab.svelte";
+
+    type Tab = {
+        title: string,
+        content: EditableContent
+    }
 
     let { activeTab = writable('Overview'), editable = $bindable(false) }: { activeTab: Writable<string>, editable?: boolean} = $props()
     
 	// const CurrentComponent = derived(activeTab, ($activeTab) => tabContent[$activeTab]);
 
-	let tabContent: Record<string, EditableContent> = $state({
-		'Overview': {type: 'plain', prev: false, content: '', next: null},
-		'Participants': {type: 'plain', prev: false, content: '', next: null},
-		'Personnel': {type: 'plain', prev: false, content: '', next: null},
-		'Highlights': {type: 'plain', prev: false, content: '', next: null},
-		'Evaluation': {type: 'plain', prev: false, content: '', next: null},
-		'Appendix': {type: 'plain', prev: false, content: '', next: null},
+	let tabContent: Record<string, Tab> = $state({
+		'Overview': {
+            title: 'Training Overview',
+            content:{type: 'plain', prev: false, content: '', next: null}
+        },
+		'Participants': {
+            title: 'Training Participants',
+            content:{type: 'plain', prev: false, content: '', next: null}
+        },
+		'Personnel': {
+            title: 'Personnel',
+            content:{type: 'plain', prev: false, content: '', next: null}
+        },
+		'Highlights': {
+            title: 'Highlights',
+            content:{type: 'plain', prev: false, content: '', next: null}
+        },
+		'Evaluation': {
+            title: 'Evaluation',
+            content:{type: 'plain', prev: false, content: '', next: null}
+        },
+		'Appendix': {
+            title: 'Appendix',
+            content:{type: 'plain', prev: false, content: '', next: null}
+        },
 	})
 
     function toggleMode() {
@@ -45,7 +62,7 @@
         </div>
     </div>
 
-    <ActiveTab bind:content={tabContent[$activeTab]} editable={editable} />
+    <ActiveTab bind:title={tabContent[$activeTab].title} bind:content={tabContent[$activeTab].content} editable={editable} />
 
     <!-- {#if $CurrentComponent}
         {@const Component = $CurrentComponent}

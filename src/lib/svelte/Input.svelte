@@ -6,31 +6,29 @@
     let showPassword = $state(false)
     let styleValue = $state('')
 
-    // Reactive styleValue
-    // $effect(() => {
-    //     styleValue = style
-    //     ? "w-full py-1 px-3 border-2 border-red-500 animate-red-shake rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
-    //     : "w-full py-1 px-3 border-2 border-[#C5C5C5] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]";
-    // })
+    $effect(() => {
+        switch(style) {
+            case 'error':
+                $effect(() => {
+                    style == addStyle
+                    ? styleValue = "w-full py-1 px-3 border-2 border-red-500 animate-red-shake rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
+                    : styleValue = "w-full py-1 px-3 border-2 border-[#C5C5C5] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
+                })
+                break;
+            case 'title':
+                styleValue = "flex w-full border-0 text-center text-2xl font-bold mb-2 text-[#1B663E]"
+                break;
+            default:
+                styleValue = "w-full py-1 px-3 border-2 border-[#C5C5C5] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
+                break;
+        }
+    })
 
-    switch(style) {
-        case 'error':
-            $effect(() => {
-                style == addStyle
-                ? styleValue = "w-full py-1 px-3 border-2 border-red-500 animate-red-shake rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
-                : styleValue = "w-full py-1 px-3 border-2 border-[#C5C5C5] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
-            })
-            break;
-        default:
-            styleValue = "w-full py-1 px-3 border-2 border-[#C5C5C5] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
-            break;
-    }
 </script>
 
-{#if type === 'text'}
-<input bind:value={text} type="text" class="{styleValue} {addStyle}" required={required} {...props}/> <span></span>
+<input bind:value={text} type={type} class="{styleValue} {addStyle}" required={required} {...props}/>
 
-{:else if type === 'password'}
+{#if type === 'password'}
 <div class="relative">
     <input bind:value={password} type={showPassword ? 'text' : 'password'} class="{styleValue} {addStyle}" {...props}/>
 
@@ -47,10 +45,6 @@
 {/if}
 
 <style>
-    input:invalid + span::before {
-        border: 2px red solid
-    }
-
     .animate-red-shake {
         animation: shakeRed 0.5s ease-in-out infinite;
     }
@@ -66,5 +60,4 @@
             transform: translateX(5px);
         }
     }
-
 </style>
