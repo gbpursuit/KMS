@@ -5,43 +5,58 @@
     import Label from "./Label.svelte";
     import Heading from '$lib/svelte/Heading.svelte';
 
-    let { additionalStyle = $bindable(), type = $bindable(), isError = false, errorMessage = '', onSubmit } = $props()
+    let { additionalStyle = $bindable(), type = $bindable(), isError = $bindable(), errorMessage = '', onSubmit } = $props()
 
     let loginUsername = $state('')
     let loginPassword = $state('')
     let maxCharacters = '64'
-    let style = $state('')
-
-    if(isError) style = 'error'
-    else style = ''
     
-    function toggleMode() {
-        const loginForm = document.getElementById('login')
-        const signupForm = document.getElementById('signup')
+    // function toggleMode() {
+    //     const loginForm = document.getElementById('login')
+    //     const signupForm = document.getElementById('signup')
 
-        if(loginForm && signupForm)
-        switch(type) {
-            case 'login':
-                loginForm.hidden = false
-                signupForm.hidden = true
-                break;
-            case 'signup':
-                loginForm.hidden = true
-                signupForm.hidden = false
-                break;
-            default:
-                break;
-        }
-    }
+    //     if(loginForm && signupForm)
+    //     switch(type) {
+    //         case 'login':
+    //             loginForm.hidden = false
+    //             signupForm.hidden = true
+    //             break;
+    //         case 'signup':
+    //             loginForm.hidden = true
+    //             signupForm.hidden = false
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    // }
 
     onMount(() => {
         let username = document.getElementById('username')
         let firstName = document.getElementById('firstName')
         let lastName = document.getElementById('lastName')
         let signupUsername = document.getElementById('signupUsername')
+        let loginForm = document.getElementById('login')
+        let signupForm = document.getElementById('signup')
 
         const letters = new RegExp("^[A-Za-z]*$")
         const lettersNumbers = new RegExp("^[A-Za-z0-9]*$")
+
+        $effect(() => {
+            if(loginForm && signupForm){
+                switch(type) {
+                    case 'login':
+                        loginForm.hidden = false
+                        signupForm.hidden = true
+                        break;
+                    case 'signup':
+                        loginForm.hidden = true
+                        signupForm.hidden = false
+                        break;
+                    default:
+                        break;
+                }
+            }
+        })
 
 
         function addListener(input: HTMLElement, regExp: RegExp) {
@@ -62,17 +77,17 @@
 </script>
 
 <div id="form">
-    <div class="{additionalStyle} transition-[height] ease-in duration-200 {type === 'login'? `h-[224px] morph-enter`: 'h-0 morph-leave'}" onanimationend={toggleMode}>
+    <div class="{additionalStyle} transition-[height] ease-in duration-200 {type === 'login'? `h-[224px] morph-enter`: 'h-0 morph-leave'}">
         <form id="login" class="flex flex-col" onsubmit={onSubmit}>
             <div>
                 <div class="flex flex-col gap-1 bg-transarent">
                     <Label forLabel="username" required> Username </Label>
-                    <Input bind:text={loginUsername} style='error' addStyle={isError? 'error': ''} type="text" id="username" name="username" maxlength={maxCharacters}/>
+                    <Input bind:text={loginUsername} style={isError? 'error': ''} type="text" id="username" name="username" maxlength={maxCharacters}/>
                 </div>
 
                 <div class="flex flex-col gap-1">
                     <Label forLabel="password" required> Password </Label>
-                    <Input bind:password={loginPassword} style='error' addStyle={isError? 'error': ''} type="password" id="password" name="password" maxlength={maxCharacters}/>
+                    <Input bind:password={loginPassword} style={isError? 'error': ''} type="password" id="password" name="password" maxlength={maxCharacters}/>
                 </div>
             </div>
 
@@ -86,34 +101,34 @@
         </form>
     </div>
 
-    <div class="{additionalStyle} transition-[height] ease-in duration-200 {type === 'login'? 'h-0 morph-leave': `h-[354px] morph-enter`}" onanimationend={toggleMode}>
+    <div class="{additionalStyle} transition-[height] ease-in duration-200 {type === 'login'? 'h-0 morph-leave': `h-[354px] morph-enter`}">
         <form id="signup" class="flex flex-col" onsubmit={onSubmit}>
             <div>
                 <div class="flex flex-row gap-4">
                     <div class="flex flex-col gap-1">
                         <Label forLabel="firstName" required> First Name </Label>
-                        <Input style='error' addStyle={isError? 'error': ''} type="text" id="firstName" name="firstName" maxlength={maxCharacters}/>
+                        <Input style={isError? 'error': ''} type="text" id="firstName" name="firstName" maxlength={maxCharacters}/>
                     </div>
 
                     <div class="flex flex-col gap-1">
                         <Label forLabel="lastName" required> Last Name </Label>
-                        <Input style='error' addStyle={isError? 'error': ''} type="text" id="lastName" name="lastName" maxlength={maxCharacters}/>
+                        <Input style={isError? 'error': ''} type="text" id="lastName" name="lastName" maxlength={maxCharacters}/>
                     </div>
                 </div>
 
                 <div class="flex flex-col gap-1">
                     <Label forLabel="username" required> Username </Label>
-                    <Input style='error' addStyle={isError? 'error': ''} type="text" id="signupUsername" name="username" maxlength={maxCharacters}/>
+                    <Input style={isError? 'error': ''} type="text" id="signupUsername" name="username" maxlength={maxCharacters}/>
                 </div>
 
                 <div class="flex flex-col gap-1">
                     <Label forLabel="password" required> Password </Label>
-                    <Input style='error' addStyle={isError? 'error': ''} type="password" id="signupPassword" name="password" maxlength={maxCharacters}/>
+                    <Input style={isError? 'error': ''} type="password" id="signupPassword" name="password" maxlength={maxCharacters}/>
                 </div>
                 
                 <div class="flex flex-col gap-1">
                     <Label forLabel="confirmPassword" required> Confirm Password </Label>
-                    <Input style='error' addStyle={isError? 'error': ''} type="password" id="confirmPassword" name="confirmPassword" maxlength={maxCharacters}/>
+                    <Input style={isError? 'error': ''} type="password" id="confirmPassword" name="confirmPassword" maxlength={maxCharacters}/>
                 </div>
             </div>
 

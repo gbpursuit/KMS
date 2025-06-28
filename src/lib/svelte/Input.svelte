@@ -9,11 +9,7 @@
     $effect(() => {
         switch(style) {
             case 'error':
-                $effect(() => {
-                    style == addStyle
-                    ? styleValue = "w-full py-1 px-3 border-2 border-red-500 animate-red-shake rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
-                    : styleValue = "w-full py-1 px-3 border-2 border-[#C5C5C5] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
-                })
+                styleValue = "w-full py-1 px-3 border-2 border-red-500 animate-red-shake rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
                 break;
             case 'title':
                 styleValue = "flex w-full border-0 text-center text-2xl font-bold mb-2 text-[#1B663E]"
@@ -25,8 +21,6 @@
     })
 
 </script>
-
-<input bind:value={text} type={type} class="{styleValue} {addStyle}" required={required} {...props}/>
 
 {#if type === 'password'}
 <div class="relative">
@@ -42,6 +36,9 @@
         {/if}
     </button>
 </div>
+{:else}
+<input bind:value={text} type={type} class="{styleValue} {addStyle}" required={required} {...props}/>
+
 {/if}
 
 <style>
