@@ -36,7 +36,7 @@
     </div>
 </div>
 
-<div id = "programs" class="flex flex-col w-full h-full">
+<div id = "program" class="flex flex-col w-full h-full">
     <div class="flex flex-col w-full h-full justify-center items-center px-16 py-10 gap-10">
         <div class="flex w-[90%] max-h-full p-2 flex-wrap items-center justify-center ">
             <div class="flex flex-col w-full gap-2 justify-center">

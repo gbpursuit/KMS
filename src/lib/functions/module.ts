@@ -2,6 +2,13 @@ import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import type { Program, Research, CurriculumDevelopment, ProfessionalDevelopment, Extension } from '@prisma/client';
 import { writable, type Writable } from 'svelte/store';
 
+export interface User {
+	id: number,
+	acctName: string,
+	roleId: number;
+	permission: string[];
+}
+
 export type ProgramTypes = {
 	research: Research;
 	cd: CurriculumDevelopment,

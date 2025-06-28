@@ -92,6 +92,7 @@ export async function getUserFromCookie(cookies: Cookies) {
         let user = {
             id: userInitial.id,
             acctName: userInitial.acctName,
+            roleId: userInitial.roleId,
             permission: userInitial?.role?.perms.map((p) => p.perms.perm_type)
         }
 

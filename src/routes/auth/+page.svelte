@@ -50,7 +50,7 @@
             if (result.ok) {
                 form.reset();
                 if(data && data.id) {
-                    window.location.href = `${ROUTE.ROOT}-${data.id}`;
+                    window.location.href = `${ROUTE.PROGRAMS}-${data.id}`;
                 } else {
                     window.location.href = `${ROUTE.ROOT}?scroll=program`;
                 }

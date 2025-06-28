@@ -1,12 +1,13 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
 
+import { type User } from '$lib/functions/module';
 
-interface User {
-	id: number,
-	acctName: string,
-	permission: string[];
-}
+// interface User {
+// 	id: number,
+// 	acctName: string,
+// 	permission: string[];
+// }
 
 declare global {
 	namespace App {

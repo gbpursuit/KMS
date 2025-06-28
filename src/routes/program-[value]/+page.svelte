@@ -51,6 +51,7 @@
 
 	let training: Training[] = $state([]);
 	onMount(async () => {
+		console.log(data);
 		if (!$selectedModuleItem) observer_func();
 		training = await getData('pd/training');
 	})
@@ -320,7 +321,7 @@
 			 <Tab tabs={tabs} bind:activeTab={activeTab}/>
 
 			<!-- Tab Content -->
-			<TabContent activeTab={activeTab} bind:editable={editable}/>
+			<TabContent activeTab={activeTab} bind:editable={editable} user={data.user}/>
 		</div>
 
 		<!-- Comment Section -->
