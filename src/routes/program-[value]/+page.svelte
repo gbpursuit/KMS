@@ -38,8 +38,8 @@
 	}
 
 	$effect(() => {
-		if ($currentModule !== data.module) {
-			$currentModule = data.module;
+		if ($currentModule !== data.program) {
+			$currentModule = data.program;
 		}
 		if ($selectedModuleItem !== data.selectedItem) {
 			$selectedModuleItem = data.selectedItem;
@@ -88,7 +88,7 @@
 	
 		item['numParticipants'] = parseInt(item['numParticipants']);
 		item['trainingId'] = parseInt(item['trainingId']);
-		item['programId'] = parseInt(data.moduleId);
+		item['programId'] = parseInt(data.programId);
 
 		if (Object.values(item).some(value => !value)) {
 			alert("Please fill in all required fields");
@@ -118,7 +118,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.module.name}</title> 
+	<title>{data.program.name}</title> 
 </svelte:head>
 
 {#if showModal}
@@ -205,7 +205,7 @@
 			<div class="flex w-full h-[90%]">
 				<!-- Populate dynamically once we have data storage -->
 				<div id="griditems" class="grid grid-cols-1 grid-flow-row w-full h-full gap-7">
-					{#each data.module.items as item}
+					{#each data.program.items as item}
 						<div class="scroll-card opacity-0 flex w-full rounded-3xl gap-2 border-2 border-gray-100">
 							<div
 								class="flex h-full w-[45%] border-r border-gray-200 rounded-l-3xl rounded-r-none"
