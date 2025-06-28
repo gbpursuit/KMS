@@ -1,7 +1,6 @@
 import { compare, hash } from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
 import type { Cookies } from '@sveltejs/kit';
-import { getData, addData } from '$lib/functions/database';
 import { data } from '$lib/functions/prisma';
 
 const SECRET = 'super-secret'; // replace with env var
@@ -77,7 +76,7 @@ export async function getUserFromCookie(cookies: Cookies) {
 
     try {
         let decoded = verify(token, SECRET) as { userId: number };
-        let user = await data.PRISMA.account.findUnique({
+        let userInitial = await data.PRISMA.account.findUnique({
             where: { id: decoded.userId },
 			include: {
 				role: {
@@ -87,11 +86,17 @@ export async function getUserFromCookie(cookies: Cookies) {
 				}
 			}
         })
-        console.log("User:", user);
+
+        if(!userInitial) throw new Error('User not found');
+
+        let user = {
+            id: userInitial.id,
+            acctName: userInitial.acctName,
+            permission: userInitial?.role?.perms.map((p) => p.perms.perm_type)
+        }
 
         return user;
     } catch (err) {
         return null;
     }
 }
-

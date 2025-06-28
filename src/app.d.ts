@@ -1,6 +1,12 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
-import type { Account, Role, RolePermission, Permission } from '@prisma/client';
+
+
+interface User {
+	id: number,
+	acctName: string,
+	permission: string[];
+}
 
 declare global {
 	namespace App {
@@ -9,13 +15,7 @@ declare global {
 		// 	user: Account | null;
 		// }
 		interface Locals {
-			user: (Account & {
-				role?: Role & {
-					perms: (RolePermission & {
-						perms: Permission;
-					})[];
-				};
-			}) | null;
+			user: User | null;
 		}
 
 		// interface PageData {}

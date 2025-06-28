@@ -7,9 +7,9 @@
 
   import { onMount } from 'svelte';
   import { getData } from '$lib/functions/database';
-  import { type ProgramPD } from '$lib/functions/module';
+  import { type ProgramAll } from '$lib/functions/module';
 
-  let programList: ProgramPD[] = [];
+  let programList: ProgramAll[] = [];
   let iconMap: Record<string, any> = {
     'Research': faAtom,
     'Curriculum Development': faClipboard,
@@ -18,7 +18,7 @@
   };
 
   onMount(async () => {
-    let rawPrograms: ProgramPD[] = await getData('program');
+    let rawPrograms: ProgramAll[] = await getData('program');
     programList = rawPrograms.map((p) => ({...p, icon: iconMap[p.name]}));
   });
 
@@ -36,7 +36,7 @@
     </div>
 </div>
 
-<div id = "modules" class="flex flex-col w-full h-full">
+<div id = "programs" class="flex flex-col w-full h-full">
     <div class="flex flex-col w-full h-full justify-center items-center px-16 py-10 gap-10">
         <div class="flex w-[90%] max-h-full p-2 flex-wrap items-center justify-center ">
             <div class="flex flex-col w-full gap-2 justify-center">

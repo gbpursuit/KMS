@@ -30,7 +30,6 @@
 		},
 	];
 
-
 	let isOpen = false;
 
 	export let currentPath: string;
@@ -42,37 +41,41 @@
 	let pathIdParts: string[] = [];
 
 	$: {
-		console.log(user);
 		const parts = currentPath.split(/[/\-]/).filter(Boolean);
 		pathIdParts = [...parts];
 		pathNameParts = parts.map((part) => {
-			if (part === 'modules') return 'Modules';
-			if (!isNaN(Number(part)) && $currentModule) return $currentModule.path;
+			if (part === 'program') return 'Programs';
+			if (!isNaN(Number(part)) && $currentModule) return $currentModule.name;
 			return part;
 		});
 
 		if ($selectedModuleItem) {
-			pathNameParts = [...pathNameParts, $selectedModuleItem.path];	
-			pathIdParts = [...pathIdParts, $selectedModuleItem.id];
+			pathNameParts = [...pathNameParts, $selectedModuleItem.title];	
+			pathIdParts = [...pathIdParts, $selectedModuleItem.id.toString()];
 		}
 	}
 
-	function go_auth(e: Event, view: 'login' | 'register' = 'login') {
+	async function handleAccount(e: Event, view: 'login' | 'register' | 'logout' = 'logout') {
 		e?.preventDefault();
-		window.location.href = `${ROUTE.AUTH}?view=${view}`;
+		if (view === 'logout') {
+			window.location.href = '/api/logout';
+			return;
+		} else {
+			window.location.href = `${ROUTE.AUTH}?view=${view}`;
+		}	
 	}
 
 	// Mano mano pa
 	function click_function(link: string, e: Event) {
 		e?.preventDefault();
 
-		if (link === ROUTE.MODULES) {
+		if (link === ROUTE.PROGRAMS) {
 			const current = page.url.pathname;
 			if (current === ROUTE.ROOT) {
-				smoothScrollTo('modules');
+				smoothScrollTo('programs');
 			} else {
 				goto(ROUTE.ROOT).then(() => {
-					setTimeout(() => smoothScrollTo('modules'), 100);
+					setTimeout(() => smoothScrollTo('programs'), 100);
 				});
 			}
 			return;
@@ -83,8 +86,8 @@
 	function get_href(i: number) {
 		const isLast = i === pathIdParts.length - 1;
 		if (isLast && $selectedModuleItem) {
-			const modules = pathIdParts.slice(0, i).join('-');
-			return `/${modules}?itemId=${$selectedModuleItem.id}`;
+			const programs = pathIdParts.slice(0, i).join('-');
+			return `/${programs}?itemId=${$selectedModuleItem.id}`;
 		}
 		return `/${pathIdParts.slice(0, i + 1).join('-')}`;
 	}
@@ -123,9 +126,13 @@
 		<div class="flex justify-center items-center gap-3">
 			{#if !user}
 				<div class="flex justify-center items-center text black gap-2">
-					<button class="cursor-pointer custom-underline leftRight" on:click={(e) => go_auth(e)}>Login</button>
+					<button class="cursor-pointer custom-underline leftRight" on:click={(e) => handleAccount(e, 'login')}>Login</button>
 					<span>/</span>
-					<button class="cursor-pointer custom-underline leftRight" on:click={(e) => go_auth(e, 'register')}>Register</button>
+					<button class="cursor-pointer custom-underline leftRight" on:click={(e) => handleAccount(e, 'register')}>Register</button>
+				</div>
+			{:else}
+				<div class="flex justify-center items-center text black gap-2">
+					<button class="cursor-pointer custom-underline leftRight" on:click={(e) => handleAccount(e)}>Logout</button>
 				</div>
 			{/if}
 			<button
@@ -147,7 +154,7 @@
 					<span>></span>
 					<a 
 						href={get_href(i)}
-						class="custom-underline middle capitalize truncate overflow-hidden whitespace-nowrap max-w-[200px] block {part === 'modules' ? 'text-white' : 'text-yellow-500'}"
+						class="custom-underline middle capitalize truncate overflow-hidden whitespace-nowrap max-w-[200px] block {part === 'program' ? 'text-white' : 'text-yellow-500'}"
 						on:click={(e) => click_function(get_href(i), e) }
 					>
 						{decodeURIComponent(pathNameParts[i])}

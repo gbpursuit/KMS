@@ -9,16 +9,13 @@ export const load: PageLoad = async ({ url, parent, fetch }) => {
 	let view = url.searchParams.get('view');
 
 	if(user) {
-		throw redirect(302, `/modules-${id ?? ''}`)
-	}
-
-	if(id) {
-		let program = await getData(`program/${id}`, fetch);
-		console.log(program);
-		if(!program) {
-			throw error (400, 'Invalid Program');
+		if (id && /^\d+$/.test(id)) {
+			throw redirect(302, `/program-${id}`);
+		} else {
+			throw redirect(302, '/');
 		}
 	}
+
 
 	return { id, view };
 };

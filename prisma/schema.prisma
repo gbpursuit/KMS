@@ -19,18 +19,21 @@ model Program { // research, curriculum development, professional development, e
 
 model Research {
   id        Int       @id @default(autoincrement())
+  title           String            @db.Text
   programId Int
   program   Program   @relation(fields: [programId], references: [id], map: "Research_programId_fkey")
 }
 
 model CurriculumDevelopment {
   id  Int @id @default(autoincrement())
+  title           String            @db.Text
   programId Int
   program   Program   @relation(fields: [programId], references: [id], map: "CD_programId_fkey")
 }
 
 model Extension {
   id  Int @id @default(autoincrement())
+  title           String            @db.Text
   programId Int
   program   Program   @relation(fields: [programId], references: [id], map: "Extension_programId_fkey")
 }
@@ -38,14 +41,15 @@ model Extension {
 model ProfessionalDevelopment {  // professional development module table -- no for the other three for now
   id              Int               @id @default(autoincrement())
   title           String            @db.Text
-  overview        String            @db.Text
   leader          String
+  numParticipants Int
   date            String
-  imageUrl        String?
+  imageUrl        String?           @db.Text     
   trainingId      Int
   training        Training          @relation(fields: [trainingId], references: [id], map: "PD_trainingId_fkey")
   programId       Int
   program         Program           @relation(fields: [programId], references: [id], map: "PD_programId_fkey")
+  overview        Overview[]    
   highlight       Highlight[]
   participantonpd ParticipantOnPd[]
   personnelonpd   PersonnelOnPd[]
@@ -57,6 +61,13 @@ model Training { // online, hybrid, face-to-face
   id    Int                           @id @default(autoincrement())
   type  String
   pd    ProfessionalDevelopment[]
+}
+
+model Overview {
+  id      Int     @id @default(autoincrement())
+  item    String
+  pdId     Int
+  pd       ProfessionalDevelopment  @relation(fields: [pdId], references: [id], map: "Overview_pdId_fkey")
 }
 
 model Participant { // random text

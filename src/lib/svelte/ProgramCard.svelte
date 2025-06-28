@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { type ProgramPD } from '$lib/functions/module';
+	import { type ProgramAll } from '$lib/functions/module';
 	import { ROUTE } from '../../routes/routes';
     import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 
-    export let program: ProgramPD;
+    export let program: ProgramAll;
 
     let nameToCountKey = {
         'Research': 'research',
@@ -22,7 +22,7 @@
             window.location.href = `${ROUTE.AUTH}?content=${id}`;
             return;
         }
-        window.location.href = `${ROUTE.MODULES}-${id}`;
+        window.location.href = `${ROUTE.PROGRAMS}-${id}`;
     }
 </script>
 

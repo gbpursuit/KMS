@@ -1,15 +1,6 @@
+import type { LayoutServerLoad } from './$types';
 
-import type { ServerLoadEvent } from '@sveltejs/kit';
-
-export async function load({ locals }: ServerLoadEvent) {
+export const load: LayoutServerLoad = async ({ locals }) => {
 	const user = locals.user;
-	// console.log(user);
-
-	// return { user };
-	let permissions = user?.role?.perms.map((p) => p.perms.perm_type) ?? [];
-
-	return {
-		user,
-		permissions
-	};
-}
+	return { user };
+};

@@ -1,18 +1,11 @@
 <!-- This is called after +page.ts -->
 <script lang='ts'>
-    import { smoothScrollTo } from '$lib/functions/function';
-    import { goto } from '$app/navigation';
 	import { ROUTE } from '../routes';
 	import AuthForm from '$lib/svelte/AuthForm.svelte';
 	import Heading from '$lib/svelte/Heading.svelte';
     import { addData } from '$lib/functions/database';
     import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
-
-    // export let data: { 
-    //     id: string | null;
-    //     view: string;
-    // }
 
 	let { data }: PageProps = $props();
 
@@ -57,10 +50,9 @@
             if (result.ok) {
                 form.reset();
                 if(data && data.id) {
-                    // goto(`${ROUTE.MODULES}-${data.id}`)
                     window.location.href = `${ROUTE.ROOT}-${data.id}`;
                 } else {
-                    window.location.href = `${ROUTE.ROOT}?scroll=modules`;
+                    window.location.href = `${ROUTE.ROOT}?scroll=program`;
                 }
             } else {
                 errorMessage = result.result.error
@@ -79,7 +71,6 @@
     }
     
     onMount(() => {
-
         let validViews = ['login', 'register'];
         if (data.view && !validViews.includes(data.view)) {
             let url = new URL(window.location.href);

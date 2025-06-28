@@ -18,6 +18,7 @@ export async function getData(type: string, fetchFn?: typeof fetch) {
 // POST data
 export async function addData(type: string, data: Record<string, any>) {
 
+    console.log("Data:", data);
     let res = await fetch(`/api/${type}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

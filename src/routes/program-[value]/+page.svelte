@@ -15,6 +15,9 @@
 	import TabContent from '$lib/svelte/TabContent.svelte';
 	import { writable } from 'svelte/store';
 
+	import type { Training } from '@prisma/client';
+	import { getData, addData } from '$lib/functions/database';
+
 	let { data } : PageProps = $props();
 
 	function observer_func() {
@@ -35,15 +38,21 @@
 	}
 
 	$effect(() => {
-		$currentModule = data.module;
-		$selectedModuleItem = data.selectedItem;
+		if ($currentModule !== data.module) {
+			$currentModule = data.module;
+		}
+		if ($selectedModuleItem !== data.selectedItem) {
+			$selectedModuleItem = data.selectedItem;
+		}
 		if (!$selectedModuleItem) {
 			setTimeout(() => observer_func(), 0);
 		}
-	})
+	});
 
-	onMount(() => {
+	let training: Training[] = $state([]);
+	onMount(async () => {
 		if (!$selectedModuleItem) observer_func();
+		training = await getData('pd/training');
 	})
 
 	function open_item(id:string) {
@@ -57,44 +66,60 @@
 
 	let showModal: boolean = $state(false);
 
-	let projectLeader: string = $state('');
-	let participants: number | '' = $state('');
-	let trainingType: string = $state('');
-	let trainingDate: string = $state('');
-	let trainingImage: File | null = null;
+	let title: string = $state('');
+	let leader: string = $state('');
+	let numParticipants: number | '' = $state('');
+	let trainingId: number = $state(0);
+	let date: string = $state('');
+	let imageUrl: File | null = null;
 
 	function handleFileChange(event: Event): void {
 		const target = event.target as HTMLInputElement;
 		if (target.files && target.files.length > 0) {
-		trainingImage = target.files[0];
+		imageUrl = target.files[0];
 		}
 	}
 
-	function handleSubmit(): void {
-		const formData = {
-		projectLeader,
-		participants,
-		trainingType,
-		trainingDate,
-		trainingImage
-		};
+	async function handleSubmit(e: Event) {
+		e?.preventDefault();
+		let form = e.target as HTMLFormElement;
+		let formData = new FormData(form);
+		let item = Object.fromEntries(formData) as Record<string, any>;
+	
+		item['numParticipants'] = parseInt(item['numParticipants']);
+		item['trainingId'] = parseInt(item['trainingId']);
+		item['programId'] = parseInt(data.moduleId);
 
-		console.log('Submitted Data:', formData);
-		showModal = false;
+		if (Object.values(item).some(value => !value)) {
+			alert("Please fill in all required fields");
+		}
+
+		item['imageUrl'] = imageUrl;
+
+		let result = await addData('pd', item);
+		if(result.ok) {
+			form.reset();
+			window.location.reload();
+			// showModal = false;
+		} else {
+			throw new Error(result.result.error);
+		}
 	}
 
 	const inputClass = "transition-all duration-300 outline-none border-2 border-[#1B663E] shadow-[0px_4px_2px_0px_#1B663E] px-3 py-2 rounded text-sm text-black focus:translate-y-1 focus:shadow-[0px_2px_0px_0px_#1B663E]";
 	const labelClass = "font-semibold text-[#0C2D1C]";
 	const fieldClass = "flex flex-col gap-1 transition-all duration-300";
 
+	function handleDate(date: string) {
+		return new Date(date).toLocaleDateString('en-PH', {
+			year: 'numeric', month: 'long', day: 'numeric'
+		})
+	}
 </script>
 
 <svelte:head>
-	<title>{data.module.path}</title> 
+	<title>{data.module.name}</title> 
 </svelte:head>
-
-<!-- bind:value={searchTerm} -->
-
 
 {#if showModal}
 	<!-- Backdrop -->
@@ -110,29 +135,43 @@
 		<p class="text-sm text-center font-semibold text-[#1B663E] mb-4 transition-opacity duration-300">Complete the form below</p>
 		<div class="h-[1px] bg-[#002e14] mb-6"></div>
  
-		<form class="flex flex-col gap-5">
+		<form class="flex flex-col gap-5" onsubmit={handleSubmit}>
 			<div class={fieldClass}>
-				<label class={labelClass}>Project Leader</label>
-				<input type="text" bind:value={projectLeader} class={inputClass} />
+				<label class={labelClass} for="title">Title<span class="text-red-500"> *</span></label>
+				<input type="text" bind:value={title} name="title" class={inputClass} />
 			</div>
 
 			<div class={fieldClass}>
-				<label class={labelClass}>Number of Participants</label>
-				<input type="number" bind:value={participants} class={inputClass} />
+				<label class={labelClass} for="leader">Project Leader<span class="text-red-500"> *</span></label>
+				<input type="text" bind:value={leader} name="leader" class={inputClass} />
 			</div>
 
 			<div class={fieldClass}>
-				<label class={labelClass}>Type of Training</label>
+				<label class={labelClass} for="numParticipants">Number of Participants<span class="text-red-500"> *</span></label>
+				<input type="number" bind:value={numParticipants} name="numParticipants" class={inputClass} />
+			</div>
+
+			<div class={fieldClass}>
+				<label class={labelClass} for="trainingId">Type of Training<span class="text-red-500"> *</span></label>
+				<select bind:value={trainingId} name="trainingId" class={inputClass}>
+					<option value="" disabled selected>Select training type</option>
+					{#each training as t}
+					<option value={t.id}>{t.type}</option>
+					{/each}
+				</select>
+			</div>
+			<!-- <div class={fieldClass}>
+				<label class={labelClass} for="trainingType">Type of Training<span class="text-red-500"> *</span></label>
 				<input type="text" bind:value={trainingType} class={inputClass} />
+			</div> -->
+
+			<div class={fieldClass}>
+				<label class={labelClass} for="date">Date<span class="text-red-500"> *</span></label>
+				<input type="date" bind:value={date} name="date" class={inputClass} />
 			</div>
 
 			<div class={fieldClass}>
-				<label class={labelClass}>Date</label>
-				<input type="date" bind:value={trainingDate} class={inputClass} />
-			</div>
-
-			<div class={fieldClass}>
-				<label class={labelClass}>Upload Image</label>
+				<label class={labelClass} for="imageUrl">Upload Image</label>
 				<input type="file" accept="image/*" onchange={handleFileChange}
 					class="file:border-0 file:py-2 file:px-4 file:rounded file:bg-[#1B663E] file:text-white file:font-semibold text-sm transition-all duration-300" />
 			</div>
@@ -140,7 +179,7 @@
 			<div class="flex justify-end gap-3 pt-4">
 				<button type="button" onclick={() => showModal = false}
 					class="bg-[#AFAFAF] text-black font-semibold px-4 py-2 rounded-lg hover:bg-[#999999] transition-all duration-200">Cancel</button>
-				<button type="button" onclick={handleSubmit}
+				<button type="submit"
 					class="bg-[#185A37] text-white font-semibold px-4 py-2 rounded-lg hover:bg-[#0C2D1C] transition-all duration-200">Submit</button>
 			</div>
 		</form>
@@ -168,34 +207,39 @@
 				<div id="griditems" class="grid grid-cols-1 grid-flow-row w-full h-full gap-7">
 					{#each data.module.items as item}
 						<div class="scroll-card opacity-0 flex w-full rounded-3xl gap-2 border-2 border-gray-100">
-							<div class="flex h-full w-[45%] border-r border-gray-200 bg-cover bg-center bg-no-repeat rounded-l-3xl rounded-r-none " style="background-image: url({'/NISMEDfrontpage.jpg'})"></div>
+							<div
+								class="flex h-full w-[45%] border-r border-gray-200 rounded-l-3xl rounded-r-none"
+								style={`background: ${item.imageUrl ? `url('${item.imageUrl}') center/cover no-repeat` : 'var(--font-green)'}`}
+							></div>
 							<div class="flex h-full flex-grow p-2 pr-5">
 								<div class="flex flex-col w-full h-full rounded-3xl gap-2">
-									<h1 class="text-lg font-semibold">{item.path}</h1>
+									<h1 class="text-lg font-semibold">{item.title}</h1>
 									<div class="flex flex-col w-full h-full gap-1">
 										<div class="flex gap-2 items-center">
 											<p class = "font-light text-sm">Module Completeness</p>
 										</div>
 										<div class="flex gap-2 items-center">
 											<FontAwesomeIcon icon = {faChartSimple} class = "text-[var(--font-green)]"/>
-											<p class="font-light text-sm">Project Leader</p>
+											<p class="font-light text-sm">{ 'leader' in item ? item.leader : 'Project Leader' }</p>
 										</div>
-										<div class="flex gap-2 items-center">
+										<div class="flex gap-1 items-center">
 											<FontAwesomeIcon icon = {faGraduationCap} class = "text-[var(--font-green)]"/>
-											<p class="font-light text-sm">Number of total Participants</p>
+											<p class="font-light text-sm">{item.numParticipants}</p>
 										</div>
 										<div class="flex gap-2 items-center">
 											<FontAwesomeIcon icon = {faFile} class = "text-[var(--font-green)]"/>
-											<p class="font-light text-sm">Type of Training</p>
+											<p class="font-light text-sm">
+												{training.find(t => t.id === item.trainingId)?.type ?? 'Unknown'}
+											</p>
 										</div>
 										<div class="flex gap-2 items-center">
 											<FontAwesomeIcon icon = {faClock} class = "text-[var(--font-green)]"/>
-											<p class="font-light text-sm">Date</p>
+											<p class="font-light text-sm">{handleDate(item.date)}</p>
 										</div>
 									</div>
 									<div class="relative flex w-full h-full border-t border-gray-200 justify-center items-center">
 										<button class="flex h-full p-1 font-medium hover:text-[var(--font-green)] hover:tracking-wide transition-all duration-300 ease-in-out cursor-pointer"
-										onclick={() => open_item(item.id)}
+										onclick={() => open_item(item.id.toString())}
 										>View More</button>
 									</div>
 								</div>
@@ -240,7 +284,7 @@
 		<!-- Page title -->
 		<!-- This is still fixed -->
 		<h1 class="text-3xl font-semibold text-white max-w-[700px]">
-			The Ultimate Guide To The Best WordPress LMS Plugin
+			{data.selectedItem.title}
 		</h1>
 
 		<!-- Metadata icons -->
@@ -248,22 +292,22 @@
 			<div class="flex items-center gap-2">
 				<FontAwesomeIcon icon={faGraduationCap} class="text-yellow-400" />
 				<!-- This is still fixed -->
-				<span>Number of Total Participants</span>
+				<span>Participants: {data.selectedItem.numParticipants}</span>
 			</div>
 			<div class="flex items-center gap-2">
 				<FontAwesomeIcon icon={faChartSimple} class="text-yellow-400" />
 				<!-- This is still fixed -->
-				<span>Project Leader</span>
+				<span>{data.selectedItem.leader}</span>
 			</div>
 			<div class="flex items-center gap-2">
 				<FontAwesomeIcon icon={faFile} class="text-yellow-400" />
 				<!-- This is still fixed -->
-				<span>Type of Training</span>
+				<span>{training.find(t => t.id === data.selectedItem.trainingId)?.type}</span>
 			</div>
 			<div class="flex items-center gap-2">
 				<FontAwesomeIcon icon={faClock} class="text-yellow-400" />
 				<!-- This is still fixed -->
-				<span>Date</span>
+				<span>{handleDate(data.selectedItem.date)}</span>
 			</div>
 		</div>
 	</div>
