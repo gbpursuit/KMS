@@ -1,0 +1,65 @@
+{
+  "Overview": 
+    {
+      "title": "Training Overview",
+      "content":
+        {
+          "type": "plain",
+          "prev": false, 
+          "content": "", 
+          "next": null
+        }
+    },
+  "Participants": 
+    {
+      "title": "Training Participants",
+      "content":
+        {
+          "type": "plain",
+          "prev": false, 
+          "content": "",
+          "next": null
+        }
+    },
+  "Personnel": 
+    {
+      "title": "Personnel",
+      "content":{
+          "type": "plain",
+          "prev": false, 
+          "content": "", "next": null}
+    },
+  "Highlights":
+    {
+      "title": "Highlights",
+      "content":
+        {
+          "type": "plain",
+          "prev": false, 
+          "content": "", 
+          "next": null
+        }
+    },
+  "Evaluation":
+    {
+      "title": "Evaluation",
+      "content":
+        {
+          "type": "plain",
+          "prev": false, 
+          "content": "", 
+          "next": null
+        }
+    },
+  "Appendix":
+    {
+      "title": "Appendix",
+      "content":
+        {
+          "type": "plain",
+          "prev": false, 
+          "content": "", 
+          "next": null
+        }
+   }
+}

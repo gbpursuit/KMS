@@ -13,17 +13,17 @@
     
     // function toggleMode() {
     //     const loginForm = document.getElementById('login')
-    //     const signupForm = document.getElementById('signup')
+    //     const registerForm = document.getElementById('register')
 
-    //     if(loginForm && signupForm)
+    //     if(loginForm && registerForm)
     //     switch(type) {
     //         case 'login':
     //             loginForm.hidden = false
-    //             signupForm.hidden = true
+    //             registerForm.hidden = true
     //             break;
-    //         case 'signup':
+    //         case 'register':
     //             loginForm.hidden = true
-    //             signupForm.hidden = false
+    //             registerForm.hidden = false
     //             break;
     //         default:
     //             break;
@@ -34,23 +34,23 @@
         let username = document.getElementById('username')
         let firstName = document.getElementById('firstName')
         let lastName = document.getElementById('lastName')
-        let signupUsername = document.getElementById('signupUsername')
+        let registerUsername = document.getElementById('registerUsername')
         let loginForm = document.getElementById('login')
-        let signupForm = document.getElementById('signup')
+        let registerForm = document.getElementById('register')
 
         const letters = new RegExp("^[A-Za-z]*$")
         const lettersNumbers = new RegExp("^[A-Za-z0-9]*$")
 
         $effect(() => {
-            if(loginForm && signupForm){
+            if(loginForm && registerForm){
                 switch(type) {
                     case 'login':
                         loginForm.hidden = false
-                        signupForm.hidden = true
+                        registerForm.hidden = true
                         break;
-                    case 'signup':
+                    case 'register':
                         loginForm.hidden = true
-                        signupForm.hidden = false
+                        registerForm.hidden = false
                         break;
                     default:
                         break;
@@ -70,7 +70,7 @@
         if(username) addListener(username, lettersNumbers)
         if(firstName) addListener(firstName, letters)
         if(lastName) addListener(lastName, letters)
-        if(signupUsername) addListener(signupUsername, lettersNumbers)
+        if(registerUsername) addListener(registerUsername, lettersNumbers)
 
     });
 
@@ -102,7 +102,7 @@
     </div>
 
     <div class="{additionalStyle} transition-[height] ease-in duration-200 {type === 'login'? 'h-0 morph-leave': `h-[354px] morph-enter`}">
-        <form id="signup" class="flex flex-col" onsubmit={onSubmit}>
+        <form id="register" class="flex flex-col" onsubmit={onSubmit}>
             <div>
                 <div class="flex flex-row gap-4">
                     <div class="flex flex-col gap-1">
@@ -118,12 +118,12 @@
 
                 <div class="flex flex-col gap-1">
                     <Label forLabel="username" required> Username </Label>
-                    <Input style={isError? 'error': ''} type="text" id="signupUsername" name="username" maxlength={maxCharacters}/>
+                    <Input style={isError? 'error': ''} type="text" id="registerUsername" name="username" maxlength={maxCharacters}/>
                 </div>
 
                 <div class="flex flex-col gap-1">
                     <Label forLabel="password" required> Password </Label>
-                    <Input style={isError? 'error': ''} type="password" id="signupPassword" name="password" maxlength={maxCharacters}/>
+                    <Input style={isError? 'error': ''} type="password" id="registerPassword" name="password" maxlength={maxCharacters}/>
                 </div>
                 
                 <div class="flex flex-col gap-1">
@@ -137,7 +137,7 @@
             </div>
 
             <div class="flex-row {isError? '': 'pt-13'}">
-                <Button style="submit" type="submit">Signup</Button>
+                <Button style="submit" type="submit">Register</Button>
             </div>
         </form>
     </div>

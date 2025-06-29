@@ -13,7 +13,9 @@
 
 	import Tab from '$lib/svelte/Tab.svelte';
 	import TabContent from '$lib/svelte/TabContent.svelte';
-	import { writable } from 'svelte/store';
+	import type { TabInterface } from '$lib/functions/tab-content'
+	import tabContentJSON from '$lib/data/tab-content.json'
+	import GenerateContent from '$lib/svelte/GenerateContent.svelte';
 
 	import type { Training } from '@prisma/client';
 	import { getData, addData } from '$lib/functions/database';
@@ -60,10 +62,10 @@
 		goto(`?itemId=${id}`);
 	}
 
-	const tabs = ['Overview', 'Participants', 'Personnel', 'Highlights', 'Evaluation', 'Appendix'];
-
 	let editable: boolean = $state(false)
-	let activeTab = $state(writable(tabs[0]))
+	let tabs: string[] = $state(['Overview', 'Participants', 'Personnel', 'Highlights', 'Evaluation', 'Appendix'])
+	let activeTab: string = $state(tabs[0])
+	let tabContent: TabInterface = $state(tabContentJSON)
 
 	let showModal: boolean = $state(false);
 
@@ -315,13 +317,18 @@
 
 	<!-- Content Area -->
 	<div class="flex w-full justify-center px-4 flex-col items-center gap-10">
-		<!-- Tabs + Content Box -->
-		<div class="flex flex-col w-full max-w-[900px] bg-white border border-black/10 rounded-xl shadow-sm overflow-hidden">
-			<!-- Tabs -->
-			 <Tab tabs={tabs} bind:activeTab={activeTab}/>
+		<div class="flex flex-col w-full max-w-[900px]">
+			<!-- Tabs + Content Box -->
+			<div class=" bg-white border border-black/10 rounded-xl shadow-sm overflow-hidden">
+				<!-- Tabs -->
+				<Tab tabs={tabs} bind:activeTab/>
 
-			<!-- Tab Content -->
-			<TabContent activeTab={activeTab} bind:editable={editable} user={data.user}/>
+				<!-- Tab Content -->
+				<TabContent user={data.user} bind:tabContent bind:editable/>
+			</div>
+			<div>
+				<GenerateContent bind:tabContent />
+			</div>
 		</div>
 
 		<!-- Comment Section -->
