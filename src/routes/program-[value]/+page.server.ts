@@ -7,9 +7,9 @@ export const load: PageServerLoad = async ({ fetch, params, url, parent }) => {
     let { user } = await parent();
     let programId = params.value;
 
-    // if (!user) {
-    //     throw redirect(302, `/auth`);
-    // }
+    if (!user) {
+        throw redirect(302, `/auth`);
+    }
 
     let itemId = url.searchParams.get('itemId');
     let rawPrograms: ProgramAll[] = await getData('program', fetch);

@@ -9,7 +9,7 @@
 	import { goto } from '$app/navigation';
 
 	import { currentModule, selectedModuleItem } from '$lib/functions/module';
-	import type { PageProps } from '../$types';
+	import type { PageProps } from './$types';
 
 	import Tab from '$lib/svelte/Tab.svelte';
 	import TabContent from '$lib/svelte/TabContent.svelte';
