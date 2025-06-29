@@ -10,7 +10,7 @@
 	let { data }: PageProps = $props();
 
     let leaving = $state(false);
-    let formType: 'login' | 'signup' = $state('login');
+    let formType: 'login' | 'register' = $state('login');
 
 
     let isError: boolean = $state(false);
@@ -21,7 +21,12 @@
         leaving = true;
         setTimeout(() => {
             leaving = false;
-            formType = formType === 'login' ? 'signup' : 'login';
+            formType = formType === 'login' ? 'register' : 'login';
+            let url = new URL(window.location.href)
+            url.searchParams.set('view', formType)
+            window.history.pushState({}, "", `?view=${formType}`)
+            console.log(url.searchParams.get('view'), url.href)
+            
             setTimeout(() => {
                 const form = document.getElementById(formType) as HTMLFormElement | null;
                 form?.reset();
@@ -80,7 +85,7 @@
 
         let url = new URL(window.location.href)
         if (url.searchParams.get('view') === 'login') formType = 'login'
-        else formType = 'signup'
+        else formType = 'register'
 
     })
 
@@ -113,7 +118,7 @@
 
 <div class="relative flex w-full h-screen justify-center items-center bg-cover bg-center bg-no-repeat" style="background-image: url({'/NISMEDfrontpage.jpg'})">
     <div class="absolute inset-0 z-0 bg-black/50"></div>
-	<div class="custom-morph z-15 w-[400px] {formType === 'signup'? 'h-[590px]': 'h-[460px]'} bg-white rounded-2xl shadow-xl px-8 py-8 transition-all ease-in-out duration-500 overflow-hidden">
+	<div class="custom-morph z-15 w-[400px] {formType === 'register'? 'h-[590px]': 'h-[460px]'} bg-white rounded-2xl shadow-xl px-8 py-8 transition-all ease-in-out duration-500 overflow-hidden">
 		<!-- Logo -->
 		<div id="logo" class="flex justify-center gap-2 mb-6">
 			<img src="/UPD.png" alt="UPD Logo" class="h-[60px] object-contain">
@@ -124,7 +129,7 @@
         <div id="heading" class="h-[40px] mb-5 w-full flex">
             <Heading style="form">
                 <span class={leaving ? "morph-leave" : "morph-enter"}>
-                    {formType === 'signup' ? 'Signup' : 'Login'}
+                    {formType === 'register' ? 'Register' : 'Login'}
                 </span>
             </Heading>
         </div>
@@ -133,10 +138,10 @@
 
         <!-- Switch Forms -->
         <div id="toggle" class="text-center text-sm text-black p-1 {leaving ? "morph-leave" : "morph-enter"}">
-            {formType === 'signup' ? 'Already have an account?' : 'Don\'t have an account yet?'}
+            {formType === 'register' ? 'Already have an account?' : 'Don\'t have an account yet?'}
             <button type="button" class="custom-underline middle"
             onclick={switchForm}
-            >{formType === 'signup' ? 'Login' : 'Signup'}</button>
+            >{formType === 'register' ? 'Login' : 'Register'}</button>
         </div>
 	</div>
 </div>
