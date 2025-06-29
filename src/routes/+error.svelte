@@ -1,15 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	// export let error: Error;
-	// export let status: number;
-
-	// import { onMount } from 'svelte';
-
-	// onMount(() => {
-	// 	console.log(error);
-	// 	console.log(status);
-	// })
- 
 </script>
 
 
@@ -27,7 +17,7 @@
 			{page.error?.message || 'An unknown error occurred'}
 		</p>
 
-		<input type='button' onclick={() => history.back()} class="inline-block px-6 py-3 text-white bg-green-600 hover:bg-green-700 rounded-lg shadow transition transform hover:-translate-y-0.5 hover:shadow-lg " value='Go to Homepage'/>
+		<input type='button' onclick={() => window.location.href = '/'} class="inline-block px-6 py-3 text-white bg-green-600 hover:bg-green-700 rounded-lg shadow transition transform hover:-translate-y-0.5 hover:shadow-lg " value='Go to Homepage'/>
 	</div>
 </div>
 

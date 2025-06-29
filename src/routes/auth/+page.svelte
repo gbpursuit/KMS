@@ -22,10 +22,10 @@
         setTimeout(() => {
             leaving = false;
             formType = formType === 'login' ? 'register' : 'login';
-            let url = new URL(window.location.href)
-            url.searchParams.set('view', formType)
-            window.history.pushState({}, "", `?view=${formType}`)
-            console.log(url.searchParams.get('view'), url.href)
+            let view = new URL(window.location.href)
+            view.searchParams.set('view', formType)
+            window.history.pushState({}, "", view.toString()) // add view URL instead of replacing
+            // console.log(view.searchParams.get('view'), view.href)
             
             setTimeout(() => {
                 const form = document.getElementById(formType) as HTMLFormElement | null;
