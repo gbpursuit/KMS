@@ -26,7 +26,6 @@
             let view = new URL(window.location.href)
             view.searchParams.set('view', formType)
             goto(`${view.pathname}?${view.searchParams}`, {replaceState: false});
-            // console.log(view.searchParams.get('view'), view.href)
             
             setTimeout(() => {
                 const form = document.getElementById(formType) as HTMLFormElement | null;
@@ -85,9 +84,9 @@
             // window.history.replaceState({}, '', url);
         }
 
-        let url = new URL(window.location.href)
-        if (url.searchParams.get('view') === 'login') formType = 'login'
-        else formType = 'register'
+        let view = new URL(window.location.href)
+        if (view.searchParams.get('view') === 'register') formType = 'register'
+        else formType = 'login'
 
     })
 
