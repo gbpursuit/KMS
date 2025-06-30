@@ -38,6 +38,18 @@
         case 'add-item':
             styleValue = "p-2 bg-transparent border-dashed border-2 rounded-xl"
             break;
+        case 'make-admin':
+            styleValue = "px-3 py-1 text-sm rounded bg-[#1B663E] text-white hover:bg-[#155b32] transition flex items-center justify-center gap-2"
+            break;
+        case 'make-user':
+            styleValue = "px-3 py-1 text-sm rounded bg-gray-300 text-black hover:bg-gray-400 transition flex items-center justify-center gap-2"
+            break;
+        case 'remove':
+            styleValue = "px-3 py-2 text-sm rounded bg-[#800000] text-white hover:bg-[#a00000] transition flex items-center justify-center"
+            break;
+        case 'underline':
+            styleValue = "text-sm text-[#1B663E] underline ml-auto hover:text-green-800"
+            break;
         default:
             break;
     }

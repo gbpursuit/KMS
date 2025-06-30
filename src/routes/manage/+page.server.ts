@@ -8,4 +8,6 @@ export const load: PageServerLoad = async ({ url, parent, fetch }) => {
     if(user && user.roleId !== 3) {
         throw error (401, 'Unauthorized');
     }
+    console.log(user)
+    return { user }
 };

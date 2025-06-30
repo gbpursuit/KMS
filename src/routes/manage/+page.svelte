@@ -2,60 +2,116 @@
 	import { onMount } from 'svelte';
 	import { getData } from '$lib/functions/database';
 	import type { Account } from '@prisma/client';
+    import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
+    import { faEye, faLock, faPlusCircle, faTrashAlt, faUser, faUserCheck, faUserShield, faUserSlash } from '@fortawesome/free-solid-svg-icons';
+	import type { PageProps } from '../$types';
 
-	let accounts: Account[] = [];
-	let searchUser = "";
-	let searchAdmin = "";
-	let showUserInfo = false;
-	let showAdminInfo = false;
+    import Button from '$lib/svelte/Button.svelte';
+	import Heading from '$lib/svelte/Heading.svelte';
+	import Paragraph from '$lib/svelte/Paragraph.svelte';
+
+	let accounts: Account[] = $state([]);
+    let { data }: PageProps = $props()
+
+	let searchUser = $state("");
+	let searchAdmin = $state("");
+	let showUserInfo = $state(false);
+	let showAdminInfo = $state(false);
+    let userCount = $state(0)
+    let adminCount = $state(0)
+    let superCount = $state(0)
+    let testing = $state(false)
+
+    $effect( ()=> {
+	    userCount = accounts.filter(a => a.roleId === 1).length;
+	    adminCount = accounts.filter(a => a.roleId === 2).length;
+        superCount = accounts.filter(a => a.roleId === 3).length;
+    })
 
 	onMount(async () => {
 		accounts = await getData('account');
+        console.log(data.user)
 	});
 
-    // BACKENDERS
-	async function changeRole(id: number, currentRole: number) {
-	}
+    async function changeRole(id: number, currentRole: number, targetRole: number) {
+        try {
+            const res = await fetch(`/api/account/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ roleId: targetRole })
+            });
 
-	async function removeAccount(id: number) {
-		const confirmDelete = confirm("Are you sure you want to permanently remove this account?");
-		if (!confirmDelete) return;
-	}
+            const data = await res.json();
+            console.log('Server response:', data);
 
-	$: userCount = accounts.filter(a => a.roleId === 1).length;
-	$: adminCount = accounts.filter(a => a.roleId === 2).length;
+            if (res.ok) {
+                accounts = accounts.map(acc =>
+                    acc.id === id ? { ...acc, roleId: targetRole } : acc
+                );
+            } else {
+                alert(data.error || 'Failed to change role.');
+            }
+        } catch (error) {
+            console.error('Error changing role:', error);
+            alert('An error occurred while changing role.');
+        }
+    }
+
+    async function removeAccount(id: number) {
+        const account = accounts.find(acc => acc.id === id);
+        if (!account) return;
+
+        let confirmDelete = confirm("Are you sure you want to permanently remove this account?");
+        if (!confirmDelete) return;
+
+        // If superuser, prompt for password before deleting
+        if (account.roleId === 3) {
+            const specialPass = prompt("Enter the special password to delete this Superuser account:");
+            if (specialPass !== 'password') {
+                alert('Incorrect password. Deletion cancelled.');
+                return;
+            }
+        }
+
+        try {
+            const res = await fetch(`/api/account/${id}`, {
+                method: 'DELETE'
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                accounts = accounts.filter(acc => acc.id !== id);
+            } else {
+                alert(data.error || 'Failed to delete account.');
+            }
+        } catch (error) {
+            console.error('Error deleting account:', error);
+            alert('An error occurred while deleting account.');
+        }
+    }
 </script>
 
-<div class="min-h-screen mt-28 px-6 py-10 bg-[#f9fafb] text-[#1B1B1B] space-y-8">
-    <!-- IDK IF LALAGAY KO BA ITO OR MAS BETTER YUNG ASA BABA -->
-    <!-- <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-        <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-            <h3 class="text-sm font-medium text-gray-500">Total Users</h3>
-            <p class="text-2xl font-bold text-[#1B663E]">{userCount}</p>
-        </div>
-        <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-            <h3 class="text-sm font-medium text-gray-500">Total Admins</h3>
-            <p class="text-2xl font-bold text-[#1B663E]">{adminCount}</p>
-        </div>
-    </div> -->
-
+<div class="min-h-screen mt-28 px-6 py-10 space-y-10">
 	<div class="flex flex-col md:flex-row gap-8">
 		
         <!-- Users Table -->
 		<div class="flex-1">
-            <h2 class="text-xl font-bold text-[#1B663E] mb-2 flex items-center gap-2">
-                <i class="fas fa-user text-[#1B663E]"></i>
-                    Users (Total Users: {userCount})
-                <button on:click={() => showUserInfo = !showUserInfo} class="text-sm text-[#1B663E] underline ml-auto hover:text-green-800">
+            <Heading type='h2' style='table'>
+                <FontAwesomeIcon icon={faUser}/>
+                Users (Total Users: {userCount})
+                <Button
+                    style="underline"
+                    onclick={() => showUserInfo = !showUserInfo}> 
                     {showUserInfo ? 'Hide' : 'What can Users do?'}
-                </button>
-            </h2>
+                </Button>
+            </Heading>
             
             <!-- User info Link -->
             {#if showUserInfo}
                 <div class="text-sm text-gray-600 bg-white border border-gray-200 rounded-md p-4 mb-4">
-                    <p><i class="fas fa-eye text-[#1B663E] mr-2"></i><strong>View-only Access:</strong> Users can view all <span class="font-medium">UP NISMED Programs</span> and detailed <span class="font-medium">Training Modules</span>.</p>
-                    <p class="mt-1"><i class="fas fa-ban text-red-500 mr-2"></i>Users cannot add, edit, or delete training content.</p>
+                    <FontAwesomeIcon icon={faEye} class='text-[#1B663E] mr-2'/><strong>View-only Access:</strong> Users can view all <span class="font-medium">UP NISMED Programs</span> and detailed <span class="font-medium">Training Modules</span>.
+                    <Paragraph addStyle="mt-1"><i class="fas fa-ban text-red-500 mr-2"></i>Users cannot add, edit, or delete training content.</Paragraph>
                 </div>
             {/if}
             
@@ -95,17 +151,16 @@
                                     <td class="px-4 py-2">{user.lastName}</td>
                                     <td class="px-4 py-2">{user.username}</td>
                                     <td class="px-4 py-2 text-center space-x-2 flex items-center justify-center">
-                                        <button
-                                            class="px-3 py-1 text-sm rounded bg-[#1B663E] text-white hover:bg-[#155b32] transition flex items-center justify-center gap-2"
-                                            on:click={() => changeRole(user.id, user.roleId)}>
-                                            <i class="fas fa-user-shield"></i> Make Admin
-                                        </button>
-                                        <button
-                                            aria-label="Remove user"
-                                            class="px-3 py-2 text-sm rounded bg-[#800000] text-white hover:bg-[#a00000] transition flex items-center justify-center"
-                                            on:click={() => removeAccount(user.id)}>
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
+                                        <Button 
+                                            style="make-admin" 
+                                            onclick={() => changeRole(user.id, user.roleId, 2)}>
+                                            <FontAwesomeIcon icon={faUserShield}/> Make Admin
+                                        </Button>
+                                        <Button 
+                                            style="remove" 
+                                            onclick={() => removeAccount(user.id)}>
+                                            <FontAwesomeIcon icon={faTrashAlt}/>
+                                        </Button>
                                     </td>
                                 </tr>
                             {/each}
@@ -123,19 +178,21 @@
 
 		<!-- Admins Table -->
 		<div class="flex-1">
-            <h2 class="text-xl font-bold text-[#1B663E] mb-2 flex items-center gap-2">
-                <i class="fas fa-user-shield text-[#1B663E]"></i>
-                    Admins (Total Admins: {adminCount})
-                <button on:click={() => showAdminInfo = !showAdminInfo} class="text-sm text-[#1B663E] underline ml-auto hover:text-green-800">
+            <Heading type='h2' style='table'>
+                <FontAwesomeIcon icon={faUserShield}/>
+                Admins (Total Admins: {adminCount})
+                <Button
+                    style="underline"
+                    onclick={() => showAdminInfo = !showAdminInfo}> 
                     {showAdminInfo ? 'Hide' : 'What can Admins do?'}
-                </button>
-            </h2>
+                </Button>
+            </Heading>
             
             <!-- Admin Info Link -->
             {#if showAdminInfo}
                 <div class="text-sm text-gray-600 bg-white border border-gray-200 rounded-md p-4 mb-4">
-                    <p><i class="fas fa-plus-circle text-[#1B663E] mr-2"></i><strong>Manage Content:</strong> Admins can add, edit, and delete <span class="font-medium">Training Modules</span>.</p>
-                    <p class="mt-1"><i class="fas fa-tools text-[#1B663E] mr-2"></i><strong>Customization:</strong> Admins have access to customize module information and manage related data.</p>
+                    <FontAwesomeIcon icon={faPlusCircle} class='text-[#1B663E] mr-2'/><strong>Manage Content:</strong> Admins can add, edit, and delete <span class="font-medium">Training Modules</span>.
+                    <Paragraph addStyle="mt-1"><i class="fas fa-tools text-[#1B663E] mr-2"></i><strong>Customization:</strong> Admins have access to customize module information and manage related data.</Paragraph>
                 </div>
             {/if}
             
@@ -175,24 +232,30 @@
                                     <td class="px-4 py-2">{admin.lastName}</td>
                                     <td class="px-4 py-2">{admin.username}</td>
                                     <td class="px-4 py-2 text-center space-x-2 flex items-center justify-center">
-                                        <button
-                                            class="px-3 py-1 text-sm rounded bg-gray-300 text-black hover:bg-gray-400 transition flex items-center justify-center gap-2"
-                                            on:click={() => changeRole(admin.id, admin.roleId)}>
-                                            <i class="fas fa-user-shield"></i> Make User
-                                        </button>
-                                        <button
-                                            aria-label="Remove user"
-                                            class="px-3 py-2 text-sm rounded bg-[#800000] text-white hover:bg-[#a00000] transition flex items-center justify-center"
-                                            on:click={() => removeAccount(admin.id)}>
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
+                                        <Button 
+                                            style="make-user" 
+                                            onclick={() => changeRole(admin.id, admin.roleId, 1)}>
+                                            <FontAwesomeIcon icon={faUser}/> Make User
+                                        </Button>
+                                        {#if testing}
+                                            <Button 
+                                                style="make-admin" 
+                                                onclick={() => changeRole(admin.id, admin.roleId, 3)}>
+                                                <FontAwesomeIcon icon={faUserShield}/> Make SuperUser
+                                            </Button>                                            
+                                        {/if}
+                                        <Button 
+                                            style="remove" 
+                                            onclick={() => removeAccount(admin.id)}>
+                                            <FontAwesomeIcon icon={faTrashAlt}/>
+                                        </Button>
                                     </td>
                                 </tr>
                             {/each}
                         {:else}
                             <tr>
                                 <td colspan="4" class="px-4 py-4 text-center text-gray-500 italic">
-                                    <i class="fas fa-user-slash mr-2 text-[#1B663E]"></i> No admins found.
+                                    <FontAwesomeIcon icon={faUserSlash} class='text-[#1B663E] mr-2'/> No admins found.
                                 </td>
                             </tr>
                         {/if}
@@ -201,6 +264,66 @@
 			</div>
 		</div>
 	</div>
+    <!-- Superusers Table -->
+    <div class="flex-1">
+        <Heading type='h2' style='table'>
+            <FontAwesomeIcon icon={faUserCheck} class='text-[#1B663E] mr-2'/>
+            Superusers (Total: {superCount})
+        </Heading>
+
+        <div class="bg-white border border-gray-200 rounded-xl overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-[#1B663E] text-white text-left">
+                    <tr>
+                        <th class="px-4 py-2">First Name</th>
+                        <th class="px-4 py-2">Last Name</th>
+                        <th class="px-4 py-2">Username</th>
+                        <th class="px-4 py-2 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#if accounts.filter(a => a.roleId === 3).length > 0}
+                        {#each accounts.filter(a => a.roleId === 3) as superuser}
+                            <tr class="border-b odd:bg-white even:bg-gray-50 hover:bg-green-50 text-[#0C2D1C]">
+                                <td class="px-4 py-2">{superuser.firstName}</td>
+                                <td class="px-4 py-2">{superuser.lastName}</td>
+                                <td class="px-4 py-2">{superuser.username}</td>
+                                <td class="px-4 py-2 text-center space-x-2 flex items-center justify-center">
+                                    {#if testing}
+                                        <Button 
+                                            style="make-user" 
+                                            onclick={() => changeRole(superuser.id, superuser.roleId, 1)}>
+                                            <FontAwesomeIcon icon={faUser}/> Make User
+                                        </Button>
+                                        <Button 
+                                            style="make-admin" 
+                                            onclick={() => changeRole(superuser.id, superuser.roleId, 2)}>
+                                            <FontAwesomeIcon icon={faUserShield}/> Make Admin
+                                        </Button>
+                                        <Button 
+                                            style="remove" 
+                                            onclick={() => removeAccount(superuser.id)}>
+                                            <FontAwesomeIcon icon={faTrashAlt}/>
+                                        </Button>
+                                    {:else}
+                                        <div class="bg-gray-100 border border-gray-300 text-gray-500 italic text-xs px-4 py-2 rounded-sm">
+                                            <FontAwesomeIcon icon={faLock}/> Not allowed to change roles
+                                        </div>
+                                    {/if}
+                                </td>
+                            </tr>
+                        {/each}
+                    {:else}
+                        <tr>
+                            <td colspan="4" class="px-4 py-4 text-center text-gray-500 italic">
+                                <i class="fas fa-user-lock mr-2 text-[#1B663E]"></i> No superusers found.
+                            </td>
+                        </tr>
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 
