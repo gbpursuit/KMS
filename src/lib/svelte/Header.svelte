@@ -200,9 +200,10 @@
 						</h1>
 					</div>
 
-					<div class="flex flex-wrap justify-center items-start gap-6 w-full">
+					<div class="flex flex-wrap justify-center items-start gap-6 w-full p-2">
 						{#each grids as g}
-							<div class="flex flex-shrink w-full sm:w-[45%] md:w-[30%] xl:w-[22%] min-w-0 rounded-md bg-white px-6 py-5 shadow-[0_2px_4px_rgba(0,0,0,0.15),_0_15px_20px_rgba(0,0,0,0.18)] transition-transform hover:scale-[1.03]">
+							<div class="flex flex-shrink w-full sm:w-[45%] md:w-[30%] min-w-0 rounded-md bg-white px-6 py-5 shadow-[0_2px_4px_rgba(0,0,0,0.15),_0_15px_20px_rgba(0,0,0,0.18)] 
+							will-change-transform transition-transform duration-500 ease-in-out hover:scale-[1.03]">
 								<div class="flex justify-center items-center w-1/4 min-w-[50px] text-[#185A37]">
 									<div class="flex justify-center items-center bg-[#F4F7FE] rounded-full w-12 h-12 md:w-14 md:h-14 text-lg md:text-2xl text-[#1B663E]" title="{g.name}">
 										<FontAwesomeIcon icon={g.icon} />

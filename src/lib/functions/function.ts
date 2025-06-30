@@ -30,15 +30,3 @@ export function smoothScrollTo(targetId:string, baseSpeed = 0.5) {
     requestAnimationFrame(animateScroll); 
 }
 
-export function handleClick(link:string, event?:MouseEvent) {
-    event?.preventDefault();
-    if (link.startsWith("#")) {
-        const id = link.slice(1);
-        const element = document.getElementById(id);
-        if (element) {
-            smoothScrollTo(id);
-        }
-    } else if (link) {
-        window.location.href = link;
-    }
-}

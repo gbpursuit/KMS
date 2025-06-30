@@ -5,7 +5,7 @@
 	import { faChartSimple, faGraduationCap, faFile, faClock} from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { goto } from '$app/navigation';
 
 	import { currentModule, selectedModuleItem } from '$lib/functions/module';
@@ -18,6 +18,7 @@
 	import tabContentJSON from '$lib/data/tab-content.json'
 
 	import type { Training } from '@prisma/client';
+	import { smoothScrollTo } from '$lib/functions/function';
 	import { addData, addImageData } from '$lib/functions/database';
 
 	let { data } : PageProps = $props();
@@ -41,20 +42,13 @@
 
 	let training: Training[] = $state([]);
 	$effect(() => {
-		if($currentModule !== data.program) {
-			currentModule.set(data.program);
-		}
-		if ($selectedModuleItem !== data.selectedItem) {
-			selectedModuleItem.set(data.selectedItem);
-		}
-
-		if (!$selectedModuleItem) {
-			setTimeout(() => observer_func(), 0);
-		}
+		if($currentModule !== data.program) currentModule.set(data.program);
+		if ($selectedModuleItem !== data.selectedItem) selectedModuleItem.set(data.selectedItem);
+		// if (!$selectedModuleItem) setTimeout(() => observer_func(), 0);
 	});
 
 	onMount(async () => {
-		if (!$selectedModuleItem) observer_func();
+		// if (!$selectedModuleItem) observer_func();
 		training = data.training;
 	})
 
@@ -119,6 +113,39 @@
 		return new Date(date).toLocaleDateString('en-PH', {
 			year: 'numeric', month: 'long', day: 'numeric'
 		})
+	}
+
+	let currentPage: number = $state(1);
+	let tasksPerPage: number = 5;
+	let totalPages: number = $state(0);
+	let startIndex: number = $state(0);
+	let endIndex: number = $state(0);
+	let visibleTasks: any[] = $state([]);
+	let pageButtons: number[] = $state([]);
+
+	$effect(() => {
+		totalPages = Math.ceil(data.program.items.length / tasksPerPage);
+		currentPage = Math.min(currentPage, totalPages);
+		startIndex = (currentPage - 1) * tasksPerPage;
+		endIndex = startIndex + tasksPerPage;
+		visibleTasks = data.program.items.slice(startIndex, endIndex);
+		pageButtons = getPageButtons(currentPage, totalPages);
+	})
+
+	async function goToPage(page: number) {
+		currentPage = page;
+		await tick();
+		smoothScrollTo('buttons');
+	}
+
+	function getPageButtons(current: number, total: number, max = 3): number[] {
+		let start = Math.max(current - Math.floor(max/2), 1);
+		let end  = Math.min(start + max - 1, total);
+
+		if( end - start < max - 1) {
+			start = Math.max(end - max + 1, 1);
+		}
+		return Array.from ({ length: end - start + 1 }, (_, i) => start + i);
 	}
 </script>
 
@@ -208,17 +235,16 @@
 			</div>
 		</div>
 		<div class="flex w-full h-[90%]">
-			<!-- Populate dynamically once we have data storage -->
 			<div id="griditems" class="grid grid-cols-1 grid-flow-row w-full h-full gap-7">
-				{#each data.program.items as item}
-					<div class="scroll-card opacity-0 flex w-full rounded-3xl gap-2 border-2 border-gray-100">
+				{#each visibleTasks as item}
+					<div class="scroll-card flex w-full rounded-3xl gap-2 border-2 border-gray-100">
 						<div
 							class="flex h-full w-[45%] border-r border-gray-200 rounded-l-3xl rounded-r-none"
 							style={`background: ${item.imageUrl ? `url('${item.imageUrl}') center/cover no-repeat` : 'var(--font-green)'}`}
 						></div>
-						<div class="flex h-full flex-grow p-2 pr-5">
+						<div class="flex h-full w-[55%] p-2 pr-5">
 							<div class="flex flex-col w-full h-full rounded-3xl gap-2">
-								<h1 class="text-lg font-semibold">{item.title}</h1>
+								<h1 class="text-lg font-semibold ">{item.title}</h1>
 								<div class="flex flex-col w-full h-full gap-1">
 									<div class="flex gap-2 items-center">
 										<p class = "font-light text-sm">Module Completeness</p>
@@ -254,15 +280,23 @@
 			</div>
 		</div>
 		<!-- Fix pagination once data storage is available -->
-		<div class="flex w-full flex-grow justify-center items-center">
+		<div id="buttons" class="flex w-full flex-grow justify-center items-center">
 			<div class="flex-grow"></div>
 			<div class="grid grid-rows-1 grid-flow-col h-full gap-9">
-				<button class="flex w-10 h-10 justify-center items-center p-1 rounded-full border border-black "><FontAwesomeIcon icon={faAngleLeft} /></button>
-				<button class="flex w-10 h-10 justify-center items-center p-1 rounded-full border border-black">1</button>
-				<button class="flex w-10 h-10 justify-center items-center p-1 rounded-full border border-black">2</button>
-				<button class="flex w-10 h-10 justify-center items-center p-1 rounded-full border border-black">3</button>
-				<button class="flex w-10 h-10 justify-center items-center p-1 rounded-full border border-black">4</button>
-				<button class="flex w-10 h-10 justify-center items-center p-1 rounded-full border border-black "><FontAwesomeIcon icon={faAngleRight} /></button>
+					<button class="flex w-10 h-10 justify-center items-center p-1 rounded-full 
+					{currentPage <= 1 ? 'pointer-events-none' : 'hover:scale-110 transition duration-300 ease-in-out'}"
+					onclick={() => goToPage(currentPage - 1)}
+					><FontAwesomeIcon icon={faAngleLeft} /></button>
+				{#each pageButtons as page} 
+					<button class="flex w-10 h-10 justify-center items-center p-1 rounded-full border border-black 
+					{page === currentPage ? 'selectedButton' : 'button'}"
+					onclick={() => goToPage(page)}
+					>{page}</button>
+				{/each}
+					<button class="flex w-10 h-10 justify-center items-center p-1 rounded-full
+					{currentPage >= totalPages ? 'pointer-events-none' : 'hover:scale-110 transition duration-300 ease-in-out'}"
+					onclick={() => goToPage(currentPage + 1)}
+					><FontAwesomeIcon icon={faAngleRight} /></button>
 			</div>
 			<div class="flex-grow"></div>
 		</div>
@@ -351,6 +385,34 @@
 
 
 <style>
+	.button {
+		transition: transform 0.3s ease;
+	}
+
+	.button:hover {
+		transform: scale(1.02);
+	}
+
+	.button:active {
+		transform: scale(0.98);
+	}
+
+	.selectedButton {
+		background-color: #1B663E;
+		color: white;
+		border-color: white;
+		transition: transform 0.3s ease, color 0.3s ease;
+	}
+
+	.selectedButton:hover {
+		background-color: #1c7747;
+		transform: scale(1.02);
+	}
+
+	.selectedButton:active {
+		transform: scale(0.98);
+	}
+
     :global(.animate-appear) {
         animation: appear 800ms ease-out forwards;
     }
