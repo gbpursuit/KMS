@@ -12,12 +12,12 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 
-	export let currentPath: string;
-	export let data: any;
 	import { currentModule, selectedModuleItem, type ProgramAll } from '$lib/functions/module';
 	import { ROUTE } from '../../routes/routes';
 
-	let grids: Summary[] = [];
+	let { data, currentPath } = $props()
+
+	let grids: Summary[] = $state([]);
 
 	onMount(async () => {
 		let target = new URLSearchParams(window.location.search).get('scroll');
@@ -64,14 +64,14 @@
 		grids = [...grids];
 	});
 
-	let isOpen = false;
-	let pathNameParts: string[] = [];
-	let pathIdParts: string[] = [];
+	let isOpen = $state(false);
+	let pathNameParts: string[] = $state([]);
+	let pathIdParts: string[] = $state([]);
 
-	$: {
+	$effect(() => {
 		const parts = currentPath.split(/[/\-]/).filter(Boolean);
 		pathIdParts = [...parts];
-		pathNameParts = parts.map((part) => {
+		pathNameParts = parts.map((part: string) => {
 			if (part === 'program') return 'Programs';
 			if (!isNaN(Number(part)) && $currentModule) return $currentModule.name;
 			return part;
@@ -81,7 +81,7 @@
 			pathNameParts = [...pathNameParts, $selectedModuleItem.title];	
 			pathIdParts = [...pathIdParts, $selectedModuleItem.id.toString()];
 		}
-	}
+	})
 
 	async function handleAccount(e: Event, view: 'login' | 'register' | 'logout' = 'logout') {
 		e?.preventDefault();
@@ -94,7 +94,7 @@
 	}
 
 	// Mano mano pa
-	function click_function(link: string, e: Event) {
+	function clickFunction(link: string, e: Event) {
 		e?.preventDefault();
 
 		if (link === ROUTE.PROGRAMS) {
@@ -111,7 +111,7 @@
 		goto(link);
 	}
 
-	function get_href(i: number) {
+	function getHref(i: number) {
 		const isLast = i === pathIdParts.length - 1;
 		if (isLast && $selectedModuleItem) {
 			const programs = pathIdParts.slice(0, i).join('-');
@@ -131,7 +131,7 @@
 				<h1 class="text-xs font-bold ">Knowledge Management System</h1>
             </a>
 			<!-- <button class="flex flex-col text-black cursor-pointer"
-			on:click = {() => window.location.href = "/"}
+			onclick = {() => window.location.href = "/"}
 			>
 				<h1 class="text-4xl font-bold  ">UP NISMED</h1>
 				<h1 class="text-xs font-bold ">Knowledge Management System</h1>
@@ -141,13 +141,13 @@
 		<div class="flex justify-center items-center gap-3">
 			{#if !data.user}
 				<div class="flex justify-center items-center text black gap-2">
-					<button class="cursor-pointer custom-underline leftRight" on:click={(e) => handleAccount(e, 'login')}>Login</button>
+					<button class="cursor-pointer custom-underline leftRight" onclick={(e) => handleAccount(e, 'login')}>Login</button>
 					<span>/</span>
-					<button class="cursor-pointer custom-underline leftRight" on:click={(e) => handleAccount(e, 'register')}>Register</button>
+					<button class="cursor-pointer custom-underline leftRight" onclick={(e) => handleAccount(e, 'register')}>Register</button>
 				</div>
 			{:else}
 				<div class="flex justify-center items-center text black gap-2">
-					<button class="cursor-pointer custom-underline leftRight" on:click={(e) => handleAccount(e)}>Logout</button>
+					<button class="cursor-pointer custom-underline leftRight" onclick={(e) => handleAccount(e)}>Logout</button>
 				</div>
 			{/if}
 			<button
@@ -168,7 +168,7 @@
 				{#each pathIdParts as part, i}
 					<span class = "{i === 0 && data.user && data.user.roleId === 3 ? 'hidden' : 'inline'}">></span>
 					<button class="custom-underline middle capitalize truncate overflow-hidden whitespace-nowrap max-w-[200px] block { pathIdParts.length - 1 !== i ? 'text-white' : 'text-yellow-500'}"
-						on:click={(e) => click_function(get_href(i), e) }
+						onclick={(e) => clickFunction(getHref(i), e) }
 					>
 						{decodeURIComponent(pathNameParts[i])}
 				</button>
@@ -180,7 +180,7 @@
 					<span class = "text-lg">Summary</span>
 				</div>
 				<button class="flex justify-center items-center w-10 h-10"
-					on:click={() => isOpen = !isOpen}
+					onclick={() => isOpen = !isOpen}
 				>
 					<div class="flex justify-center items-center p-1 {isOpen ? "animatedDown" : "animatedUp"}">
 						<FontAwesomeIcon icon={faSortDown}/>
