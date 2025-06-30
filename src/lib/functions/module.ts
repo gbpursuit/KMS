@@ -3,10 +3,18 @@ import type { Program, Research, CurriculumDevelopment, ProfessionalDevelopment,
 import { writable, type Writable } from 'svelte/store';
 
 export interface User {
-	id: number,
-	acctName: string,
+	id: number;
+	acctName: string;
 	roleId: number;
 	permission: string[];
+}
+
+export interface Summary {
+	name: string;
+	count: number;
+	icon: IconDefinition;
+	label: string;
+
 }
 
 export type ProgramTypes = {

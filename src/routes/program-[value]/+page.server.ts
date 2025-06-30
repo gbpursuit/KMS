@@ -2,9 +2,10 @@ import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { getData } from '$lib/functions/database';
 import type { ProgramAll, ProgramModule, ProgramItem } from '$lib/functions/module';
+import type { Training } from '@prisma/client';
 
 export const load: PageServerLoad = async ({ fetch, params, url, parent }) => {
-    let { user } = await parent();
+    let { user, training } = await parent();
     let programId = params.value;
 
     if (!user) {
@@ -16,6 +17,10 @@ export const load: PageServerLoad = async ({ fetch, params, url, parent }) => {
     let selectedProgram = rawPrograms.find((p) => p.id.toString() === programId);
     if (!selectedProgram) {
         throw error(404, 'Program Not Found');
+    }
+
+    if(user && user.roleId === 3) {
+        throw redirect(302, '/manage');
     }
 
     let program: ProgramModule;
@@ -79,6 +84,7 @@ export const load: PageServerLoad = async ({ fetch, params, url, parent }) => {
     return {
         programId,
         program,
-        selectedItem
+        selectedItem,
+        training
     };
 };

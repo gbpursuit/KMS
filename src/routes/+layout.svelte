@@ -13,7 +13,7 @@
 </script>
 
 {#if currentPath !== ROUTE.AUTH && status < 400}
-	<Header currentPath={currentPath} user = {data.user}/>
+	<Header currentPath={currentPath} data = {data}/>
 {/if}
 {@render children()}
 {#if currentPath !== ROUTE.AUTH && status < 400}

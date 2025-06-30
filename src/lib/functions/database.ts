@@ -18,7 +18,6 @@ export async function getData(type: string, fetchFn?: typeof fetch) {
 // POST data
 export async function addData(type: string, data: Record<string, any>) {
 
-    console.log("Data:", data);
     let res = await fetch(`/api/${type}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -31,6 +30,26 @@ export async function addData(type: string, data: Record<string, any>) {
         ok: res.ok,
         result: result
     }
+}
+
+export async function addImageData(imageFile: File | null, leader: string) {
+    const data = new FormData();
+	if (imageFile) {
+		data.append('imageUrl', imageFile);
+	}
+    data.append('leader', leader);
+
+    let res = await fetch(`/api/upload`, {
+        method: 'POST', 
+        body: data
+    })
+
+    if (!res.ok) {
+        throw new Error('Upload failed');
+    }
+
+    let { path } = await res.json();
+    return path;
 }
 
 // PUT or UPDATE data

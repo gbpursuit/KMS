@@ -4,12 +4,15 @@
 	import ProgramCard from '$lib/svelte/program/ProgramCard.svelte';
   import '@fortawesome/fontawesome-svg-core/styles.css';
   import { faAtom, faClipboard, faPersonChalkboard, faPalette } from '@fortawesome/free-solid-svg-icons';
+  import { currentModule, selectedModuleItem } from '$lib/functions/module';
+  import type { PageProps } from './$types';
 
   import { onMount } from 'svelte';
-  import { getData } from '$lib/functions/database';
   import { type ProgramAll } from '$lib/functions/module';
 
-  let programList: ProgramAll[] = [];
+  let { data } : PageProps = $props();
+
+  let programList: ProgramAll[] = $state([]);
   let iconMap: Record<string, any> = {
     'Research': faAtom,
     'Curriculum Development': faClipboard,
@@ -18,9 +21,14 @@
   };
 
   onMount(async () => {
-    let rawPrograms: ProgramAll[] = await getData('program');
-    programList = rawPrograms.map((p) => ({...p, icon: iconMap[p.name]}));
+    programList = data.programs.map((p) => ({...p, icon: iconMap[p.name]}));
   });
+
+  $effect(() => {
+    currentModule.set(null);
+    selectedModuleItem.set(null);
+  })
+
 
 </script>
 

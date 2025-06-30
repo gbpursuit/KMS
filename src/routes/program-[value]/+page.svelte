@@ -18,7 +18,7 @@
 	import tabContentJSON from '$lib/data/tab-content.json'
 
 	import type { Training } from '@prisma/client';
-	import { getData, addData } from '$lib/functions/database';
+	import { addData, addImageData } from '$lib/functions/database';
 
 	let { data } : PageProps = $props();
 
@@ -39,24 +39,25 @@
 		}
 	}
 
+	let training: Training[] = $state([]);
 	$effect(() => {
-		if ($currentModule !== data.program) {
-			$currentModule = data.program;
+		if($currentModule !== data.program) {
+			currentModule.set(data.program);
 		}
 		if ($selectedModuleItem !== data.selectedItem) {
-			$selectedModuleItem = data.selectedItem;
+			selectedModuleItem.set(data.selectedItem);
 		}
+
 		if (!$selectedModuleItem) {
 			setTimeout(() => observer_func(), 0);
 		}
 	});
 
-	let training: Training[] = $state([]);
 	onMount(async () => {
-		console.log(data);
 		if (!$selectedModuleItem) observer_func();
-		training = await getData('pd/training');
+		training = data.training;
 	})
+
 
 	function open_item(id:string) {
 		goto(`?itemId=${id}`);
@@ -69,11 +70,11 @@
 
 	let showModal: boolean = $state(false);
 
-	let title: string = $state('');
-	let leader: string = $state('');
-	let numParticipants: number | '' = $state('');
-	let trainingId: number = $state(0);
-	let date: string = $state('');
+	// let title: string = $state('');
+	// let leader: string = $state('');
+	// let numParticipants: number | '' = $state('');
+	// let trainingId: number = $state(0);
+	// let date: string = $state('');
 	let imageUrl: File | null = null;
 
 	function handleFileChange(event: Event): void {
@@ -89,21 +90,22 @@
 		let formData = new FormData(form);
 		let item = Object.fromEntries(formData) as Record<string, any>;
 	
-		item['numParticipants'] = parseInt(item['numParticipants']);
-		item['trainingId'] = parseInt(item['trainingId']);
-		item['programId'] = parseInt(data.programId);
+		item.numParticipants = parseInt(item.numParticipants);
+		item.trainingId = parseInt(item.trainingId);
+		item.programId = parseInt(data.programId);
 
 		if (Object.values(item).some(value => !value)) {
 			alert("Please fill in all required fields");
 		}
 
-		item['imageUrl'] = imageUrl;
+		let PATH = await addImageData(imageUrl, item.leader);
+		item.imageUrl = PATH;
 
 		let result = await addData('pd', item);
 		if(result.ok) {
 			form.reset();
+			imageUrl = null;
 			window.location.reload();
-			// showModal = false;
 		} else {
 			throw new Error(result.result.error);
 		}
@@ -141,22 +143,22 @@
 		<form class="flex flex-col gap-5" onsubmit={handleSubmit}>
 			<div class={fieldClass}>
 				<label class={labelClass} for="title">Title<span class="text-red-500"> *</span></label>
-				<input type="text" bind:value={title} name="title" class={inputClass} />
+				<input type="text" name="title" class={inputClass} />
 			</div>
 
 			<div class={fieldClass}>
 				<label class={labelClass} for="leader">Project Leader<span class="text-red-500"> *</span></label>
-				<input type="text" bind:value={leader} name="leader" class={inputClass} />
+				<input type="text" name="leader" class={inputClass} />
 			</div>
 
 			<div class={fieldClass}>
 				<label class={labelClass} for="numParticipants">Number of Participants<span class="text-red-500"> *</span></label>
-				<input type="number" bind:value={numParticipants} name="numParticipants" class={inputClass} />
+				<input type="number" name="numParticipants" class={inputClass} />
 			</div>
 
 			<div class={fieldClass}>
 				<label class={labelClass} for="trainingId">Type of Training<span class="text-red-500"> *</span></label>
-				<select bind:value={trainingId} name="trainingId" class={inputClass}>
+				<select name="trainingId" class={inputClass}>
 					<option value="" disabled selected>Select training type</option>
 					{#each training as t}
 					<option value={t.id}>{t.type}</option>
@@ -170,7 +172,7 @@
 
 			<div class={fieldClass}>
 				<label class={labelClass} for="date">Date<span class="text-red-500"> *</span></label>
-				<input type="date" bind:value={date} name="date" class={inputClass} />
+				<input type="date" name="date" class={inputClass} />
 			</div>
 
 			<div class={fieldClass}>
@@ -273,7 +275,7 @@
 {:else}
 <!-- Top Bar -->
 <div class="flex flex-col w-full min-h-[calc(100dvh-120px)] mt-[120px] items-center">
-	<div class="flex flex-col justify-center w-full h-[245px] bg-[#1B663E] text-white px-6 py-4 mb-10">
+	<div class="flex flex-col justify-center w-full h-[245px] bg-cover bg-center bg-no-reoeat text-white px-6 py-4 mb-10" style="{data.selectedItem.imageUrl ? `background-image: url(${data.selectedItem.imageUrl})` : 'background-color: #1B663E;'}">
 		<!-- Progress Bar -->
 		<!-- This is still fixed -->
 		<div class="flex items-center gap-3 text-sm font-light text-yellow-400 mb-2">

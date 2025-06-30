@@ -11,7 +11,6 @@ export const load: PageServerLoad = async ({ url, parent, fetch }) => {
         if (id && /^\d+$/.test(id)) {
             throw redirect(302, `/program-${id}`);
         } else {
-            throw redirect(302, '/');
         }
     }
     return { id, view };

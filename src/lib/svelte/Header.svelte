@@ -5,38 +5,66 @@
     import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import { smoothScrollTo } from '$lib/functions/function';
 
+	import { type Summary } from '$lib/functions/module';
+	import type { ProfessionalDevelopment, Training } from '@prisma/client';
+	import { getData } from '$lib/functions/database';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 
-	let grids = [
-		{
-			name: "Teachers Trained",
-			count: "2039",
-			icon: faUser,
-			label: "2024 Total",
-		},
-		{
-			name: "Trainings Count",
-			count: "35",
-			icon: faBook,
-			label: "Past Year",
-		},
-		{
-			name: "Online Courses",
-			count: "89",
-			icon: faLaptop,
-			label: "Available Now",
-		},
-	];
-
-	let isOpen = false;
-
 	export let currentPath: string;
-	export let user: any;
-	import { currentModule, selectedModuleItem } from '$lib/functions/module';
+	export let data: any;
+	import { currentModule, selectedModuleItem, type ProgramAll } from '$lib/functions/module';
 	import { ROUTE } from '../../routes/routes';
 
+	let grids: Summary[] = [];
+
+	onMount(async () => {
+		let target = new URLSearchParams(window.location.search).get('scroll');
+		if (target) {
+			setTimeout(() => {
+				smoothScrollTo(target);
+
+				let url = new URL(window.location.href);
+				url.searchParams.delete('scroll');
+				window.history.replaceState({}, '', url);
+			}, 100);
+		}
+
+		let pd = await getData('pd');
+		let currentYear = new Date().getFullYear();
+		let teachersCount = pd.reduce((sum: number, pd: ProfessionalDevelopment) => sum + pd.numParticipants, 0);
+		let trainingCount = data.programs.reduce((sum: number, item: ProgramAll) => sum + item.pd.length, 0);
+		let onlineCount = pd.filter((item: ProfessionalDevelopment) => {
+			let training = data.training.find((t: Training) => t.id === item.trainingId);
+			return training?.type === 'Online';
+		}).length;
+		
+		grids.push(
+			{
+				name: "Teachers Trained",
+				count: teachersCount,
+				icon: faUser,
+				label: `${currentYear} Total`,
+			},
+			{
+				name: "Trainings Count",
+				count: trainingCount,
+				icon: faBook,
+				label: "Past Year",
+			},
+			{
+				name: "Online Courses",
+				count: onlineCount,
+				icon: faLaptop,
+				label: "Available Now",
+			},
+		);
+
+		grids = [...grids];
+	});
+
+	let isOpen = false;
 	let pathNameParts: string[] = [];
 	let pathIdParts: string[] = [];
 
@@ -72,10 +100,10 @@
 		if (link === ROUTE.PROGRAMS) {
 			const current = page.url.pathname;
 			if (current === ROUTE.ROOT) {
-				smoothScrollTo('programs');
+				smoothScrollTo('program');
 			} else {
 				goto(ROUTE.ROOT).then(() => {
-					setTimeout(() => smoothScrollTo('programs'), 100);
+					setTimeout(() => smoothScrollTo('program'), 100);
 				});
 			}
 			return;
@@ -91,19 +119,6 @@
 		}
 		return `/${pathIdParts.slice(0, i + 1).join('-')}`;
 	}
-
-	onMount(() => {
-		const target = new URLSearchParams(window.location.search).get('scroll');
-		if (target) {
-			setTimeout(() => {
-				smoothScrollTo(target);
-
-				let url = new URL(window.location.href);
-				url.searchParams.delete('scroll');
-				window.history.replaceState({}, '', url);
-			}, 100);
-		}
-	});
 
 </script>
 
@@ -124,7 +139,7 @@
 		</div>
 		<div class="flex-grow"></div>
 		<div class="flex justify-center items-center gap-3">
-			{#if !user}
+			{#if !data.user}
 				<div class="flex justify-center items-center text black gap-2">
 					<button class="cursor-pointer custom-underline leftRight" on:click={(e) => handleAccount(e, 'login')}>Login</button>
 					<span>/</span>
@@ -149,16 +164,14 @@
 	<nav class="flex z-10 w-full h-[50px] bg-[#1B663E] text-white">
 		<div class="flex w-full px-[20px] sm:px-[30px] md:px-[40px] lg:px-[50px] py-[8px]">
 			<div class="flex w-[70%] items-center gap-2">
-				<a href="/" class="{user && user.roleId === 3 ? 'hidden' : 'inline' } custom-underline middle">Home</a>
+				<a href="/" class="{data.user && data.user.roleId === 3 ? 'hidden' : 'inline' } custom-underline middle">Home</a>
 				{#each pathIdParts as part, i}
-					<span class = "{i === 0 && user && user.roleId === 3 ? 'hidden' : 'inline'}">></span>
-					<a 
-						href={get_href(i)}
-						class="custom-underline middle capitalize truncate overflow-hidden whitespace-nowrap max-w-[200px] block { pathIdParts.length - 1 !== i ? 'text-white' : 'text-yellow-500'}"
+					<span class = "{i === 0 && data.user && data.user.roleId === 3 ? 'hidden' : 'inline'}">></span>
+					<button class="custom-underline middle capitalize truncate overflow-hidden whitespace-nowrap max-w-[200px] block { pathIdParts.length - 1 !== i ? 'text-white' : 'text-yellow-500'}"
 						on:click={(e) => click_function(get_href(i), e) }
 					>
 						{decodeURIComponent(pathNameParts[i])}
-					</a>
+				</button>
 				{/each}
 			</div>
 			<div class="flex-grow"></div>

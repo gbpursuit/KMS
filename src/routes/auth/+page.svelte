@@ -5,6 +5,7 @@
 	import Heading from '$lib/svelte/Heading.svelte';
     import { addData } from '$lib/functions/database';
     import { onMount } from 'svelte';
+    import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -24,7 +25,7 @@
             formType = formType === 'login' ? 'register' : 'login';
             let view = new URL(window.location.href)
             view.searchParams.set('view', formType)
-            window.history.pushState({}, "", view.toString()) // add view URL instead of replacing
+            goto(`${view.pathname}?${view.searchParams}`, {replaceState: false});
             // console.log(view.searchParams.get('view'), view.href)
             
             setTimeout(() => {
@@ -78,14 +79,15 @@
     onMount(() => {
         let validViews = ['login', 'register'];
         if (data.view && !validViews.includes(data.view)) {
-            let url = new URL(window.location.href);
-            url.searchParams.set('view', 'login');
-            window.history.replaceState({}, '', url);
+            let view = new URL(window.location.href);
+            view.searchParams.set('view', 'login');
+            goto(`${view.pathname}?${view.searchParams}`, {replaceState: true});
+            // window.history.replaceState({}, '', url);
         }
 
         let url = new URL(window.location.href)
-        if (url.searchParams.get('view') === 'register') formType = 'register'
-        else formType = 'login'
+        if (url.searchParams.get('view') === 'login') formType = 'login'
+        else formType = 'register'
 
     })
 
