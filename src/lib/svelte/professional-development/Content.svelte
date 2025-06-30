@@ -2,8 +2,8 @@
 	import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
 	import { faPlus, faMinus, faList } from "@fortawesome/free-solid-svg-icons";
 	import { type EditableContent } from "$lib/functions/tab-content";
-	import TextArea from "./TextArea.svelte";
-	import Button from "./Button.svelte";
+	import TextArea from "../TextArea.svelte";
+	import Button from "../Button.svelte";
     import Content from "./Content.svelte";
     let { editable, currentContent = $bindable() }: { editable: boolean, currentContent: EditableContent | null} = $props()
     let displayTextTypes = $state(false)

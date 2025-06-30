@@ -1,7 +1,7 @@
 <script lang='ts'>
   import Heading from '$lib/svelte/Heading.svelte';
   import Paragraph from '$lib/svelte/Paragraph.svelte';
-  import ProgramCard from '$lib/svelte/ProgramCard.svelte';
+	import ProgramCard from '$lib/svelte/program/ProgramCard.svelte';
   import '@fortawesome/fontawesome-svg-core/styles.css';
   import { faAtom, faClipboard, faPersonChalkboard, faPalette } from '@fortawesome/free-solid-svg-icons';
 

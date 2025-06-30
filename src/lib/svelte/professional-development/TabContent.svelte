@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { writable, type Writable } from "svelte/store";
-	import Button from "./Button.svelte";
-	import Paragraph from "./Paragraph.svelte";
+	import Button from "../Button.svelte";
+	import Paragraph from "../Paragraph.svelte";
 	import type { TabInterface } from "$lib/functions/tab-content";
 	import ActiveTab from "./ActiveTab.svelte";
     import { type User } from '$lib/functions/module';

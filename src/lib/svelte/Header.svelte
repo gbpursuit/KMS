@@ -107,7 +107,7 @@
 
 </script>
 
-<nav id="topbar"class="fixed z-10 flex flex-col w-full min-h-[120px] top-0">
+<header id="topbar"class="fixed z-10 flex flex-col w-full min-h-[120px] top-0">
 	<div class="flex z-10 w-full h-[70px] px-[20px] sm:px-[30px] md:px-[40px] lg:px-[50px] py-[8px] bg-white">
 		<div class="flex items-center gap-2">
 			<img src="/NISMED.png" alt="NISMED Logo" class="h-full object-cover">
@@ -146,7 +146,7 @@
 
 		</div>
 	</div>
-	<div class="flex z-10 w-full h-[50px] bg-[#1B663E] text-white">
+	<nav class="flex z-10 w-full h-[50px] bg-[#1B663E] text-white">
 		<div class="flex w-full px-[20px] sm:px-[30px] md:px-[40px] lg:px-[50px] py-[8px]">
 			<div class="flex w-[70%] items-center gap-2">
 				<a href="/" class="{user && user.roleId === 3 ? 'hidden' : 'inline' } custom-underline middle">Home</a>
@@ -176,7 +176,7 @@
 				</button>
 			</div>
 		</div>
-	</div>
+	</nav>
 	<div class="{isOpen ? 'h-[calc(65dvh-120px)]' : 'h-0'} relative z-9 flex w-full transition-height duration-600 ease-in-out">
 		<div class="{isOpen ? 'translate-y-0' : '-translate-y-[calc(65dvh)]'} absolute w-full shadow-[0_15px_20px_rgba(0,0,0,0.1)] transition duration-600 ease-in-out overflow-hidden">
 			<div class="flex w-full bg-[#1B663E] justify-center items-start py-6 px-6 pb-12 overflow-hidden">
@@ -199,7 +199,7 @@
 								<p class="text-sm md:text-base text-[#185A37] font-semibold truncate w-full" title="{g.name}">
 									{g.name}
 								</p>
-								<div class="flex items-baseline gap-1 mt-1 justify-center items-center">
+								<div class="flex gap-1 mt-1 justify-center items-center">
 									<p class="text-[#1B663E] text-xl md:text-2xl font-bold break-words">{g.count}</p>
 								</div>
 
@@ -214,7 +214,7 @@
 			</div>
 		</div>
 	</div>
-</nav>
+</header>
 
 <style>
 	@keyframes down {

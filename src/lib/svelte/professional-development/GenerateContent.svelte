@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { EditableContent, TabInterface } from "$lib/functions/tab-content";
-    import Button from "./Button.svelte";
-	import Heading from "./Heading.svelte";
+    import Button from "../Button.svelte";
+	import Heading from "../Heading.svelte";
     let { tabContent = $bindable() }: { tabContent: TabInterface } = $props()
     
     // Need to read the other rows

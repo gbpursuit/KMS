@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { writable } from "svelte/store";
-	import Button from "./Button.svelte";
+	import Button from "../Button.svelte";
 
     let { tabs = $bindable(), activeTab = $bindable('Overview') } = $props()
 

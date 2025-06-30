@@ -1,7 +1,7 @@
 <!-- This is called after +page.ts -->
 <script lang='ts'>
 	import { ROUTE } from '../routes';
-	import AuthForm from '$lib/svelte/AuthForm.svelte';
+	import Form from '$lib/svelte/authentication/Form.svelte';
 	import Heading from '$lib/svelte/Heading.svelte';
     import { addData } from '$lib/functions/database';
     import { onMount } from 'svelte';
@@ -134,7 +134,7 @@
             </Heading>
         </div>
         
-        <AuthForm bind:type={formType} bind:isError={isError} errorMessage={errorMessage} onSubmit={submitForm}></AuthForm>
+        <Form bind:type={formType} bind:isError={isError} errorMessage={errorMessage} onSubmit={submitForm}></Form>
 
         <!-- Switch Forms -->
         <div id="toggle" class="text-center text-sm text-black p-1 {leaving ? "morph-leave" : "morph-enter"}">

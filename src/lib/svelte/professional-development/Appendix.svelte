@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Heading from "./Heading.svelte";
+	import Heading from "../Heading.svelte";
 
 	let { mode = $bindable(), editable } = $props();
 </script>

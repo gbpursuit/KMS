@@ -11,11 +11,11 @@
 	import { currentModule, selectedModuleItem } from '$lib/functions/module';
 	import type { PageProps } from './$types';
 
-	import Tab from '$lib/svelte/Tab.svelte';
-	import TabContent from '$lib/svelte/TabContent.svelte';
+	import Tab from '$lib/svelte/professional-development/Tab.svelte';
+	import TabContent from '$lib/svelte/professional-development/TabContent.svelte';
+	import GenerateContent from '$lib/svelte/professional-development/GenerateContent.svelte';
 	import type { TabInterface } from '$lib/functions/tab-content'
 	import tabContentJSON from '$lib/data/tab-content.json'
-	import GenerateContent from '$lib/svelte/GenerateContent.svelte';
 
 	import type { Training } from '@prisma/client';
 	import { getData, addData } from '$lib/functions/database';
@@ -317,6 +317,11 @@
 
 	<!-- Content Area -->
 	<div class="flex w-full justify-center px-4 flex-col items-center gap-10">
+		<div class="flex flex-col w-full max-w-[900px]">
+			<!-- Tabs + Content Box -->
+			<div class=" bg-white border border-black/10 rounded-xl shadow-sm overflow-hidden">
+				<!-- Tabs -->
+				<Tab tabs={tabs} bind:activeTab/>
 		<div class="flex flex-col w-full max-w-[900px]">
 			<!-- Tabs + Content Box -->
 			<div class=" bg-white border border-black/10 rounded-xl shadow-sm overflow-hidden">

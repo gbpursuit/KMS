@@ -1,5 +1,5 @@
 <script>
-	import Label from "./Label.svelte";
+	import Label from "../Label.svelte";
 
 
 </script>

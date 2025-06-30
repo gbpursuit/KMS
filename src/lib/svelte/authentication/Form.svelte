@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-    import Button from "./Button.svelte";
-    import Input from "./Input.svelte";
-    import Label from "./Label.svelte";
+    import Button from "../Button.svelte";
+    import Input from "../Input.svelte";
+    import Label from "../Label.svelte";
     import Heading from '$lib/svelte/Heading.svelte';
 
     let { additionalStyle = $bindable(), type = $bindable(), isError = $bindable(), errorMessage = '', onSubmit } = $props()

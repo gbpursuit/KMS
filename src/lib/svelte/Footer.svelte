@@ -1,4 +1,4 @@
-<nav class="flex flex-col w-full h-[400px] bottom-0 bg-[#F5F5F5]">
+<footer class="flex flex-col w-full h-[400px] bottom-0 bg-[#F5F5F5]">
 	<!-- Contents -->
 	<div class="flex gap-2 sm:gap-5 md:gap-15 lg:gap-25 h-[80%] px-3 md:px-0">
 		<div class="hello flex w-1/2 h-full p-2 justify-end items-center">
@@ -49,4 +49,4 @@
 		<p class="text-sm font-light text-black/80">© 2020 - 2025 UP NISMED  |  All Rights Reserved</p>
 	</div>
 	</div>
-</nav>
+</footer>

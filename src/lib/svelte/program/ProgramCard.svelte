@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { type ProgramAll } from '$lib/functions/module';
-	import { ROUTE } from '../../routes/routes';
     import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
+	import { ROUTE } from '../../../routes/routes';
 
     export let program: ProgramAll;
 
