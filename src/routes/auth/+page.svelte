@@ -84,8 +84,8 @@
         }
 
         let url = new URL(window.location.href)
-        if (url.searchParams.get('view') === 'login') formType = 'login'
-        else formType = 'register'
+        if (url.searchParams.get('view') === 'register') formType = 'register'
+        else formType = 'login'
 
     })
 
