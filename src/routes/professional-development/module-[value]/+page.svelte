@@ -1,0 +1,116 @@
+<script lang="ts">
+    import type { PageProps } from './$types';
+    import '@fortawesome/fontawesome-svg-core/styles.css';
+    import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'; 
+	import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
+	import { faChartSimple, faGraduationCap, faFile, faClock} from '@fortawesome/free-solid-svg-icons';
+	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
+    import type { Training } from '@prisma/client';
+    import { onMount } from 'svelte';
+
+	import Tab from '$lib/svelte/professional-development/Tab.svelte';
+	import TabContent from '$lib/svelte/professional-development/TabContent.svelte';
+	import GenerateContent from '$lib/svelte/professional-development/GenerateContent.svelte';
+	import type { TabInterface } from '$lib/functions/tab-content'
+	import tabContentJSON from '$lib/data/tab-content.json'
+    
+	let editable: boolean = $state(false)
+	let tabs: string[] = $state(['Overview', 'Participants', 'Personnel', 'Highlights', 'Evaluation', 'Appendix'])
+	let activeTab: string = $state(tabs[0])
+	let tabContent: TabInterface = $state(tabContentJSON)
+    
+    let training: Training[] = $state([]);
+    let { data }: PageProps = $props();
+    onMount(() => {
+        training = data.training;
+        console.log(data.selectedItem);
+    })
+
+	function handleDate(date: string) {
+		return new Date(date).toLocaleDateString('en-PH', {
+			year: 'numeric', month: 'long', day: 'numeric'
+		})
+	}
+
+
+</script>
+
+{#if data.selectedItem}
+<div class="flex flex-col w-full min-h-[calc(100dvh-120px)] mt-[120px] items-center">
+	<div class="flex flex-col justify-center w-full h-[245px] bg-cover bg-center bg-no-reoeat text-white px-6 py-4 mb-10" style="{data.selectedItem.imageUrl ? `background-image: url(${data.selectedItem.imageUrl})` : 'background-color: #1B663E;'}">
+		<!-- Progress Bar -->
+		<!-- This is still fixed -->
+		<div class="flex items-center gap-3 text-sm font-light text-yellow-400 mb-2">
+			<p class="text-sm font-semibold">23 of 50</p>
+			<div class="relative w-40 h-[6px] bg-gray-200 rounded-full overflow-hidden">
+				<div class="absolute top-0 left-0 h-full bg-yellow-500" style="width: 46%"></div>
+			</div>
+		</div>
+
+		<!-- Page title -->
+		<!-- This is still fixed -->
+		<h1 class="text-3xl font-semibold text-white max-w-[700px]">
+			{data.selectedItem.title}
+		</h1>
+
+		<!-- Metadata icons -->
+		<div class="flex flex-wrap items-center gap-6 mt-8 text-sm text-white">
+			<div class="flex items-center gap-2">
+				<FontAwesomeIcon icon={faGraduationCap} class="text-yellow-400" />
+				<!-- This is still fixed -->
+				<span>Participants: {data.selectedItem.numParticipants}</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<FontAwesomeIcon icon={faChartSimple} class="text-yellow-400" />
+				<!-- This is still fixed -->
+				<span>{data.selectedItem.leader}</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<FontAwesomeIcon icon={faFile} class="text-yellow-400" />
+				<!-- This is still fixed -->
+				<span>{training.find(t => t.id === data?.selectedItem?.trainingId)?.type}</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<FontAwesomeIcon icon={faClock} class="text-yellow-400" />
+				<!-- This is still fixed -->
+				<span>{handleDate(data.selectedItem.date)}</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- Content Area -->
+	<div class="flex w-full justify-center px-4 flex-col items-center gap-10">
+		<div class="flex flex-col w-full max-w-[900px]">
+			<!-- Tabs + Content Box -->
+			<div class=" bg-white border border-black/10 rounded-xl shadow-sm overflow-hidden">
+				<!-- Tabs -->
+				<Tab tabs={tabs} bind:activeTab/>
+
+				<!-- Tab Content -->
+				<TabContent user={data.user} bind:tabContent bind:editable/>
+			</div>
+			<div>
+				<GenerateContent bind:tabContent />
+			</div>
+		</div>
+
+		<!-- Comment Section -->
+		<div class="w-full max-w-[900px] px-6">
+			<h3 class="font-semibold mb-1">Leave A Comment</h3>
+			<p class="text-sm text-gray-600 mb-4">Let us know your thoughts about the Module.</p>
+
+			<form class="flex flex-col gap-3">
+				<input type="text" placeholder="Name*" class="p-2 border border-gray-300 rounded" />
+				<textarea placeholder="Comment" rows="4" class="p-2 border border-gray-300 rounded min-h-[45px] max-h-[300px]"></textarea>
+				<button type="submit" class="w-max px-5 py-2 bg-orange-400 text-white rounded hover:bg-[#FF782D] transition mb-5">
+					Post Comment
+				</button>
+			</form>
+		</div>
+	</div>
+</div>
+{/if}
+
+<style>
+
+</style>

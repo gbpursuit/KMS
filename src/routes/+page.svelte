@@ -22,6 +22,7 @@
 
   onMount(async () => {
     programList = data.programs.map((p) => ({...p, icon: iconMap[p.name]}));
+    console.log(programList);
   });
 
   $effect(() => {
@@ -62,7 +63,7 @@
         <div class="grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 w-[90%] h-[70%] place-items-center gap-6">
 
                 {#each programList as program}
-                    <ProgramCard program={program}/>
+                    <ProgramCard program={program} data={data}/>
                 {/each}
         </div>
     </div>

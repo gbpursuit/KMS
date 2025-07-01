@@ -2,8 +2,10 @@
 	import { type ProgramAll } from '$lib/functions/module';
     import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import { ROUTE } from '../../../routes/routes';
+    // import type { PageProps } from './$types';
 
     export let program: ProgramAll;
+    export let data : any;
 
     let nameToCountKey = {
         'Research': 'research',
@@ -16,18 +18,21 @@
     let countKey = nameToCountKey[program.name as ProgramName];
     let moduleCount = program._count?.[countKey] ?? 0;
 
-    function handleButton(e: Event, id: number, check: boolean) {
+    let a = program.name.replace(' ', '-').toLowerCase();
+
+    function handleButton(e: Event, id: number, check: any) {
         e?.preventDefault();
         if (!check) {
             window.location.href = `${ROUTE.AUTH}?content=${id}`;
             return;
         }
-        window.location.href = `${ROUTE.PROGRAMS}-${id}`;
+        window.location.href = `/${a}`; 
+
     }
 </script>
 
 <button class="group relative h-full w-full py-16 px-4 border-2 border-[#C3C6CE] rounded-[20px] shadow-[0_4px_10px_rgba(0,0,0,0.1)] transition-all duration-500 hover:shadow-[0_4px_18px_rgba(27,102,62,0.5)] hover:border-[#1B663E] hover:-translate-y-3"
-on:click={(e) => handleButton(e, program.id, false)}
+on:click={(e) => handleButton(e, program.id, data.user)}
 >
     <div class="flex flex-col w-full h-[100%] gap-2 justify-center items-center">
         <FontAwesomeIcon icon={program.icon} class="text-xl lg:text-2xl xl:text-3xl text-[var(--font-green)]"/>
