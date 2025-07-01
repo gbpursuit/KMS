@@ -49,6 +49,7 @@
 
 	onMount(async () => {
 		// if (!$selectedModuleItem) observer_func();
+		console.log(data?.selectedItem?.imageUrl)
 		training = data.training;
 	})
 

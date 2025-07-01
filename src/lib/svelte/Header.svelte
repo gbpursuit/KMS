@@ -39,6 +39,8 @@
 			let training = data.training.find((t: Training) => t.id === item.trainingId);
 			return training?.type === 'Online';
 		}).length;
+
+		console.log(data.user)
 		
 		grids.push(
 			{
@@ -146,8 +148,11 @@
 					<button class="cursor-pointer custom-underline leftRight" onclick={(e) => handleAccount(e, 'register')}>Register</button>
 				</div>
 			{:else}
-				<div class="flex justify-center items-center text black gap-2">
-					<button class="cursor-pointer custom-underline leftRight" onclick={(e) => handleAccount(e)}>Logout</button>
+				<div class="flex justify-center items-center text-[#1B663E] black gap-2">
+					<div class="flex gap-2 items-center">
+						<span class="px-4 py-1 text-sm font-semibold"> Hello, {data.user.acctName || 'User'} </span>
+						<button class="px-4 py-1 text-sm font-semibold border-1 border-[#1B663E] rounded-full bg-white text-[#1B663E] transition-all duration-300 hover:bg-[#1B663E] hover:text-white" onclick={(e) => handleAccount(e)}> Logout </button>
+					</div>	
 				</div>
 			{/if}
 			<button
