@@ -18,6 +18,8 @@
 	let tabs: string[] = $state(['Overview', 'Participants', 'Personnel', 'Highlights', 'Evaluation', 'Appendix'])
 	let activeTab: string = $state(tabs[0])
 	let tabContent: TabInterface = $state(tabContentJSON)
+
+	$inspect('Active Tab:', activeTab)
     
     let training: Training[] = $state([]);
     let { data }: PageProps = $props();
@@ -87,7 +89,7 @@
 				<Tab tabs={tabs} bind:activeTab/>
 
 				<!-- Tab Content -->
-				<TabContent user={data.user} bind:tabContent bind:editable/>
+				<TabContent user={data.user} activeTab={activeTab} bind:tabContent bind:editable/>
 			</div>
 			<div>
 				<GenerateContent bind:tabContent />

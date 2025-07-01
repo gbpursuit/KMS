@@ -6,13 +6,9 @@
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 
 	import { onMount, tick } from 'svelte';
-	import { goto } from '$app/navigation';
 
 	import { currentModule, selectedModuleItem } from '$lib/functions/module';
 	import type { PageProps } from './$types';
-
-	import type { TabInterface } from '$lib/functions/tab-content'
-	import tabContentJSON from '$lib/data/tab-content.json'
 
 	import type { Training } from '@prisma/client';
 	import { smoothScrollTo } from '$lib/functions/function';
@@ -57,10 +53,7 @@
 		window.location.href = `${url}/module-${id}`;
 	}
 
-	let editable: boolean = $state(false)
 	let tabs: string[] = $state(['Overview', 'Participants', 'Personnel', 'Highlights', 'Evaluation', 'Appendix'])
-	let activeTab: string = $state(tabs[0])
-	let tabContent: TabInterface = $state(tabContentJSON)
 
 	let showModal: boolean = $state(false);
 	let imageUrl: File | null = null;
