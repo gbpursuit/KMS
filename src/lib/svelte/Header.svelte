@@ -39,8 +39,6 @@
 			let training = data.training.find((t: Training) => t.id === item.trainingId);
 			return training?.type === 'Online';
 		}).length;
-
-		console.log(data.user)
 		
 		grids.push(
 			{
@@ -71,12 +69,12 @@
 	let pathIdParts: string[] = $state([]);
 
 	$effect(() => {
-		const parts = currentPath.split(/[/\-]/).filter(Boolean);
+		let parts = currentPath.split('/').filter(Boolean);
+		parts = currentPath === '/' ? [...parts] : ['program', ...parts];
 		pathIdParts = [...parts];
 		pathNameParts = parts.map((part: string) => {
-			if (part === 'program') return 'Programs';
-			if (!isNaN(Number(part)) && $currentModule) return $currentModule.name;
-			return part;
+			if (part === 'program') return 'Programs'; 
+			return part.replace('-', ' ').toLowerCase()
 		});
 
 		if ($selectedModuleItem) {
@@ -100,26 +98,22 @@
 		e?.preventDefault();
 
 		if (link === ROUTE.PROGRAMS) {
-			const current = page.url.pathname;
-			if (current === ROUTE.ROOT) {
-				smoothScrollTo('program');
-			} else {
-				goto(ROUTE.ROOT).then(() => {
-					setTimeout(() => smoothScrollTo('program'), 100);
-				});
-			}
+			goto(ROUTE.ROOT).then(() => {
+				setTimeout(() => smoothScrollTo('program'), 100);
+			});
 			return;
 		}
 		goto(link);
 	}
 
-	function getHref(i: number) {
-		const isLast = i === pathIdParts.length - 1;
-		if (isLast && $selectedModuleItem) {
-			const programs = pathIdParts.slice(0, i).join('-');
-			return `/${programs}?itemId=${$selectedModuleItem.id}`;
+	function getHref(i: number, name: string) {
+		if (name === 'program') {
+			return '/program'
 		}
-		return `/${pathIdParts.slice(0, i + 1).join('-')}`;
+
+		let check: string;
+		check = '/' + pathIdParts.slice(0, i + 1).filter(part => part !== 'program').join('/');
+		return check;
 	}
 
 </script>
@@ -173,7 +167,7 @@
 				{#each pathIdParts as part, i}
 					<span class = "{i === 0 && data.user && data.user.roleId === 3 ? 'hidden' : 'inline'}">></span>
 					<button class="custom-underline middle capitalize truncate overflow-hidden whitespace-nowrap max-w-[200px] block { pathIdParts.length - 1 !== i ? 'text-white' : 'text-yellow-500'}"
-						onclick={(e) => clickFunction(getHref(i), e) }
+						onclick={(e) => clickFunction(getHref(i, part), e) }
 					>
 						{decodeURIComponent(pathNameParts[i])}
 				</button>

@@ -127,13 +127,6 @@
 		}
 	});
 
-	$inspect("totalPages:", totalPages);
-	$inspect("currentPage:", currentPage);
-	$inspect("startIndex:", startIndex);
-	$inspect("endIndex:", endIndex);
-	$inspect("visibleTasks:", visibleTasks);
-
-
 	async function goToPage(page: number) {
 		currentPage = page;
 		await tick();

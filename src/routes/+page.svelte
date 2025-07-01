@@ -22,7 +22,6 @@
 
   onMount(async () => {
     programList = data.programs.map((p) => ({...p, icon: iconMap[p.name]}));
-    console.log(programList);
   });
 
   $effect(() => {
