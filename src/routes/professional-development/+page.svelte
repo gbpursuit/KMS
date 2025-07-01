@@ -24,6 +24,7 @@
 		const scrollObserver = new IntersectionObserver((entries) => {
 			entries.forEach((entry) => {
 				const el = entry.target as HTMLElement;
+				const show = entry.isIntersecting;
 				el.classList.toggle('animate-appear', show);
 				el.classList.toggle('animate-disappear', !show);
 			});
