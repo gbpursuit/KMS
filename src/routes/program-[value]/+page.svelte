@@ -115,22 +115,14 @@
 		})
 	}
 
-	let currentPage: number = $state(1);
-	let tasksPerPage: number = 5;
-	let totalPages: number = $state(0);
-	let startIndex: number = $state(0);
-	let endIndex: number = $state(0);
-	let visibleTasks: any[] = $state([]);
-	let pageButtons: number[] = $state([]);
+	let currentPage = $state(1);
+	let tasksPerPage = 5;
 
-	$effect(() => {
-		totalPages = Math.ceil(data.program.items.length / tasksPerPage);
-		currentPage = Math.min(currentPage, totalPages);
-		startIndex = (currentPage - 1) * tasksPerPage;
-		endIndex = startIndex + tasksPerPage;
-		visibleTasks = data.program.items.slice(startIndex, endIndex);
-		pageButtons = getPageButtons(currentPage, totalPages);
-	})
+	let totalPages = $derived(() => Math.ceil(data.program.items.length / tasksPerPage));
+	let startIndex = $derived(() => (currentPage > totalPages() ? totalPages() : currentPage - 1) * tasksPerPage);
+	let endIndex = $derived(() => startIndex() + tasksPerPage);
+	let visibleTasks = $derived(() => data.program.items.slice(startIndex(), endIndex()));
+	let pageButtons = $derived(() => getPageButtons(currentPage, totalPages()));
 
 	async function goToPage(page: number) {
 		currentPage = page;
@@ -147,6 +139,7 @@
 		}
 		return Array.from ({ length: end - start + 1 }, (_, i) => start + i);
 	}
+
 </script>
 
 <svelte:head>
@@ -236,7 +229,7 @@
 		</div>
 		<div class="flex w-full h-[90%]">
 			<div id="griditems" class="grid grid-cols-1 grid-flow-row w-full h-full gap-7">
-				{#each visibleTasks as item}
+				{#each visibleTasks() as item}
 					<div class="scroll-card flex w-full rounded-3xl gap-2 border-2 border-gray-100">
 						<div
 							class="flex h-full w-[45%] border-r border-gray-200 rounded-l-3xl rounded-r-none"
@@ -287,14 +280,14 @@
 					{currentPage <= 1 ? 'pointer-events-none' : 'hover:scale-110 transition duration-300 ease-in-out'}"
 					onclick={() => goToPage(currentPage - 1)}
 					><FontAwesomeIcon icon={faAngleLeft} /></button>
-				{#each pageButtons as page} 
+				{#each pageButtons() as page} 
 					<button class="flex w-10 h-10 justify-center items-center p-1 rounded-full border border-black 
 					{page === currentPage ? 'selectedButton' : 'button'}"
 					onclick={() => goToPage(page)}
 					>{page}</button>
 				{/each}
 					<button class="flex w-10 h-10 justify-center items-center p-1 rounded-full
-					{currentPage >= totalPages ? 'pointer-events-none' : 'hover:scale-110 transition duration-300 ease-in-out'}"
+					{currentPage >= totalPages() ? 'pointer-events-none' : 'hover:scale-110 transition duration-300 ease-in-out'}"
 					onclick={() => goToPage(currentPage + 1)}
 					><FontAwesomeIcon icon={faAngleRight} /></button>
 			</div>

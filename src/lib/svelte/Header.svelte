@@ -43,19 +43,19 @@
 		grids.push(
 			{
 				name: "Teachers Trained",
-				count: data.user ? teachersCount : "???",
+				count: data.user ? teachersCount : "---",
 				icon: faUser,
 				label: `${currentYear} Total`,
 			},
 			{
 				name: "Trainings Count",
-				count: data.user ? trainingCount : "???",
+				count: data.user ? trainingCount : "---",
 				icon: faBook,
 				label: "Past Year",
 			},
 			{
 				name: "Online Courses",
-				count: data.user ? onlineCount : "???",
+				count: data.user ? onlineCount : "---",
 				icon: faLaptop,
 				label: "Available Now",
 			},
