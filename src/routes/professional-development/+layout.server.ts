@@ -7,7 +7,6 @@ import type { Training } from '@prisma/client';
 
 export const load: LayoutServerLoad = async ({ fetch, params, url, parent }) => {
     let { user, training } = await parent();
-    let path = url.pathname; 
 
     if (!user) {
         throw redirect(302, `/auth`);
@@ -15,8 +14,11 @@ export const load: LayoutServerLoad = async ({ fetch, params, url, parent }) => 
     let segments = url.pathname.split('/').filter(Boolean);
     let pathName = segments[0].replace('-',' ').toLowerCase(); 
 
-
-    let itemId = segments[1].split('-')[1];
+    let itemId: string;
+    if (segments.length > 1 ) {
+        itemId = segments[1].split('-')[1];
+    }
+    // let itemId = segments[1].split('-')[1];
     let rawPrograms: ProgramAll[] = await getData('program', fetch);
 
     let selectedProgram = rawPrograms.find((p) => p.name.toLowerCase() === pathName);
