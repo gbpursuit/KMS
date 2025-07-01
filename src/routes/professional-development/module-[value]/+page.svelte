@@ -7,19 +7,21 @@
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
     import type { Training } from '@prisma/client';
     import { onMount } from 'svelte';
+	import type { User } from '$lib/functions/module';
 
 	import Tab from '$lib/svelte/professional-development/Tab.svelte';
 	import TabContent from '$lib/svelte/professional-development/TabContent.svelte';
 	import GenerateContent from '$lib/svelte/professional-development/GenerateContent.svelte';
 	import type { TabInterface } from '$lib/functions/tab-content'
 	import tabContentJSON from '$lib/data/tab-content.json'
+	import Button from '$lib/svelte/Button.svelte';
+	import Paragraph from '$lib/svelte/Paragraph.svelte';
     
 	let editable: boolean = $state(false)
+	let editBanner: boolean = $state(false)
 	let tabs: string[] = $state(['Overview', 'Participants', 'Personnel', 'Highlights', 'Evaluation', 'Appendix'])
 	let activeTab: string = $state(tabs[0])
 	let tabContent: TabInterface = $state(tabContentJSON)
-
-	$inspect('Active Tab:', activeTab)
     
     let training: Training[] = $state([]);
     let { data }: PageProps = $props();
@@ -34,12 +36,12 @@
 		})
 	}
 
-
 </script>
 
 {#if data.selectedItem}
 <div class="flex flex-col w-full min-h-[calc(100dvh-120px)] mt-[120px] items-center">
-	<div class="flex flex-col justify-center w-full h-[245px] bg-cover bg-center bg-no-reoeat text-white px-6 py-4 mb-10" style="{data.selectedItem.imageUrl ? `background-image: url(${data.selectedItem.imageUrl})` : 'background-color: #1B663E;'}">
+	<div class="flex flex-col justify-center w-full h-[245px] bg-cover bg-center bg-no-reoeat text-white px-6 py-4 mb-10 bg-[#1B663E]">
+	<!-- <div class="flex flex-col justify-center w-full h-[245px] bg-cover bg-center bg-no-reoeat text-white px-6 py-4 mb-10" style="{data.selectedItem.imageUrl ? `background-image: url(${data.selectedItem.imageUrl})` : 'background-color: #1B663E;'}"> -->
 		<!-- Progress Bar -->
 		<!-- This is still fixed -->
 		<div class="flex items-center gap-3 text-sm font-light text-yellow-400 mb-2">
@@ -76,6 +78,17 @@
 				<FontAwesomeIcon icon={faClock} class="text-yellow-400" />
 				<!-- This is still fixed -->
 				<span>{handleDate(data.selectedItem.date)}</span>
+			</div>
+		</div>
+
+		<div class="flex flex-row w-full gap-2 mt-4  items-center ">
+			<div class="flex ">
+				<Paragraph addStyle=font-semibold >Editor Mode</Paragraph>
+			</div>
+			<div class="flex items-center w-8 h-4 rounded-2xl transition-colors duration-300 ease-in-out" class:bg-green-300={editBanner} class:bg-red-300={!editBanner}>
+				<Button style="editor-mode" onclick={() => editBanner = !editBanner} addStyle={editBanner? 'translate-x-4 bg-green-500': 'bg-red-500'}>
+					<div></div>
+				</Button>
 			</div>
 		</div>
 	</div>
