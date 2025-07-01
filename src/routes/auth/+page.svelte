@@ -17,7 +17,6 @@
     let isError: boolean = $state(false);
     let errorMessage: string = $state('');
 
-
 	function switchForm() {
         leaving = true;
         setTimeout(() => {
@@ -54,8 +53,8 @@
 
             if (result.ok) {
                 form.reset();
-                if(data && data.id) {
-                    window.location.href = `${ROUTE.PROGRAMS}-${data.id}`;
+                if(data && data.path) {
+                    window.location.href = data.path;
                 } else {
                     window.location.href = `${ROUTE.ROOT}?scroll=program`;
                 }

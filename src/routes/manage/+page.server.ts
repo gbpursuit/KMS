@@ -5,9 +5,6 @@ import { error } from '@sveltejs/kit';
 export const load: PageServerLoad = async ({ url, parent, fetch }) => {
     let { user } = await parent();
 
-    if(user && user.roleId !== 3) {
-        throw error (401, 'Unauthorized');
-    }
-    console.log(user)
+	if (!user || user.roleId !== 3) throw error(404, 'Unknown Page'); // hide existence of /manage route
     return { user }
 };
