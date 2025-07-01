@@ -23,16 +23,16 @@
 
     
     <!-- Toggle Button -->
-    <div class="{canEdit ? 'flex' : 'hidden'} flex-row-reverse w-full gap-4">
+    <div class="{canEdit ? 'flex' : 'hidden'} flex-row-reverse w-full gap-2">
         <div class="flex items-center">
-            <div class="flex items-center w-8 h-2 bg-blue-400 rounded-2xl">
-                <Button style="editor-mode" onclick={toggleMode} addStyle={editable? 'translate-x-4 bg-green-300': 'bg-red-300'}>
+            <div class="flex items-center w-8 h-4 rounded-2xl transition-colors duration-300 ease-in-out" class:bg-green-300={editable} class:bg-red-300={!editable}>
+                <Button style="editor-mode" onclick={toggleMode} addStyle={editable? 'translate-x-4 bg-green-500': 'bg-red-500'}>
                     <div></div>
                 </Button>
             </div>
         </div>
         <div class="h-full">
-            <Paragraph>Editor Mode</Paragraph>
+            <Paragraph addStyle=font-semibold >Editor Mode</Paragraph>
         </div>
     </div>
 
