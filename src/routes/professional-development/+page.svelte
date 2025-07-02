@@ -1,6 +1,6 @@
 <script lang="ts">
     import '@fortawesome/fontawesome-svg-core/styles.css';
-    import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'; 
+    import { faFileCircleExclamation, faFolderMinus, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'; 
 	import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 	import { faChartSimple, faGraduationCap, faFile, faClock} from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
@@ -110,6 +110,8 @@
 	let endIndex = $state(0);
 	let visibleTasks: any[] = $state([]);
 	let pageButtons: number[] = $state([]);
+	let selectedFilter = $state('All');
+	let filterOptions = $state(['All', 'Online', 'Face-to-Face', 'Hybrid']);
 
 
 	$effect(() => {
@@ -217,62 +219,86 @@
 {#if !data.selectedItem}
 <div class="flex flex-col w-full min-h-[calc(100dvh-120px)] mt-[120px] justify-center items-center">
 	<div class="flex flex-col w-[65%] flex-grow gap-10 py-20">
-		<div class="flex w-full h-[5%] justify-center items-center">
-			<h1 class="text-4xl font-semibold">All Training Modules</h1>
+		<div class="flex w-full items-center justify-between border-b-2 border-[var(--font-green)]/20 pb-4">
+			<!-- Title -->
+			<h1 class="text-4xl font-semibold text-[var(--font-green)]">All Training Modules</h1>
+
 			<div class="flex-grow"></div>
 
-			<div class="flex h-[30px] justify-center items-center border-b border-black">
-				<input 
-				type="text" 
-				placeholder="Search" 
-				class="w-[23ch] p-0 bg-transparent text-sm text-black placeholder-[rgb(0,0,0,0.5)] border-none focus:ring-0"
-				>
-				<button type = "button" class = "flex justify-center items-center w-10 h-10 p-1"><FontAwesomeIcon icon={faMagnifyingGlass} /></button>
+			<!-- Filter + Search Row -->
+			<div class="flex items-center gap-3">
+				<!-- Filter Dropdown -->
+				<div class="relative">
+					<select
+						bind:value={selectedFilter}
+						class="text-sm py-3 px-3 w-[120px] border border-[var(--font-green)] rounded-full text-[var(--font-green)] bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--font-green)] transition duration-200"
+					>
+						{#each filterOptions as option}
+							<option value={option}>{option}</option>
+						{/each}
+					</select>
+				</div>
+
+				<!-- Search Bar -->
+				<div class="flex items-center gap-2 px-3 py-1 border border-[var(--font-green)] rounded-full shadow-sm bg-white transition duration-200 focus-within:ring-2 focus-within:ring-[var(--font-green)]">
+					<input type="text" placeholder="Search modules..." class="w-[23ch] text-sm text-black placeholder-gray-400 bg-transparent border-none focus:outline-none focus:ring-0">
+					<button type="button" class="flex justify-center items-center text-[var(--font-green)] hover:scale-110 transition-transform duration-200">
+						<FontAwesomeIcon icon={faMagnifyingGlass} />
+					</button>
+				</div>
 			</div>
 		</div>
 		<div class="flex w-full h-[90%]">
 			<div id="griditems" class="grid grid-cols-1 grid-flow-row w-full h-full gap-7">
-				{#each visibleTasks as item}
-					<div class="scroll-card flex w-full rounded-3xl gap-2 border-2 border-gray-100">
-						<div
-							class="flex h-full w-[45%] border-r border-gray-200 rounded-l-3xl rounded-r-none"
-							style={`background: ${item.imageUrl ? `url('${item.imageUrl}') center/cover no-repeat` : 'var(--font-green)'}`}
-						></div>
-						<div class="flex h-full w-[55%] p-2 pr-5">
-							<div class="flex flex-col w-full h-full rounded-3xl gap-2">
-								<h1 class="text-lg font-semibold ">{item.title}</h1>
-								<div class="flex flex-col w-full h-full gap-1">
-									<div class="flex gap-2 items-center">
-										<p class = "font-light text-sm">Module Completeness</p>
+				{#if visibleTasks.length > 0}
+					{#each visibleTasks as item}
+						<div class="scroll-card flex w-full rounded-3xl gap-2 border-2 border-gray-100">
+							<div
+								class="flex h-full w-[45%] border-r border-gray-200 rounded-l-3xl rounded-r-none"
+								style={`background: ${item.imageUrl ? `url('${item.imageUrl}') center/cover no-repeat` : 'var(--font-green)'}`}
+							></div>
+							<div class="flex h-full w-[55%] p-2 pr-5">
+								<div class="flex flex-col w-full h-full rounded-3xl gap-2">
+									<h1 class="text-lg font-semibold ">{item.title}</h1>
+									<div class="flex flex-col w-full h-full gap-1">
+										<div class="flex gap-2 items-center">
+											<p class = "font-light text-sm">Module Completeness</p>
+										</div>
+										<div class="flex gap-2 items-center">
+											<FontAwesomeIcon icon = {faChartSimple} class = "text-[var(--font-green)]"/>
+											<p class="font-light text-sm">{ 'leader' in item ? item.leader : 'Project Leader' }</p>
+										</div>
+										<div class="flex gap-1 items-center">
+											<FontAwesomeIcon icon = {faGraduationCap} class = "text-[var(--font-green)]"/>
+											<p class="font-light text-sm">{item.numParticipants}</p>
+										</div>
+										<div class="flex gap-2 items-center">
+											<FontAwesomeIcon icon = {faFile} class = "text-[var(--font-green)]"/>
+											<p class="font-light text-sm">
+												{training.find(t => t.id === item.trainingId)?.type ?? 'Unknown'}
+											</p>
+										</div>
+										<div class="flex gap-2 items-center">
+											<FontAwesomeIcon icon = {faClock} class = "text-[var(--font-green)]"/>
+											<p class="font-light text-sm">{handleDate(item.date)}</p>
+										</div>
 									</div>
-									<div class="flex gap-2 items-center">
-										<FontAwesomeIcon icon = {faChartSimple} class = "text-[var(--font-green)]"/>
-										<p class="font-light text-sm">{ 'leader' in item ? item.leader : 'Project Leader' }</p>
-									</div>
-									<div class="flex gap-1 items-center">
-										<FontAwesomeIcon icon = {faGraduationCap} class = "text-[var(--font-green)]"/>
-										<p class="font-light text-sm">{item.numParticipants}</p>
-									</div>
-									<div class="flex gap-2 items-center">
-										<FontAwesomeIcon icon = {faFile} class = "text-[var(--font-green)]"/>
-										<p class="font-light text-sm">
-											{training.find(t => t.id === item.trainingId)?.type ?? 'Unknown'}
-										</p>
-									</div>
-									<div class="flex gap-2 items-center">
-										<FontAwesomeIcon icon = {faClock} class = "text-[var(--font-green)]"/>
-										<p class="font-light text-sm">{handleDate(item.date)}</p>
+									<div class="relative flex w-full h-full border-t border-gray-200 justify-center items-center">
+										<button class="flex h-full p-1 font-medium hover:text-[var(--font-green)] hover:tracking-wide transition-all duration-300 ease-in-out cursor-pointer"
+										onclick={() => open_item(item.id.toString())}
+										>View More</button>
 									</div>
 								</div>
-								<div class="relative flex w-full h-full border-t border-gray-200 justify-center items-center">
-									<button class="flex h-full p-1 font-medium hover:text-[var(--font-green)] hover:tracking-wide transition-all duration-300 ease-in-out cursor-pointer"
-									onclick={() => open_item(item.id.toString())}
-									>View More</button>
-								</div>
-							</div>
-						</div>		
+							</div>		
+						</div>
+					{/each}
+				{:else}
+					<div class="flex flex-col w-full h-full justify-center items-center text-center text-gray-500 gap-4 py-26">
+						<FontAwesomeIcon icon={faFileCircleExclamation} class="text-5xl text-[var(--font-green)]" />
+						<p class="text-xl font-medium">No training modules currently available</p>
+						<p class="text-sm text-gray-400">Please add a new module using the button below</p>
 					</div>
-				{/each}
+				{/if}
 			</div>
 		</div>
 		<!-- Fix pagination once data storage is available -->
