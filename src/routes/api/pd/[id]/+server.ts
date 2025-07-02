@@ -1,31 +1,45 @@
-// GET, UPDATE, DELETE  A SPECIFIC PD
+// // GET, UPDATE, DELETE  A SPECIFIC PD
 import { createHandlers } from '$lib/functions/specificHandle';
 
-// export const PUT: RequestHandler = async ({ params, request }) => {
-//     try {
-//         let id = Number(params.id);
-//         if(isNaN(id)) {
-//             return json({ error: 'PUT: Invalid PD ID' }, { status: 400 });
-//         }
+// export const { GET, PUT, DELETE } = createHandlers('professionalDevelopment', {
+//     logPrefix: 'pd',
+//     errorHandle: 'Professional Development'
 
-//         let data = await request.json();
+// })
 
-//         if(!data) {
-//             return json({ error: 'PUT: PD Name is required' }, { status: 400});
-//         }
-        
-//         let updated = await prisma.professionalDevelopment.update({
-//             where: { id },
-//             data: data
-//         });
-//         return json(updated);   
-//     } catch(err) {
-//         console.error('GET /api/professionalDevelopment/[id] error:', err);
-//         return json({ error: 'Failed to update professionalDevelopment' }, {status : 500});
-//     }
-// }
+import type { RequestHandler } from '@sveltejs/kit';
+import { data } from '$lib/functions/prisma'; 
+import { error } from '@sveltejs/kit';
 
-export const { GET, PUT, DELETE } = createHandlers('professionalDevelopment', {
+export const { GET, DELETE } = createHandlers('professionalDevelopment', {
     logPrefix: 'pd',
     errorHandle: 'Professional Development'
 })
+
+export const PUT: RequestHandler = async({ params, request }) => {
+    let id = Number(params.id);
+    if(isNaN(id)) {
+        throw error(400, 'Invalid Module ID. Update Failed.');
+    }
+
+    try {
+        let item = await request.json();
+        if(!item) {
+            throw error(400, 'PUT: JSON data is missing');
+        }
+
+        let updated = await data.PRISMA.professionalDevelopment.update({
+            where: { id },
+            data: item
+        });
+
+        console.dir(updated, { depth: null });
+        return data.json(updated);
+
+    } catch (err: any) {
+        console.error('POST /api/pd error', err);
+        if(err?.status) throw err;
+        throw error(500, err?.message || 'Failed to update JSON Content');
+    }
+}
+

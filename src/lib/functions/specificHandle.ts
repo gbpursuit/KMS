@@ -26,7 +26,7 @@ export function createHandlers(
                     include
                 });
                 if (item.length === 0) {
-                    throw error(404, `${errorHandle} is empty`);
+                    console.warn(404, `${errorHandle} is empty`);
                 }
             } catch(err: any) {
                 console.error(`GET /api/${logPrefix} error:`, err);
@@ -36,7 +36,7 @@ export function createHandlers(
         } else {
             let id = Number(params.id);
             if (isNaN(id)) {
-                throw error(400, `GET: Invalid ${errorHandle} ID`);
+                console.warn(400, `GET: Invalid ${errorHandle} ID`);
             }
             try {
                 item = await (data.PRISMA[modelName] as any).findUnique({
@@ -45,7 +45,7 @@ export function createHandlers(
                 });
 
                 if (!item) {
-                    throw error(404, `${errorHandle} not found`);
+                    console.warn(404, `${errorHandle} not found`);
                 }
 
             } catch(err: any) {

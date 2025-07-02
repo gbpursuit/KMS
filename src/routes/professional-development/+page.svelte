@@ -43,7 +43,6 @@
 	onMount(async () => {
 		// if (!$selectedModuleItem) observer_func();
 		training = data.training;
-		console.log(data);
 	});
 
 

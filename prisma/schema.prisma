@@ -49,10 +49,13 @@ model ProfessionalDevelopment {  // professional development module table -- no 
   training        Training          @relation(fields: [trainingId], references: [id], map: "PD_trainingId_fkey")
   programId       Int
   program         Program           @relation(fields: [programId], references: [id], map: "PD_programId_fkey")
-  overview        Overview[]    
-  highlight       Highlight[]
-  participantonpd ParticipantOnPd[]
-  personnelonpd   PersonnelOnPd[]
+  content         Json?
+  // highlight       Json?
+  // participant     Json?
+  // personnel       Json?
+  // evaluation      Json?
+  // appendix        Json?
+
 
   @@index([programId], map: "PD_programId_fkey")
 }
@@ -63,57 +66,57 @@ model Training { // online, hybrid, face-to-face
   pd    ProfessionalDevelopment[]
 }
 
-model Overview {
-  id      Int     @id @default(autoincrement())
-  item    String
-  pdId     Int
-  pd       ProfessionalDevelopment  @relation(fields: [pdId], references: [id], map: "Overview_pdId_fkey")
-}
+// model Overview {
+//   id      Int     @id @default(autoincrement())
+//   item    String
+//   pdId     Int
+//   pd       ProfessionalDevelopment  @relation(fields: [pdId], references: [id], map: "Overview_pdId_fkey")
+// }
 
-model Participant { // random text
-  id                Int               @id @default(autoincrement())
-  item              String            @db.Text
-  participantonpd   ParticipantOnPd[]
-}
+// model Participant { // random text
+//   id                Int               @id @default(autoincrement())
+//   item              String            @db.Text
+//   participantonpd   ParticipantOnPd[]
+// }
 
-model ParticipantOnPd { // Join Table (participant and pd)
-  pdId          Int         
-  participantId Int         
-  participant   Participant             @relation(fields: [participantId], references: [id], map: "ParticipantOnPD_participantId_fkey")
-  pd            ProfessionalDevelopment @relation(fields: [pdId], references: [id], map: "ParticipantOnPD_pdId_fkey")      
+// model ParticipantOnPd { // Join Table (participant and pd)
+//   pdId          Int         
+//   participantId Int         
+//   participant   Participant             @relation(fields: [participantId], references: [id], map: "ParticipantOnPD_participantId_fkey")
+//   pd            ProfessionalDevelopment @relation(fields: [pdId], references: [id], map: "ParticipantOnPD_pdId_fkey")      
 
-  @@id([pdId, participantId])
-  @@index([participantId], map: "ParticipantOnPD_participantId_fkey") 
-} 
+//   @@id([pdId, participantId])
+//   @@index([participantId], map: "ParticipantOnPD_participantId_fkey") 
+// } 
 
-model Personnel { // random text
-  id            Int             @id @default(autoincrement())
-  item          String          @db.Text
-  personnelonpd PersonnelOnPd[] 
-}
+// model Personnel { // random text
+//   id            Int             @id @default(autoincrement())
+//   item          String          @db.Text
+//   personnelonpd PersonnelOnPd[] 
+// }
 
-model PersonnelOnPd { // Join Table (personnel and pd)
-  pdId        Int       
-  personnelId Int
-  personnel   Personnel               @relation(fields: [personnelId], references: [id], map: "PersonnelOnPD_personnelId_fkey")
-  pd          ProfessionalDevelopment @relation(fields: [pdId], references: [id], map: "PersonnelOnPD_pdId_fkey")
+// model PersonnelOnPd { // Join Table (personnel and pd)
+//   pdId        Int       
+//   personnelId Int
+//   personnel   Personnel               @relation(fields: [personnelId], references: [id], map: "PersonnelOnPD_personnelId_fkey")
+//   pd          ProfessionalDevelopment @relation(fields: [pdId], references: [id], map: "PersonnelOnPD_pdId_fkey")
 
-  @@id([pdId, personnelId])
-  @@index([personnelId], map: "PersonnelOnPD_personnelId_fkey")
-}
+//   @@id([pdId, personnelId])
+//   @@index([personnelId], map: "PersonnelOnPD_personnelId_fkey")
+// }
 
-model Highlight { // url paths
-  id       Int                      @id @default(autoincrement())
-  title    String                   @db.Text
-  text     String?                  @db.Text
-  imageUrl String?                  @db.Text
-  pdfURL   String?                  @db.Text
-  vidURL   String?                  @db.Text
-  pdId     Int
-  pd       ProfessionalDevelopment  @relation(fields: [pdId], references: [id], map: "Highlight_pdId_fkey")
+// model Highlight { // url paths
+//   id       Int                      @id @default(autoincrement())
+//   title    String                   @db.Text
+//   text     String?                  @db.Text
+//   imageUrl String?                  @db.Text
+//   pdfURL   String?                  @db.Text
+//   vidURL   String?                  @db.Text
+//   pdId     Int
+//   pd       ProfessionalDevelopment  @relation(fields: [pdId], references: [id], map: "Highlight_pdId_fkey")
 
-  @@index([pdId], map: "Highlight_pdId_fkey")
-}
+//   @@index([pdId], map: "Highlight_pdId_fkey")
+// }
 
 // Role Tables
 model Role {  // user, admin, super user

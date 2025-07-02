@@ -30,7 +30,6 @@
 
 	onMount(async () => {
 		accounts = await getData('account');
-        console.log(data.user)
 	});
 
     async function changeRole(id: number, currentRole: number, targetRole: number) {

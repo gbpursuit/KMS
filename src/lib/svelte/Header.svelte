@@ -32,32 +32,39 @@
 		}
 
 		let pd = await getData('pd');
+
 		let currentYear = new Date().getFullYear();
-		let teachersCount = pd.reduce((sum: number, pd: ProfessionalDevelopment) => sum + pd.numParticipants, 0);
-		let trainingCount = data.programs.reduce((sum: number, item: ProgramAll) => sum + item.pd.length, 0);
-		let onlineCount = pd.filter((item: ProfessionalDevelopment) => {
-			let training = data.training.find((t: Training) => t.id === item.trainingId);
-			return training?.type === 'Online';
-		}).length;
-		
+		let teachersCount: string = '';
+		let trainingCount: string = '';
+		let onlineCount: string = '';
+
+		if (pd) {
+			teachersCount = pd.reduce((sum: number, pd: ProfessionalDevelopment) => sum + pd.numParticipants, 0).toString();
+			trainingCount = data.programs.reduce((sum: number, item: ProgramAll) => sum + item.pd.length, 0).toString();
+			onlineCount = pd.filter((item: ProfessionalDevelopment) => {
+				let training = data.training.find((t: Training) => t.id === item.trainingId);
+				return training?.type === 'Online';
+			}).length.toString();
+		}
+
 		grids.push(
 			{
 				name: "Teachers Trained",
-				count: data.user ? teachersCount : "---",
+				count: data.user ? (teachersCount !== '' ? teachersCount : '---') : '---',
 				icon: faUser,
-				label: `${currentYear} Total`,
+				label: `Short Info`,
 			},
 			{
 				name: "Trainings Count",
-				count: data.user ? trainingCount : "---",
+				count: data.user ? (trainingCount !== '' ? trainingCount : '---') : '---',
 				icon: faBook,
-				label: "Past Year",
+				label: "Short Info",
 			},
 			{
 				name: "Online Courses",
-				count: data.user ? onlineCount : "---",
+				count: data.user ? (onlineCount !== '' ? onlineCount : '---') : '---',
 				icon: faLaptop,
-				label: "Available Now",
+				label: "Short Info",
 			},
 		);
 

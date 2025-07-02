@@ -3,6 +3,7 @@
     import Button from "../Button.svelte";
 	import Heading from "../Heading.svelte";
     let { tabContent = $bindable() }: { tabContent: TabInterface } = $props()
+    let hideContent = $state(true)
     
     // Need to read the other rows
     function renderTabContent(content: EditableContent | null): string {
@@ -24,6 +25,7 @@
 
     // Generating row logic
     async function generatePDF() {
+        hideContent = false
         console.log("[PDF] Starting PDF generation...");
         console.log("[PDF] Current tabContent:", JSON.parse(JSON.stringify(tabContent)));
 
@@ -65,6 +67,7 @@
                 <\/style>
             <\/head>
             <body>
+                <button onclick="window.print()"> Print </button>
         `;
 
         for (const tab of Object.values(tabContent)) {
@@ -97,7 +100,7 @@
 </div>
 
 <!-- PDF Preview -->
-<div class="w-full mt-10">
+<div class="w-full mt-10" hidden={hideContent}>
     <Heading type="h2">PDF Preview</Heading>
     <iframe
         id="pdf-preview"

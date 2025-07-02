@@ -7,7 +7,7 @@
     import { type User } from '$lib/functions/module';
 
 
-    let { activeTab, editable = $bindable(false), tabContent = $bindable(), user }: { activeTab: string, editable?: boolean, tabContent: TabInterface, user: User | null} = $props()
+    let { activeTab, editable = $bindable(false), tabContent = $bindable(), user }: { activeTab: string, editable?: boolean, tabContent: TabInterface, user: User | null } = $props()
     
 	// const CurrentComponent = derived(activeTab, ($activeTab) => tabContent[$activeTab]);
 

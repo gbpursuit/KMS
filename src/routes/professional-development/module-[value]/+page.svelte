@@ -17,8 +17,9 @@
 	import Input from '$lib/svelte/Input.svelte';
 	import Button from '$lib/svelte/Button.svelte';
 	import Paragraph from '$lib/svelte/Paragraph.svelte';
-	import { getData } from '$lib/functions/database';
 	import Select from '$lib/svelte/Select.svelte';
+
+	import { getData, addContent } from '$lib/functions/database';
     
 	let editable: boolean = $state(false)
 	let editBanner: boolean = $state(false)
@@ -36,14 +37,18 @@
     
     let training: Training[] = $state([]);
     let { data }: PageProps = $props();
-    onMount(async () => {
+
+	onMount(async () => {
+		if (!data || !data.selectedItem) return;
+
 		let temp = []
-        training = data.training;	
-        console.log(data.selectedItem);
+		training = data.training;	
 		moduleDate = data.selectedItem.date ?? ''
 		leader = data.selectedItem.leader ?? ''
 		accountsPromise = await getData('account').then((v: Array<any>) => {console.log(v); for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName	})
-    })
+
+		tabContent = await updateTabContent(data.selectedItem.id);
+	});
 
 	function handleDate(date: string) {
 		return new Date(date).toLocaleDateString('en-PH', {
@@ -51,6 +56,21 @@
 		})
 	}
 	
+
+	async function updateTabContent(id: number | string){
+		if(!data.selectedItem) return;
+
+		let item = await getData('pd', fetch, data.selectedItem.id);
+		return item.content;
+
+	}
+
+	async function callAdd() {
+		let result = await addContent(data.selectedItem, tabContent);
+		return result;
+	}
+
+	let canEdit = data.user?.permission?.includes('can_edit');
 
 </script>
 
@@ -101,7 +121,7 @@
 		</div>
 
 		<!-- Editor Toggle Button -->
-		<div class="flex flex-row w-full gap-2 mt-4 items-center ">
+		<div class="{canEdit ? 'flex' : 'hidden'} flex flex-row w-full gap-2 mt-4 items-center ">
 			<div class="flex items-center  w-22 h-5.5 px-1 rounded-full transition-colors duration-300 ease-in-out" class:bg-green-300={editBanner} class:bg-red-300={!editBanner}>
 				<Button style="editor-mode" onclick={() => editBanner = !editBanner} addStyle={editBanner? 'translate-x-4 bg-green-500': 'bg-red-500'}>
                     <div class="w-full h-full flex items-center justify-center text-[8px] font-bold text-white">
@@ -113,6 +133,8 @@
 	</div>
 
 	<!-- Content Area -->
+	<button class="{canEdit ? 'flex' : 'hidden'} flex w-full h-4 cursor-pointer p-4 m-4 border border-black" onclick = {callAdd}>Save</button>
+
 	<div class="flex w-full justify-center px-4 flex-col items-center gap-10">
 		<div class="flex flex-col w-full max-w-[900px]">
 			<!-- Tabs + Content Box -->

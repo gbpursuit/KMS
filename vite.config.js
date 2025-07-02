@@ -2,9 +2,19 @@ import tailwindcss from '@tailwindcss/vite';
 import { svelteTesting } from '@testing-library/svelte/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
+import fs from 'fs';
+
+const USEHTTPS = fs.existsSync('./kms.local+1.pem') && fs.existsSync('./kms.local+1-key.pem');
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
+	// server: {
+	// 	host: '0.0.0.0',
+	// 	https: USEHTTPS ? {
+	// 		key: fs.readFileSync('./kms.local+1-key.pem'),
+	// 		cert: fs.readFileSync('./kms.local+1.pem')
+	// 	}: undefined
+	// },
 	test: {
 		projects: [
 			{

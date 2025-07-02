@@ -7,7 +7,14 @@
           "type": "plain",
           "prev": false, 
           "content": "", 
-          "next": null
+          "next": null,
+          "style": {
+            "type": "",
+            "size": "",
+            "spacing": "",
+            "color": "",
+            "align": ""
+          }
         }
     },
   "Participants": 
@@ -18,7 +25,14 @@
           "type": "plain",
           "prev": false, 
           "content": "",
-          "next": null
+          "next": null,
+          "style": {
+            "type": "",
+            "size": "",
+            "spacing": "",
+            "color": "",
+            "align": ""
+          }
         }
     },
   "Personnel": 
@@ -27,7 +41,16 @@
       "content":{
           "type": "plain",
           "prev": false, 
-          "content": "", "next": null}
+          "content": "",
+          "next": null,
+          "style": {
+            "type": "",
+            "size": "",
+            "spacing": "",
+            "color": "",
+            "align": ""
+          }
+        }
     },
   "Highlights":
     {
@@ -37,7 +60,14 @@
           "type": "plain",
           "prev": false, 
           "content": "", 
-          "next": null
+          "next": null,
+          "style": {
+            "type": "",
+            "size": "",
+            "spacing": "",
+            "color": "",
+            "align": ""
+          }
         }
     },
   "Evaluation":
@@ -48,7 +78,14 @@
           "type": "plain",
           "prev": false, 
           "content": "", 
-          "next": null
+          "next": null,
+          "style": {
+            "type": "",
+            "size": "",
+            "spacing": "",
+            "color": "",
+            "align": ""
+          }
         }
     },
   "Appendix":
@@ -59,7 +96,14 @@
           "type": "plain",
           "prev": false, 
           "content": "", 
-          "next": null
+          "next": null,
+          "style": {
+            "type": "",
+            "size": "",
+            "spacing": "",
+            "color": "",
+            "align": ""
+          }
         }
    }
 }

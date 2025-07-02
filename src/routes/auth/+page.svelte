@@ -43,13 +43,11 @@
             let endpoint = formType === 'login' ? 'auth/login' : 'auth/register';
 
             if (Object.values(item).some(value => !value)) {
-                console.log(item);
                 errorMessage = "Please fill in all fields"
                 throw new Error (errorMessage);
             }
 
             let result = await addData(endpoint, item);
-            console.log(result)
 
             if (result.ok) {
                 form.reset();
