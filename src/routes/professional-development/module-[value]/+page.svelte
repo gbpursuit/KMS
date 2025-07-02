@@ -14,20 +14,35 @@
 	import GenerateContent from '$lib/svelte/professional-development/GenerateContent.svelte';
 	import type { TabInterface } from '$lib/functions/tab-content'
 	import tabContentJSON from '$lib/data/tab-content.json'
+	import Input from '$lib/svelte/Input.svelte';
 	import Button from '$lib/svelte/Button.svelte';
 	import Paragraph from '$lib/svelte/Paragraph.svelte';
+	import { getData } from '$lib/functions/database';
+	import Select from '$lib/svelte/Select.svelte';
     
 	let editable: boolean = $state(false)
 	let editBanner: boolean = $state(false)
 	let tabs: string[] = $state(['Overview', 'Participants', 'Personnel', 'Highlights', 'Evaluation', 'Appendix'])
 	let activeTab: string = $state(tabs[0])
 	let tabContent: TabInterface = $state(tabContentJSON)
+	let accountsPromise = $state()
+	let allAccounts: Array<string> = $state([])
+	let allTraining: Array<string> = $state(['Online', 'Hybrid', 'Face-to-Face'])
+
+	let moduleDate: string = $state('')
+	let leader: string = $state('')
+
+	$inspect(allAccounts)
     
     let training: Training[] = $state([]);
     let { data }: PageProps = $props();
-    onMount(() => {
-        training = data.training;
+    onMount(async () => {
+		let temp = []
+        training = data.training;	
         console.log(data.selectedItem);
+		moduleDate = data.selectedItem.date ?? ''
+		leader = data.selectedItem.leader ?? ''
+		accountsPromise = await getData('account').then((v: Array<any>) => {console.log(v); for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName	})
     })
 
 	function handleDate(date: string) {
@@ -35,6 +50,7 @@
 			year: 'numeric', month: 'long', day: 'numeric'
 		})
 	}
+	
 
 </script>
 
@@ -51,33 +67,36 @@
 			</div>
 		</div>
 
-		<!-- Page title -->
-		<!-- This is still fixed -->
-		<h1 class="text-3xl font-semibold text-white max-w-[700px]">
-			{data.selectedItem.title}
-		</h1>
+		<div class="flex-row w-full">
+			<!-- div.flex.flex-row. -->
+			<!-- Page title -->
+			<!-- This is still fixed -->
+			<Input style="module-title" bind:text={data.selectedItem.title} disabled={!editBanner} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white focus:ring-0": ""} />
 
-		<!-- Metadata icons -->
-		<div class="flex flex-wrap items-center gap-6 mt-8 text-sm text-white">
-			<div class="flex items-center gap-2">
-				<FontAwesomeIcon icon={faGraduationCap} class="text-yellow-400" />
-				<!-- This is still fixed -->
-				<span>Participants: {data.selectedItem.numParticipants}</span>
-			</div>
-			<div class="flex items-center gap-2">
-				<FontAwesomeIcon icon={faChartSimple} class="text-yellow-400" />
-				<!-- This is still fixed -->
-				<span>{data.selectedItem.leader}</span>
-			</div>
-			<div class="flex items-center gap-2">
-				<FontAwesomeIcon icon={faFile} class="text-yellow-400" />
-				<!-- This is still fixed -->
-				<span>{training.find(t => t.id === data?.selectedItem?.trainingId)?.type}</span>
-			</div>
-			<div class="flex items-center gap-2">
-				<FontAwesomeIcon icon={faClock} class="text-yellow-400" />
-				<!-- This is still fixed -->
-				<span>{handleDate(data.selectedItem.date)}</span>
+			<!-- Metadata icons -->
+			<div class="flex flex-wrap items-center gap-6 mt-8 text-sm text-white">
+				<div class="flex items-center gap-2">
+					<FontAwesomeIcon icon={faGraduationCap} class="text-yellow-400" />
+					<!-- This is still fixed -->
+					Participants:<span hidden={editBanner}>{data.selectedItem.numParticipants}</span> 
+					<Input disabled={!editBanner} hidden={!editBanner} type="number" style="module-details" bind:text={data.selectedItem.numParticipants} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white focus:ring-0": ""}/>
+				</div>
+				<div class="flex items-center gap-2">
+					<FontAwesomeIcon icon={faChartSimple} class="text-yellow-400" />
+					<span hidden={editBanner}>{data.selectedItem.leader}</span>
+					<Select disabled={!editBanner} hidden={!editBanner} bind:options={allAccounts} bind:selected={leader} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white" : "border-0"} />
+				</div>
+				<div class="flex items-center gap-2">
+					<FontAwesomeIcon icon={faFile} class="text-yellow-400" />
+					<span hidden={editBanner}>{training.find(t => t.id === data?.selectedItem?.trainingId)?.type}</span>
+					<Select disabled={!editBanner} hidden={!editBanner} bind:options={allTraining} bind:selected={data.selectedItem.trainingId} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white" : "border-0"} />
+				</div>
+				<div class="flex items-center gap-2">
+					<FontAwesomeIcon icon={faClock} class="text-yellow-400" />
+					<span hidden={editBanner}>{handleDate(data.selectedItem.date)}</span>
+					<Input disabled={!editBanner} hidden={!editBanner} type="date" style="module-details" bind:text={moduleDate} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white focus:ring-0": ""}/>
+					 <!-- <input type="date" value="{data.selectedItem.trainingId}"/> -->
+				</div>
 			</div>
 		</div>
 
@@ -86,7 +105,7 @@
 			<div class="flex items-center  w-22 h-5.5 px-1 rounded-full transition-colors duration-300 ease-in-out" class:bg-green-300={editBanner} class:bg-red-300={!editBanner}>
 				<Button style="editor-mode" onclick={() => editBanner = !editBanner} addStyle={editBanner? 'translate-x-4 bg-green-500': 'bg-red-500'}>
                     <div class="w-full h-full flex items-center justify-center text-[8px] font-bold text-white">
-                        {editable ? 'EDITOR ON' : 'EDITOR OFF'}
+                        {editBanner ? 'EDITOR ON' : 'EDITOR OFF'}
                     </div>
 				</Button>
 			</div>
