@@ -50,6 +50,9 @@
         case 'underline':
             styleValue = "text-sm text-[#1B663E] underline ml-auto hover:text-green-800"
             break;
+        case 'hollow':
+            styleValue = "border border-white text-white hover:bg-white/10 transition px-6 py-2 rounded-2xl"
+            break;
         default:
             break;
     }
