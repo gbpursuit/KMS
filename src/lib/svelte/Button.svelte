@@ -33,7 +33,7 @@
             styleValue = "font-exo flex-1 flex justify-center items-center px-4 py-3 text-sm transition-colors duration-300 ease-in-out font-semibold"
             break;
         case 'editor-mode':
-            styleValue = "aspect-square w-4 rounded-xl transition duration-500 ease-in-out"
+            styleValue = "w-16 h-4 rounded-xl transition duration-500 ease-in-out"
             break;
         case 'add-item':
             styleValue = "p-2 bg-transparent border-dashed border-2 rounded-xl"

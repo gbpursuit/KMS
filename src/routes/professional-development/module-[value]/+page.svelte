@@ -81,13 +81,13 @@
 			</div>
 		</div>
 
-		<div class="flex flex-row w-full gap-2 mt-4  items-center ">
-			<div class="flex ">
-				<Paragraph addStyle=font-semibold >Editor Mode</Paragraph>
-			</div>
-			<div class="flex items-center w-8 h-4 rounded-2xl transition-colors duration-300 ease-in-out" class:bg-green-300={editBanner} class:bg-red-300={!editBanner}>
+		<!-- Editor Toggle Button -->
+		<div class="flex flex-row w-full gap-2 mt-4 items-center ">
+			<div class="flex items-center  w-22 h-5.5 px-1 rounded-full transition-colors duration-300 ease-in-out" class:bg-green-300={editBanner} class:bg-red-300={!editBanner}>
 				<Button style="editor-mode" onclick={() => editBanner = !editBanner} addStyle={editBanner? 'translate-x-4 bg-green-500': 'bg-red-500'}>
-					<div></div>
+                    <div class="w-full h-full flex items-center justify-center text-[8px] font-bold text-white">
+                        {editable ? 'EDITOR ON' : 'EDITOR OFF'}
+                    </div>
 				</Button>
 			</div>
 		</div>

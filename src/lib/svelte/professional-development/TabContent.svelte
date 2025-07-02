@@ -25,18 +25,18 @@
     <!-- Toggle Button -->
     <div class="{canEdit ? 'flex' : 'hidden'} flex-row-reverse w-full gap-2">
         <div class="flex items-center">
-            <div class="flex items-center w-8 h-4 rounded-2xl transition-colors duration-300 ease-in-out" class:bg-green-300={editable} class:bg-red-300={!editable}>
-                <Button style="editor-mode" onclick={toggleMode} addStyle={editable? 'translate-x-4 bg-green-500': 'bg-red-500'}>
-                    <div></div>
+            <div class="relative flex items-center w-22 h-5.5 px-1 rounded-full transition-colors duration-300 ease-in-out shadow-inner" class:bg-green-300={editable} class:bg-red-300={!editable}>
+                <Button style="editor-mode" onclick={toggleMode} addStyle={editable? 'translate-x-4 bg-green-500 scale-100 shadow-lg': 'bg-red-500 scale-100 shadow-md'}>
+                    <div class="w-full h-full flex items-center justify-center text-[8px] font-bold text-white">
+                        {editable ? 'EDITOR ON' : 'EDITOR OFF'}
+                    </div>
                 </Button>
             </div>
         </div>
-        <div class="h-full">
-            <Paragraph addStyle=font-semibold >Editor Mode</Paragraph>
-        </div>
+
     </div>
 
-    <div class="flex-row w-full text-sm bg-white p-6 rounded-lg border border-[#AFAFAF] shadow-md">
+    <div class="flex-row w-full text-sm bg-white p-6 rounded-lg border border-[#AFAFAF] shadow-md mt-5">
         <ActiveTab bind:title={tabContent[activeTab].title} bind:content={tabContent[activeTab].content} editable={editable} />
     </div>
 </div>
