@@ -46,7 +46,7 @@
 	<div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-[#F5F5F5] to-transparent"></div>
 	<div class="absolute top-0 right-0 w-full h-px bg-gradient-to-l from-[#F5F5F5] to-transparent"></div>
 	<div class="w-full flex flex-col md:flex-row justify-between items-center text-center gap-2 px-4 xl:w-[60%]">
-		<p class="text-sm font-light text-black/80">© 2020 - 2025 UP NISMED  |  All Rights Reserved</p>
+		<p class="flex w-full text-sm font-light text-black/80 justify-center">© 2020 - 2025 UP NISMED  |  All Rights Reserved</p>
 	</div>
 	</div>
 </footer>
