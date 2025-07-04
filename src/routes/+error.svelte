@@ -2,13 +2,13 @@
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 
-	onMount(() => {
-		let timeout = setTimeout(() => {
-			window.location.href = '/'
-		}, 3500) // after 3.5 seconds
+	// onMount(() => {
+	// 	let timeout = setTimeout(() => {
+	// 		window.location.href = '/'
+	// 	}, 3500) // after 3.5 seconds
 
-		return () => clearTimeout(timeout);
-	})
+	// 	return () => clearTimeout(timeout);
+	// })
 
 </script>
 
