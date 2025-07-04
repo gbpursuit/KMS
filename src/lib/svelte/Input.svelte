@@ -1,4 +1,5 @@
 <script lang="ts">
+    import "@fortawesome/free-solid-svg-icons"
 	import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 	import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
 
@@ -29,7 +30,7 @@
 </script>
 
 {#if type === 'password'}
-<div class="relative">
+<div class="flex flex-col w-full">
     <input bind:value={password} type={showPassword ? 'text' : 'password'} class="{styleValue} {addStyle}" {...props}/>
 
     <button type="button"
