@@ -15,6 +15,14 @@ export default defineConfig({
 	// 		cert: fs.readFileSync('./kms.local+1.pem')
 	// 	}: undefined
 	// },
+	server: {
+		allowedHosts: true,
+		headers: {
+			"bypass-tunnel-reminder": "localtunnel",
+			"user-agent": "localtunnel"
+		}
+		
+	},
 	test: {
 		projects: [
 			{
