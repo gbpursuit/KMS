@@ -46,9 +46,9 @@
     <div class="{canEdit ? 'flex' : 'hidden'} flex-row-reverse w-full gap-2">
         <div class="flex w-full justify-between items-center px-2">
             <div class="flex gap-3 items-center">
-                <Button style="save" onclick={callAdd} addStyle={editable? 'opacity-100 shadow-lg': 'opacity-0'}>
-                    <div class="w-full h-full flex items-center justify-center text-[8px] font-bold">
-                        {clicked ? 'CHANGES SAVED SUCCESSFULLY' : 'SAVE CHANGES'}
+                <Button style="save" onclick={callAdd} addStyle={editable? 'opacity-100 shadow-lg w-[100px]': 'opacity-0 w-0'}>
+                    <div class="w-full h-full flex items-center justify-center text-[8px] font-bold overflow-hidden whitespace-nowrap">
+                        {clicked ? 'SAVE SUCCESSFUL' : 'SAVE CHANGES'}
                     </div>
                 </Button>
             </div>

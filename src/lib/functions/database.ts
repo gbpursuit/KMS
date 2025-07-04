@@ -56,7 +56,7 @@ export async function updateData(type: string, data: Record<string, any>, id:num
 // DELETE data
 export async function deleteData(type:string, id: number) {
     try {
-        let res = await fetch(`/api/${type}`, {
+        let res = await fetch(`/api/${type}/${id}`, {
             method: 'DELETE',
         });
 

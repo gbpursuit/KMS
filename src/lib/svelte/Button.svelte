@@ -33,7 +33,7 @@
             styleValue = "font-exo flex-1 flex justify-center items-center px-4 py-3 text-sm transition-colors duration-300 ease-in-out font-semibold"
             break;
         case 'editor-mode':
-            styleValue = "w-16 h-4 rounded-xl transition duration-500 ease-in-out"
+            styleValue = "w-16 h-4 rounded-xl transition duration-500 ease-in-out cursor-pointer"
             break;
         case 'add-item':
             styleValue = "w-full p-2 bg-[#1B663E] border-1 text-white hover:bg-[#258C55] transition duration-300 ease-in-out"
@@ -54,7 +54,10 @@
             styleValue = "border border-white text-white hover:bg-white/10 transition px-6 py-2 rounded-2xl"
             break;
         case 'save':
-            styleValue = "bg-transparent border border-[#1B663E] rounded-xl px-2 py-1 hover:bg-[#1B663E] hover:text-white transition duration-500 ease-in-out "
+            styleValue = "bg-transparent border border-[#1B663E] rounded-xl px-2 py-1 hover:bg-[#1B663E] hover:text-white transition-[width,opacity,background,color] duration-500 ease-in-out cursor-pointer"
+            break;
+        case 'delete':
+            styleValue = 'bg-red-500 rounded-xl px-2 py-1 hover:bg-red-600 transition-[width,opacity] duration-500 ease cursor-pointer';
             break;
         case 'upload':
             styleValue = "flex flex-col gap-3 bg-[#E8E8E8] w-full h-[125px] rounded-lg justify-center items-center cursor-pointer"

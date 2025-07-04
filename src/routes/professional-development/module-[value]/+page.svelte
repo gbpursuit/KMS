@@ -4,6 +4,7 @@
 	import { faChartSimple, faGraduationCap, faFile, faClock} from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
     import type { Training } from '@prisma/client';
+	import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
 
 	import Tab from '$lib/svelte/professional-development/Tab.svelte';
@@ -15,7 +16,7 @@
 	import Button from '$lib/svelte/Button.svelte';
 	import Select from '$lib/svelte/Select.svelte';
 
-	import { getData, addContent } from '$lib/functions/database';
+	import { getData, deleteData } from '$lib/functions/database';
     
 	let editable: boolean = $state(false)
 	let editBanner: boolean = $state(false)
@@ -60,10 +61,25 @@
 
 	}
 
-	async function callAdd() {
-		let result = await addContent(data.selectedItem, tabContent);
-		return result;
+	async function deleteModule(id: number | undefined = undefined) {
+		const confirmed = confirm('Are you sure you want to delete this module?');
+		if (!confirmed) return;
+
+		try {
+			if(id) {
+				let isDeleted = await deleteData('pd', id);
+			}
+
+			if (isDeleted) {
+				alert('Module deleted successfully!');
+				window.location.href = '/professional-development'
+			} 
+		} catch (error) {
+			console.error('Delete failed:', error);
+			alert('An error occurred during deletion.');
+		}
 	}
+
 
 	let canEdit = data.user?.permission?.includes('can_edit');
 
@@ -120,14 +136,19 @@
 		</div>
 
 		<!-- Editor Toggle Button -->
-		<div class="{canEdit ? 'flex' : 'hidden'} flex flex-row w-full gap-2 mt-4 items-center ">
-			<div class="flex items-center  w-22 h-5.5 px-1 rounded-full transition-colors duration-300 ease-in-out" class:bg-green-300={editBanner} class:bg-red-300={!editBanner}>
+		<div class="{canEdit ? 'flex' : 'hidden'} flex flex-row w-full gap-2 mt-4 items-center justify-between">
+			<div class="flex items-center w-22 h-5.5 px-1 rounded-full transition-colors duration-300 ease-in-out" class:bg-green-300={editBanner} class:bg-red-300={!editBanner}>
 				<Button style="editor-mode" onclick={() => editBanner = !editBanner} addStyle={editBanner? 'translate-x-4 bg-green-500': 'bg-red-500'}>
                     <div class="w-full h-full flex items-center justify-center text-[8px] font-bold text-white">
                         {editBanner ? 'EDITOR ON' : 'EDITOR OFF'}
                     </div>
 				</Button>
 			</div>
+			<Button style="delete" onclick={() => deleteModule(data?.selectedItem?.id)} addStyle={editBanner? 'opacity-100 shadow-lg w-[150px]': 'opacity-0 w-0'}>
+				<div class="w-full h-full flex items-center justify-center text-[12px] font-bold overflow-hidden whitespace-nowrap"> 
+					DELETE MODULE
+				</div>
+			</Button>
 		</div>
 	</div>
 
