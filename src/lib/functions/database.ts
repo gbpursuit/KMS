@@ -7,11 +7,11 @@ import type { TabInterface } from '$lib/functions/tab-content'
 export async function getData(type: string, fetchFn?: typeof fetch, id?: number | string) {
 	let useFetch = fetchFn ?? fetch;
 
-    const url = id ? `/api/${type}/${id}` : `/api/${type}`;
+    let url = id ? `/api/${type}/${id}` : `/api/${type}`;
 
-	const res = await useFetch(url);
+	let res = await useFetch(url);
 	if (!res.ok) {
-		const json = await res.json().catch(() => ({}));
+		let json = await res.json().catch(() => ({}));
 		throw svelteError(res.status, json?.message ?? `GET ${type} failed`);
 	}
 
@@ -70,18 +70,17 @@ export async function deleteData(type:string, id: number) {
 }
 
 
-export async function addImageData(imageFile: File | null, leader: string) {
-    const data = new FormData();
-	if (imageFile) {
-		data.append('imageUrl', imageFile);
-	}
-    data.append('leader', leader);
+export async function addImageData(file: File | null, leader: string | null = null) {
+    let data = new FormData();
+	if (file) data.append('file', file);
+    if (leader) data.append('leader', leader);
 
     let res = await fetch(`/api/upload`, {
         method: 'POST', 
         body: data
     })
 
+    console.log(res);
     if (!res.ok) {
         throw new Error('Upload failed');
     }
@@ -103,4 +102,35 @@ export async function addContent(data: Record<string, any> | null, tabContent: T
     } catch(err) {
         console.error(err);
     }
+}
+
+export async function uploadFileWithProgress(file: File | null, leader: string | null = null, onProgress: (percent: number) => void): Promise<string> {
+	return new Promise((resolve, reject) => {
+		let formData = new FormData();
+		if (file) formData.append('file', file);
+		if (leader) formData.append('leader', leader);
+
+		let xhr = new XMLHttpRequest();
+
+		xhr.upload.onprogress = (event) => {
+			if (event.lengthComputable) {
+				let percent = Math.round((event.loaded / event.total) * 100);
+				onProgress(percent);
+			}
+		};
+
+		xhr.onload = () => {
+			if (xhr.status >= 200 && xhr.status < 300) {
+				let response = JSON.parse(xhr.responseText);
+				resolve(response.path);
+			} else {
+				reject(new Error('Upload failed'));
+			}
+		};
+
+		xhr.onerror = () => reject(new Error('Network error during upload'));
+
+		xhr.open('POST', '/api/upload');
+		xhr.send(formData);
+	});
 }

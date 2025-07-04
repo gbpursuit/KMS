@@ -3,12 +3,11 @@
 	import { faPlus, faMinus, faList } from "@fortawesome/free-solid-svg-icons";
 	import { type EditableContent } from "$lib/functions/tab-content";
 	import TextArea from "../TextArea.svelte";
+    import UploadFile from "../Upload.svelte";
 	import Button from "../Button.svelte";
     import Content from "./Content.svelte";
     let { editable, currentContent = $bindable() }: { editable: boolean, currentContent: EditableContent | null} = $props()
     let displayTextTypes = $state(false)
-    
-    $inspect(displayTextTypes)
 
 	function addItem(e: PointerEvent) {
         if(currentContent) {
@@ -18,7 +17,8 @@
                     type: 'plain',
                     content: '',
                     prev: temp.prev,
-                    next: temp
+                    next: temp,
+                    style: {}
                 }
                 temp.prev = true
                 currentContent = prev
@@ -29,7 +29,8 @@
                     type: 'plain',
                     content: '',
                     prev: true,
-                    next: temp.next
+                    next: temp.next,
+                    style: {}
                 }
                 currentContent.next = next
             }
@@ -54,24 +55,34 @@
     <div class="flex flex-col gap-2">
         <div class="flex flex-row w-full items-center gap-2">
             <!-- {JSON.stringify(currentContent)} -->
-            <TextArea type="text" bind:style={currentContent.type} disabled={!editable} bind:text={currentContent.content} />
-            <Button addStyle="transition duration-500 hover:text-green-500 {editable? 'opacity-100': 'opacity-0'}" onclick={addItem} disabled={!editable}>
-                <FontAwesomeIcon icon={faPlus}/>
-            </Button>
-            <div class="flex">
-                <div class="absolute bg-red-500 w-100% h-[24px] top-0.1" hidden={!displayTextTypes}>
-                    <div class="flex-col">
-                        <Button onclick={() => {if(currentContent) currentContent.type='plain'; displayTextTypes=!displayTextTypes}}> Plain </Button>
-                        <Button onclick={() => {if(currentContent) currentContent.type='heading'; displayTextTypes=!displayTextTypes}}> Heading </Button>
+            {#if currentContent.type === 'plain' || currentContent.type === 'heading'}
+                <TextArea type="text" bind:style={currentContent.type} disabled={!editable} bind:text={currentContent.content} />
+            {:else}
+                <UploadFile bind:style={currentContent.type} disabled={!editable} bind:filePath={currentContent.content}> </UploadFile>
+            {/if}
+            <div class="flex flex-row gap-2 transition-width duration-700 ease-in-out {editable? 'w-[60px]' : 'w-0'} overflow-hidden">
+                <Button addStyle="transition duration-100 hover:text-green-500 {editable? 'opacity-100': 'opacity-0'}" onclick={addItem} disabled={!editable}>
+                    <FontAwesomeIcon icon={faPlus}/>
+                </Button>
+                <div class="flex">
+                    <div class="absolute w-[75px] mt-5 shadow-lg" hidden={!displayTextTypes}>
+                        <div class="flex flex-col items-start">
+                            <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='plain'; displayTextTypes=!displayTextTypes}}> Plain </Button>
+                            <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='heading'; displayTextTypes=!displayTextTypes}}> Heading </Button>
+                            <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='image'; displayTextTypes=!displayTextTypes}}> Image </Button>
+                            <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='video'; displayTextTypes=!displayTextTypes}}> Video </Button>
+                            <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='pdf'; displayTextTypes=!displayTextTypes}}> PDF </Button>
+                        </div>
                     </div>
+                    
+                    <Button addStyle="transition duration-500 hover:text-blue-500 {editable? 'opacity-100': 'opacity-0'}" onclick={() => {displayTextTypes = !displayTextTypes}} disabled={!editable}>
+                        <FontAwesomeIcon icon={faList}/>
+                    </Button>
                 </div>
-                <Button addStyle="transition duration-500 hover:text-blue-500 {editable? 'opacity-100': 'opacity-0'}" onclick={() => {displayTextTypes = !displayTextTypes}} disabled={!editable}>
-                    <FontAwesomeIcon icon={faList}/>
+                <Button addStyle="transition duration-500 hover:text-red-500 {editable && (currentContent.prev || currentContent.next)? 'opacity-100': 'opacity-0'}" onclick={deleteItem} disabled={!editable && (currentContent.prev || currentContent.next)}>
+                    <FontAwesomeIcon icon={faMinus}/>
                 </Button>
             </div>
-            <Button addStyle="transition duration-500 hover:text-red-500 {editable && (currentContent.prev || currentContent.next)? 'opacity-100': 'opacity-0'}" onclick={deleteItem} disabled={!editable && (currentContent.prev || currentContent.next)}>
-                <FontAwesomeIcon icon={faMinus}/>
-            </Button>
         </div>
 
         {#if currentContent.next}

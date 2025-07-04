@@ -18,6 +18,9 @@
         case 'table':
             styleValue = "text-xl font-bold text-[#1B663E] mb-2 flex items-center gap-2"
             break;
+        case 'saved':
+            styleValue = "text-xl font-semibold text-[#1B663E]";
+            break;
         default:
             styleValue = "text-3xl font-semibold text-[var(--font-green)] text-shadow-[0_2px_5px_rgb(0_0_0_/_0.1)]"
             break;

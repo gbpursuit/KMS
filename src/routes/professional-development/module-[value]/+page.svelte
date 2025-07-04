@@ -1,13 +1,10 @@
 <script lang="ts">
     import type { PageProps } from './$types';
     import '@fortawesome/fontawesome-svg-core/styles.css';
-    import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'; 
-	import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 	import { faChartSimple, faGraduationCap, faFile, faClock} from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
     import type { Training } from '@prisma/client';
     import { onMount } from 'svelte';
-	import type { User } from '$lib/functions/module';
 
 	import Tab from '$lib/svelte/professional-development/Tab.svelte';
 	import TabContent from '$lib/svelte/professional-development/TabContent.svelte';
@@ -16,7 +13,6 @@
 	import tabContentJSON from '$lib/data/tab-content.json'
 	import Input from '$lib/svelte/Input.svelte';
 	import Button from '$lib/svelte/Button.svelte';
-	import Paragraph from '$lib/svelte/Paragraph.svelte';
 	import Select from '$lib/svelte/Select.svelte';
 
 	import { getData, addContent } from '$lib/functions/database';
@@ -32,8 +28,6 @@
 
 	let moduleDate: string = $state('')
 	let leader: string = $state('')
-
-	$inspect(allAccounts)
     
     let training: Training[] = $state([]);
     let { data }: PageProps = $props();
@@ -45,7 +39,7 @@
 		training = data.training;	
 		moduleDate = data.selectedItem.date ?? ''
 		leader = data.selectedItem.leader ?? ''
-		accountsPromise = await getData('account').then((v: Array<any>) => {console.log(v); for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName	})
+		accountsPromise = await getData('account').then((v: Array<any>) => {	for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName	})
 
 		tabContent = await updateTabContent(data.selectedItem.id);
 	});
@@ -56,12 +50,13 @@
 		})
 	}
 	
-
 	async function updateTabContent(id: number | string){
 		if(!data.selectedItem) return;
 
 		let item = await getData('pd', fetch, data.selectedItem.id);
-		return item.content;
+
+		if (!item?.content) return tabContentJSON;	// Return defaults if database is empty
+		return item.content;						// Return the items inside database
 
 	}
 
@@ -73,6 +68,10 @@
 	let canEdit = data.user?.permission?.includes('can_edit');
 
 </script>
+
+<svelte:head>
+	<title>{data.name} | {data.selectedItem.id}</title>
+</svelte:head>
 
 {#if data.selectedItem}
 <div class="flex flex-col w-full min-h-[calc(100dvh-120px)] mt-[120px] items-center">
@@ -133,8 +132,6 @@
 	</div>
 
 	<!-- Content Area -->
-	<button class="{canEdit ? 'flex' : 'hidden'} flex w-full h-4 cursor-pointer p-4 m-4 border border-black" onclick = {callAdd}>Save</button>
-
 	<div class="flex w-full justify-center px-4 flex-col items-center gap-10">
 		<div class="flex flex-col w-full max-w-[900px]">
 			<!-- Tabs + Content Box -->
@@ -143,7 +140,7 @@
 				<Tab tabs={tabs} bind:activeTab/>
 
 				<!-- Tab Content -->
-				<TabContent user={data.user} activeTab={activeTab} bind:tabContent bind:editable/>
+				<TabContent item={data} activeTab={activeTab} bind:tabContent bind:editable/>
 			</div>
 			<div>
 				<GenerateContent bind:tabContent />

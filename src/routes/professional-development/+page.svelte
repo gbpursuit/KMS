@@ -40,8 +40,7 @@
 		// if (!$selectedModuleItem) setTimeout(() => observer_func(), 0);
 	});
 
-	onMount(async () => {
-		// if (!$selectedModuleItem) observer_func();
+	onMount(() => {
 		training = data.training;
 	});
 
@@ -111,7 +110,6 @@
 	let pageButtons: number[] = $state([]);
 	let selectedFilter = $state('All');
 	let filterOptions = $state(['All', 'Online', 'Face-to-Face', 'Hybrid']);
-
 
 	$effect(() => {
 		if(!data.selectedItem) {

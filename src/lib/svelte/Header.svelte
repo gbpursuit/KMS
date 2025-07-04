@@ -17,6 +17,8 @@
 
 	let { data, currentPath } = $props()
 
+	console.log(data.user);
+
 	let grids: Summary[] = $state([]);
 
 	onMount(async () => {
