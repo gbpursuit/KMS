@@ -68,12 +68,11 @@
 		try {
 			if(id) {
 				let isDeleted = await deleteData('pd', id);
+				if (isDeleted) {
+					alert('Module deleted successfully!');
+					window.location.href = '/professional-development'
+				} 
 			}
-
-			if (isDeleted) {
-				alert('Module deleted successfully!');
-				window.location.href = '/professional-development'
-			} 
 		} catch (error) {
 			console.error('Delete failed:', error);
 			alert('An error occurred during deletion.');
