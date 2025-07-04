@@ -32,6 +32,7 @@
     
     let training: Training[] = $state([]);
     let { data }: PageProps = $props();
+	let pageLoaded = $state(false)
 
 	onMount(async () => {
 		if (!data || !data.selectedItem) return;
@@ -41,8 +42,8 @@
 		moduleDate = data.selectedItem.date ?? ''
 		leader = data.selectedItem.leader ?? ''
 		accountsPromise = await getData('account').then((v: Array<any>) => {	for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName	})
-
 		tabContent = await updateTabContent(data.selectedItem.id);
+		pageLoaded = true
 	});
 
 	function handleDate(date: string) {
@@ -85,7 +86,9 @@
 </script>
 
 <svelte:head>
-	<title>{data.name} | {data.selectedItem.id}</title>
+	{#if data.selectedItem}
+		<title>{data.name} | {data.selectedItem.id}</title>
+	{/if}
 </svelte:head>
 
 {#if data.selectedItem}
@@ -94,61 +97,67 @@
 	<!-- <div class="flex flex-col justify-center w-full h-[245px] bg-cover bg-center bg-no-reoeat text-white px-6 py-4 mb-10" style="{data.selectedItem.imageUrl ? `background-image: url(${data.selectedItem.imageUrl})` : 'background-color: #1B663E;'}"> -->
 		<!-- Progress Bar -->
 		<!-- This is still fixed -->
-		<div class="flex items-center gap-3 text-sm font-light text-yellow-400 mb-2">
-			<p class="text-sm font-semibold">23 of 50</p>
-			<div class="relative w-40 h-[6px] bg-gray-200 rounded-full overflow-hidden">
-				<div class="absolute top-0 left-0 h-full bg-yellow-500" style="width: 46%"></div>
+		{#if !pageLoaded}
+			<div class="flex items-center text-lg text-white">
+				Loading Contents
 			</div>
-		</div>
-
-		<div class="flex-row w-full">
-			<!-- div.flex.flex-row. -->
-			<!-- Page title -->
-			<!-- This is still fixed -->
-			<Input style="module-title" bind:text={data.selectedItem.title} disabled={!editBanner} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white focus:ring-0": ""} />
-
-			<!-- Metadata icons -->
-			<div class="flex flex-wrap items-center gap-6 mt-8 text-sm text-white">
-				<div class="flex items-center gap-2">
-					<FontAwesomeIcon icon={faGraduationCap} class="text-yellow-400" />
-					<!-- This is still fixed -->
-					Participants:<span hidden={editBanner}>{data.selectedItem.numParticipants}</span> 
-					<Input disabled={!editBanner} hidden={!editBanner} type="number" style="module-details" bind:text={data.selectedItem.numParticipants} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white focus:ring-0": ""}/>
-				</div>
-				<div class="flex items-center gap-2">
-					<FontAwesomeIcon icon={faChartSimple} class="text-yellow-400" />
-					<span hidden={editBanner}>{data.selectedItem.leader}</span>
-					<Select disabled={!editBanner} hidden={!editBanner} bind:options={allAccounts} bind:selected={leader} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white" : "border-0"} />
-				</div>
-				<div class="flex items-center gap-2">
-					<FontAwesomeIcon icon={faFile} class="text-yellow-400" />
-					<span hidden={editBanner}>{training.find(t => t.id === data?.selectedItem?.trainingId)?.type}</span>
-					<Select disabled={!editBanner} hidden={!editBanner} bind:options={allTraining} bind:selected={data.selectedItem.trainingId} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white" : "border-0"} />
-				</div>
-				<div class="flex items-center gap-2">
-					<FontAwesomeIcon icon={faClock} class="text-yellow-400" />
-					<span hidden={editBanner}>{handleDate(data.selectedItem.date)}</span>
-					<Input disabled={!editBanner} hidden={!editBanner} type="date" style="module-details" bind:text={moduleDate} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white focus:ring-0": ""}/>
-					 <!-- <input type="date" value="{data.selectedItem.trainingId}"/> -->
+		{:else}
+			<div class="flex items-center gap-3 text-sm font-light text-yellow-400 mb-2">
+				<p class="text-sm font-semibold">23 of 50</p>
+				<div class="relative w-40 h-[6px] bg-gray-200 rounded-full overflow-hidden">
+					<div class="absolute top-0 left-0 h-full bg-yellow-500" style="width: 46%"></div>
 				</div>
 			</div>
-		</div>
 
-		<!-- Editor Toggle Button -->
-		<div class="{canEdit ? 'flex' : 'hidden'} flex flex-row w-full gap-2 mt-4 items-center justify-between">
-			<div class="flex items-center w-22 h-5.5 px-1 rounded-full transition-colors duration-300 ease-in-out" class:bg-green-300={editBanner} class:bg-red-300={!editBanner}>
-				<Button style="editor-mode" onclick={() => editBanner = !editBanner} addStyle={editBanner? 'translate-x-4 bg-green-500': 'bg-red-500'}>
-                    <div class="w-full h-full flex items-center justify-center text-[8px] font-bold text-white">
-                        {editBanner ? 'EDITOR ON' : 'EDITOR OFF'}
-                    </div>
+			<div class="flex-row w-full">
+				<!-- div.flex.flex-row. -->
+				<!-- Page title -->
+				<!-- This is still fixed -->
+				<Input style="module-title" bind:text={data.selectedItem.title} disabled={!editBanner} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white focus:ring-0": ""} />
+
+				<!-- Metadata icons -->
+				<div class="flex flex-wrap items-center gap-6 mt-8 text-sm text-white">
+					<div class="flex items-center gap-2">
+						<FontAwesomeIcon icon={faGraduationCap} class="text-yellow-400" />
+						<!-- This is still fixed -->
+						Participants:<span hidden={editBanner}>{data.selectedItem.numParticipants}</span> 
+						<Input disabled={!editBanner} hidden={!editBanner} type="number" style="module-details" bind:text={data.selectedItem.numParticipants} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white focus:ring-0": ""}/>
+					</div>
+					<div class="flex items-center gap-2">
+						<FontAwesomeIcon icon={faChartSimple} class="text-yellow-400" />
+						<span hidden={editBanner}>{data.selectedItem.leader}</span>
+						<Select disabled={!editBanner} hidden={!editBanner} bind:options={allAccounts} bind:selected={leader} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white" : "border-0"} />
+					</div>
+					<div class="flex items-center gap-2">
+						<FontAwesomeIcon icon={faFile} class="text-yellow-400" />
+						<span hidden={editBanner}>{training.find(t => t.id === data?.selectedItem?.trainingId)?.type}</span>
+						<Select disabled={!editBanner} hidden={!editBanner} bind:options={allTraining} bind:selected={data.selectedItem.trainingId} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white" : "border-0"} />
+					</div>
+					<div class="flex items-center gap-2">
+						<FontAwesomeIcon icon={faClock} class="text-yellow-400" />
+						<span hidden={editBanner}>{handleDate(data.selectedItem.date)}</span>
+						<Input disabled={!editBanner} hidden={!editBanner} type="date" style="module-details" bind:text={moduleDate} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white focus:ring-0": ""}/>
+						<!-- <input type="date" value="{data.selectedItem.trainingId}"/> -->
+					</div>
+				</div>
+			</div>
+
+			<!-- Editor Toggle Button -->
+			<div class="{canEdit ? 'flex' : 'hidden'} flex flex-row w-full gap-2 mt-4 items-center justify-between">
+				<div class="flex items-center w-22 h-5.5 px-1 rounded-full transition-colors duration-300 ease-in-out" class:bg-green-300={editBanner} class:bg-red-300={!editBanner}>
+					<Button style="editor-mode" onclick={() => editBanner = !editBanner} addStyle={editBanner? 'translate-x-4 bg-green-500': 'bg-red-500'}>
+						<div class="w-full h-full flex items-center justify-center text-[8px] font-bold text-white">
+							{editBanner ? 'EDITOR ON' : 'EDITOR OFF'}
+						</div>
+					</Button>
+				</div>
+				<Button style="delete" onclick={() => deleteModule(data?.selectedItem?.id)} addStyle={editBanner? 'opacity-100 shadow-lg w-[150px]': 'opacity-0 w-0'}>
+					<div class="w-full h-full flex items-center justify-center text-[12px] font-bold overflow-hidden whitespace-nowrap"> 
+						DELETE MODULE
+					</div>
 				</Button>
 			</div>
-			<Button style="delete" onclick={() => deleteModule(data?.selectedItem?.id)} addStyle={editBanner? 'opacity-100 shadow-lg w-[150px]': 'opacity-0 w-0'}>
-				<div class="w-full h-full flex items-center justify-center text-[12px] font-bold overflow-hidden whitespace-nowrap"> 
-					DELETE MODULE
-				</div>
-			</Button>
-		</div>
+		{/if}
 	</div>
 
 	<!-- Content Area -->
@@ -160,7 +169,13 @@
 				<Tab tabs={tabs} bind:activeTab/>
 
 				<!-- Tab Content -->
-				<TabContent item={data} activeTab={activeTab} bind:tabContent bind:editable/>
+				{#if !pageLoaded}
+					<div class="p-4 text-[15px] text-gray-800 leading-relaxed bg-[#F7F7F7] text-center">
+						Loading Contents
+					</div>
+				{:else}
+					<TabContent item={data} activeTab={activeTab} bind:tabContent bind:editable/>
+				{/if}
 			</div>
 			<div>
 				<GenerateContent bind:tabContent />

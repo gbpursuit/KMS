@@ -42,6 +42,7 @@
 
 	onMount(() => {
 		training = data.training;
+		pageLoaded = true;
 	});
 
 
@@ -51,10 +52,9 @@
 		window.location.href = `${url}/module-${id}`;
 	}
 
-	let tabs: string[] = $state(['Overview', 'Participants', 'Personnel', 'Highlights', 'Evaluation', 'Appendix'])
-
 	let showModal: boolean = $state(false);
 	let imageUrl: File | null = null;
+	let pageLoaded = $state(false)
 
 	function handleFileChange(event: Event): void {
 		const target = event.target as HTMLInputElement;
@@ -247,7 +247,11 @@
 		</div>
 		<div class="flex w-full h-[90%]">
 			<div id="griditems" class="grid grid-cols-1 grid-flow-row w-full h-full gap-7">
-				{#if visibleTasks.length > 0}
+				{#if !pageLoaded}
+					<div class="flex w-full h-full items-center justify-center text-[var(--font-green)]">
+						Loading Modules
+					</div>
+				{:else if visibleTasks.length > 0}
 					{#each visibleTasks as item}
 						<div class="scroll-card flex w-full rounded-3xl gap-2 border-2 border-gray-100">
 							<div

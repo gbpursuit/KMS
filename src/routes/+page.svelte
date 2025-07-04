@@ -13,6 +13,7 @@
 
   let { data } : PageProps = $props();
 
+  let pageLoaded = $state(false)
   let programList: ProgramAll[] = $state([]);
   let iconMap: Record<string, any> = {
     'Research': faAtom,
@@ -23,6 +24,7 @@
 
   onMount(async () => {
     programList = data.programs.map((p) => ({...p, icon: iconMap[p.name]}));
+    pageLoaded = true
   });
 
   $effect(() => {
@@ -75,12 +77,17 @@
                 </Paragraph>
             </div>
         </div>
-        <div class="grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 w-[90%] h-[70%] place-items-center gap-6">
-
-                {#each programList as program}
-                    <ProgramCard program={program} data={data}/>
-                {/each}
-        </div>
+        {#if !pageLoaded}
+          <div class="flex w-full justify-center">
+            <Heading>Loading Programs</Heading>
+          </div>
+        {:else}
+          <div class="grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 w-[90%] h-[70%] place-items-center gap-6">
+              {#each programList as program}
+                  <ProgramCard program={program} data={data}/>
+              {/each}
+          </div>
+        {/if}
     </div>
 </div>
 
