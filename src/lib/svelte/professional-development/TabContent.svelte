@@ -1,14 +1,8 @@
 <script lang="ts">
-	import { writable, type Writable } from "svelte/store";
 	import Button from "../Button.svelte";
-	import Paragraph from "../Paragraph.svelte";
 	import type { TabInterface } from "$lib/functions/tab-content";
 	import ActiveTab from "./ActiveTab.svelte";
-    import Heading from '$lib/svelte/Heading.svelte';
-    import { type User } from '$lib/functions/module';
     import { getData, addContent } from '$lib/functions/database';
-	import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
-    import { faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 
     let { activeTab, editable = $bindable(false), tabContent = $bindable(), item }: { activeTab: string, editable?: boolean, tabContent: TabInterface, item: Record<string, any> } = $props()
     
@@ -23,17 +17,30 @@
         // }
     }
 
-    let clicked: boolean = $state(false);
+    let saved: boolean = $state(false);
+    let reverted: boolean = $state(false);
 
 	async function callAdd() {
-		let result = await addContent(item.selectedItem, tabContent);
-        clicked = true;
 
-        setTimeout(() => {
-            clicked = false;
-        }, 3000);
+        try {
+            let result = await addContent(item.selectedItem, tabContent);
 
-		return result;
+            if (!result) throw new Error('Error saving module content to database');
+
+            if(result.ok) {
+                saved = true;
+
+                setTimeout(() => {
+                    saved = false;
+                }, 3000);
+
+                return result;
+            } 
+
+        } catch(err) {
+            console.error('Error:', err);
+            alert('Error:' + err);
+        }
 	}
 
     let canEdit = item.user?.permission?.includes('can_edit');
@@ -46,9 +53,14 @@
     <div class="{canEdit ? 'flex' : 'hidden'} flex-row-reverse w-full gap-2">
         <div class="flex w-full justify-between items-center px-2">
             <div class="flex gap-3 items-center">
-                <Button style="save" onclick={callAdd} addStyle={editable? 'opacity-100 shadow-lg w-[100px]': 'opacity-0 w-0'}>
+                <Button style="save-revert" onclick={callAdd} addStyle={editable? 'opacity-100 shadow-lg w-[100px]': 'opacity-0 w-0'}>
                     <div class="w-full h-full flex items-center justify-center text-[8px] font-bold overflow-hidden whitespace-nowrap">
-                        {clicked ? 'SAVE SUCCESSFUL' : 'SAVE CHANGES'}
+                        {saved ? 'SAVE SUCCESSFUL' : 'SAVE CHANGES'}
+                    </div>
+                </Button>
+                <Button style="save-revert" addStyle={editable? 'opacity-100 shadow-lg w-[100px]': 'opacity-0 w-0'}>
+                    <div class="w-full h-full flex items-center justify-center text-[8px] font-bold overflow-hidden whitespace-nowrap">
+                        {reverted ? 'REVERT SUCCESSFUL' : 'REVERT CHANGES'}
                     </div>
                 </Button>
             </div>

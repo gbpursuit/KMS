@@ -50,15 +50,12 @@
 	onMount(async () => {
 		// if (!$selectedModuleItem) observer_func();
 		training = data.training;
-		console.log(data.selectedItem);
 	});
 
 
 	function open_item(id:string) {
 		let url = new URL(window.location.href);
-		console.log(url);
 		url.searchParams.set('ItemId', id);
-		console.log(url);
 		// window.location.href = url.toString();
 		// goto(`?itemId=${id}`);
 	}

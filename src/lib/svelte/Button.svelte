@@ -53,8 +53,9 @@
         case 'hollow':
             styleValue = "border border-white text-white hover:bg-white/10 transition px-6 py-2 rounded-2xl"
             break;
-        case 'save':
-            styleValue = "bg-transparent border border-[#1B663E] rounded-xl px-2 py-1 hover:bg-[#1B663E] hover:text-white transition-[width,opacity,background,color] duration-500 ease-in-out cursor-pointer"
+        case 'save-revert':
+            styleValue = "bg-transparent border border-[#1B663E] rounded-xl px-2 py-1 hover:bg-[#1B663E] hover:text-white ease-in-out cursor-pointer"
+                + " [transition-property:opacity,background,color,width] [transition-duration:350ms,500ms,500ms,500ms]";
             break;
         case 'delete':
             styleValue = 'bg-red-500 rounded-xl px-2 py-1 hover:bg-red-600 transition-[width,opacity] duration-500 ease cursor-pointer';

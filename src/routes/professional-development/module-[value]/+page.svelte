@@ -161,7 +161,7 @@
 	</div>
 
 	<!-- Content Area -->
-	<div class="flex w-full justify-center px-4 flex-col items-center gap-10">
+	<div class="flex w-full justify-center px-4 flex-col items-center gap-10 mb-10">
 		<div class="flex flex-col w-full max-w-[900px]">
 			<!-- Tabs + Content Box -->
 			<div class=" bg-white border border-black/10 rounded-xl shadow-sm overflow-hidden">
@@ -183,7 +183,7 @@
 		</div>
 
 		<!-- Comment Section -->
-		<div class="w-full max-w-[900px] px-6">
+		<!-- <div class="w-full max-w-[900px] px-6">
 			<h3 class="font-semibold mb-1">Leave A Comment</h3>
 			<p class="text-sm text-gray-600 mb-4">Let us know your thoughts about the Module.</p>
 
@@ -194,7 +194,7 @@
 					Post Comment
 				</button>
 			</form>
-		</div>
+		</div> -->
 	</div>
 </div>
 {/if}

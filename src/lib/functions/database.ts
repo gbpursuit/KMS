@@ -44,9 +44,10 @@ export async function updateData(type: string, data: Record<string, any>, id:num
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
-        
         if (!res.ok) throw new Error(`PUT ${type} failed: ${res.status}`);
-        return await res.json()
+
+        let result = await res.json();
+        return { ok: res.ok, result }
     } catch (err) {
         console.error(err);
         throw err;
@@ -61,14 +62,15 @@ export async function deleteData(type:string, id: number) {
         });
 
         if (!res.ok) throw new Error(`DELETE ${type} failed: ${res.status}`);
-        return await res.json();
+
+        let result = await res.json();
+        return { ok: res.ok, result }
     } catch (err) {
         console.error(err);
         throw err;
     }
 
 }
-
 
 export async function addImageData(file: File | null, leader: string | null = null) {
     let data = new FormData();
@@ -80,7 +82,6 @@ export async function addImageData(file: File | null, leader: string | null = nu
         body: data
     })
 
-    console.log(res);
     if (!res.ok) {
         throw new Error('Upload failed');
     }
@@ -90,8 +91,6 @@ export async function addImageData(file: File | null, leader: string | null = nu
 }
 
 export async function addContent(data: Record<string, any> | null, tabContent: TabInterface) {
-    // e?.preventDefault();
-
     if(!data) return;
 
     data.content = tabContent;

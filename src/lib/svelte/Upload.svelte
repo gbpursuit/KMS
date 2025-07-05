@@ -93,7 +93,6 @@
 		}
 	});
 
-	$inspect(fileType);
 </script>
 
 <div class="relative w-full group">
