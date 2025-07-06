@@ -2,11 +2,18 @@
 	import Button from "../Button.svelte";
 	import type { TabInterface } from "$lib/functions/tab-content";
 	import ActiveTab from "./ActiveTab.svelte";
-    import { getData, addContent } from '$lib/functions/database';
+    import { addContent } from '$lib/functions/database';
 
-    let { activeTab, editable = $bindable(false), tabContent = $bindable(), item }: { activeTab: string, editable?: boolean, tabContent: TabInterface, item: Record<string, any> } = $props()
+    let { activeTab = $bindable(), tabContent = $bindable(), data, item = $bindable(), recentlyEdited = $bindable(), recentlySaved = $bindable() }: { activeTab: string, editable?: boolean, tabContent: TabInterface, data: Record<string, any>, item: Record<string, any>, recentlyEdited: boolean, recentlySaved: boolean } = $props()
     
 	// const CurrentComponent = derived(activeTab, ($activeTab) => tabContent[$activeTab]);
+    let initContent = $state(JSON.parse(JSON.stringify(tabContent))) // deep copy the initial tabContent
+    let preSavedContent = $state(JSON.parse(JSON.stringify(tabContent))) // used for storing previously saved content
+
+    let initItem = $state(JSON.parse(JSON.stringify(item))) // deep copy the initial item
+    let preSavedItem = $state(JSON.parse(JSON.stringify(item))) // used for storing previously saved item
+
+    let editable: boolean = $state(false)
 
     async function toggleMode() {
         let wasEditable = editable; // if button is initially on, we save it afterwards
@@ -23,15 +30,21 @@
 	async function callAdd() {
 
         try {
-            let result = await addContent(item.selectedItem, tabContent);
+            let result: {ok: true, result: any} | any = await addContent(data.selectedItem, tabContent);
 
             if (!result) throw new Error('Error saving module content to database');
 
             if(result.ok) {
                 saved = true;
-
+                
                 setTimeout(() => {
+                    preSavedContent = JSON.parse(JSON.stringify(initContent))
+                    initContent = JSON.parse(JSON.stringify(tabContent))
+                    preSavedItem = JSON.parse(JSON.stringify(initItem))
+                    initItem = JSON.parse(JSON.stringify(item))
                     saved = false;
+                    recentlyEdited = false
+                    recentlySaved = true
                 }, 3000);
 
                 return result;
@@ -43,7 +56,39 @@
         }
 	}
 
-    let canEdit = item.user?.permission?.includes('can_edit');
+    async function callRevert() {
+        try {
+            let result: {ok: true, result: any} | any = await addContent(data.selectedItem, preSavedContent);
+
+            if (!result) throw new Error('Error reverting module content to database');
+
+            if(result.ok) {
+                reverted = true;
+                tabContent = JSON.parse(JSON.stringify(preSavedContent));
+                initContent = JSON.parse(JSON.stringify(preSavedContent))
+
+                item = JSON.parse(JSON.stringify(preSavedItem))
+                initItem = JSON.parse(JSON.stringify(preSavedItem))
+
+                setTimeout(() => {
+                    reverted = false;
+                    recentlySaved = false
+                }, 3000);
+
+                return result;
+            }
+        } catch(err) {
+            console.error('Error:', err);
+            alert('Error:' + err)
+        }
+    }
+
+    let canEdit = data.user?.permission?.includes('can_edit');
+
+    $effect(() => {
+        if(JSON.stringify(tabContent) != JSON.stringify(initContent) || JSON.stringify(item) != JSON.stringify(initItem)) recentlyEdited = true
+        else recentlyEdited = false
+    })
 
 </script>
 
@@ -53,12 +98,12 @@
     <div class="{canEdit ? 'flex' : 'hidden'} flex-row-reverse w-full gap-2">
         <div class="flex w-full justify-between items-center px-2">
             <div class="flex gap-3 items-center">
-                <Button style="save-revert" onclick={callAdd} addStyle={editable? 'opacity-100 shadow-lg w-[100px]': 'opacity-0 w-0'}>
+                <Button style="save-revert" onclick={callAdd} addStyle={recentlyEdited? 'opacity-100 shadow-lg w-[100px]': 'opacity-0 w-0'}>
                     <div class="w-full h-full flex items-center justify-center text-[8px] font-bold overflow-hidden whitespace-nowrap">
                         {saved ? 'SAVE SUCCESSFUL' : 'SAVE CHANGES'}
                     </div>
                 </Button>
-                <Button style="save-revert" addStyle={editable? 'opacity-100 shadow-lg w-[100px]': 'opacity-0 w-0'}>
+                <Button style="save-revert" onclick={callRevert} addStyle={recentlySaved? 'opacity-100 shadow-lg w-[100px]': 'opacity-0 w-0'}>
                     <div class="w-full h-full flex items-center justify-center text-[8px] font-bold overflow-hidden whitespace-nowrap">
                         {reverted ? 'REVERT SUCCESSFUL' : 'REVERT CHANGES'}
                     </div>
