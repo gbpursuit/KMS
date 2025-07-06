@@ -3,7 +3,7 @@
 	import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 	import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
 
-    let { text = $bindable(),  password = $bindable(), required = false, style = '', addStyle = '', type = 'text', ...props } = $props()
+    let { text = $bindable(),  password = $bindable(), required = false, inverted = false, style = '', addStyle = '', type = 'text', ...props } = $props()
     let showPassword = $state(false)
     let styleValue = $state('')
 
@@ -20,6 +20,12 @@
                 break;
             case 'module-details':
                 styleValue = "flex p-0 border-0 bg-transparent field-sizing-content"
+                break;
+            case 'modal':
+                styleValue = "transition-all duration-300 outline-none border-2 border-[#1B663E] shadow-[0px_4px_2px_0px_#1B663E] px-3 py-2 rounded text-sm text-black focus:translate-y-1 focus:shadow-[0px_2px_0px_0px_#1B663E]"
+                break;
+            case 'modal-file':
+                styleValue = "file:border-0 file:py-2 file:px-4 file:rounded file:bg-[#1B663E] file:text-white file:font-semibold text-sm transition-all duration-300"
                 break;
             default:
                 styleValue = "flex w-full py-1 px-3 border-2 border-[#C5C5C5] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
@@ -44,9 +50,10 @@
     </button>
 </div>
 {:else}
-<input bind:value={text} contenteditable="true" type={type} class="{styleValue} {addStyle}" required={required} {...props}/>
+<input bind:value={text} contenteditable="true" type={type} class="{inverted? 'inverted': ''} {styleValue} {addStyle}" required={required} {...props} />
 
 {/if}
+
 
 <style>
     input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
@@ -73,7 +80,7 @@
         height: 25px;
         border-width: thin
     } */
-    input[type="date"]::-webkit-calendar-picker-indicator {
+    input[type="date"].inverted::-webkit-calendar-picker-indicator {
         filter: invert(1);
     }
     /* input::-webkit-datetime-edit-fields-wrapper {

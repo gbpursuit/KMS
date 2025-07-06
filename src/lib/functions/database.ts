@@ -100,6 +100,7 @@ export async function addContent(data: Record<string, any> | null, tabContent: T
 
     } catch(err) {
         console.error(err);
+        return err
     }
 }
 

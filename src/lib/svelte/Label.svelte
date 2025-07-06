@@ -1,9 +1,19 @@
 <script lang="ts">
-    let { required = false, forLabel, children } = $props()
+    let { required = false, style = '', addStyle = '', children, ...props } = $props()
+    let styleValue = $state('')
+    $effect(() => {
+        switch(style) {
+            case 'modal':
+                styleValue = "font-semibold text-[#0C2D1C]"
+                break;
+            default:
+                break;
+        }
+    })
 </script>
 
 {#if required}
-<label for="{forLabel}">{@render children()}<span class="text-red-500"> *</span></label>
+<label class="{styleValue} {addStyle}" {...props}>{@render children()}<span class="text-red-500"> *</span></label>
 {:else}
-<label for="{forLabel}">{@render children()}</label>
+<label class="{styleValue} {addStyle}" {...props}>{@render children()}</label>
 {/if}

@@ -126,12 +126,12 @@
 					<div class="flex items-center gap-2">
 						<FontAwesomeIcon icon={faChartSimple} class="text-yellow-400" />
 						<span hidden={editBanner}>{data.selectedItem.leader}</span>
-						<Select disabled={!editBanner} hidden={!editBanner} bind:options={allAccounts} bind:selected={leader} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white" : "border-0"} />
+						<Select disabled={!editBanner} hidden={!editBanner} options={allAccounts} selected={leader} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white" : "border-0"} />
 					</div>
 					<div class="flex items-center gap-2">
 						<FontAwesomeIcon icon={faFile} class="text-yellow-400" />
 						<span hidden={editBanner}>{training.find(t => t.id === data?.selectedItem?.trainingId)?.type}</span>
-						<Select disabled={!editBanner} hidden={!editBanner} bind:options={allTraining} bind:selected={data.selectedItem.trainingId} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white" : "border-0"} />
+						<Select disabled={!editBanner} hidden={!editBanner} options={allTraining} selected={data.selectedItem.trainingId} addStyle={editBanner? "border-[0px_0px_2px_0px] border-white" : "border-0"} />
 					</div>
 					<div class="flex items-center gap-2">
 						<FontAwesomeIcon icon={faClock} class="text-yellow-400" />

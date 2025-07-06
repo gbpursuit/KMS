@@ -12,7 +12,10 @@
 
 	import type { Training } from '@prisma/client';
 	import { smoothScrollTo } from '$lib/functions/function';
-	import { addData, addImageData } from '$lib/functions/database';
+	import { addData, addImageData, getData } from '$lib/functions/database';
+	import Select from '$lib/svelte/Select.svelte';
+	import Label from '$lib/svelte/Label.svelte';
+	import Input from '$lib/svelte/Input.svelte';
 
 	let { data } : PageProps = $props();
 
@@ -33,15 +36,19 @@
 		}
 	}
 
-	let training: Training[] = $state([]);
+	let training: Array<string> = $state([]);
+	let allAccounts: Array<string> = $state([])
+	let accountsPromise = $state()
+
 	$effect(() => {
 		if($currentModule !== data.pd) currentModule.set(data.pd);
 		if ($selectedModuleItem !== data.selectedItem) selectedModuleItem.set(data.selectedItem);
 		// if (!$selectedModuleItem) setTimeout(() => observer_func(), 0);
 	});
 
-	onMount(() => {
-		training = data.training;
+	onMount(async () => {
+		for(let i = 0; i < data.training.length; i++) training = training.concat(data.training[i].type)
+		accountsPromise = await getData('account').then((v: Array<any>) => {	for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName	})
 		pageLoaded = true;
 	});
 
@@ -90,8 +97,6 @@
 		}
 	}
 
-	const inputClass = "transition-all duration-300 outline-none border-2 border-[#1B663E] shadow-[0px_4px_2px_0px_#1B663E] px-3 py-2 rounded text-sm text-black focus:translate-y-1 focus:shadow-[0px_2px_0px_0px_#1B663E]";
-	const labelClass = "font-semibold text-[#0C2D1C]";
 	const fieldClass = "flex flex-col gap-1 transition-all duration-300";
 
 	function handleDate(date: string) {
@@ -164,28 +169,36 @@
  
 		<form class="flex flex-col gap-5" onsubmit={handleSubmit}>
 			<div class={fieldClass}>
-				<label class={labelClass} for="title">Title<span class="text-red-500"> *</span></label>
-				<input type="text" name="title" class={inputClass} />
+				<!-- <label class={labelClass} for="title">Title<span class="text-red-500"> *</span></label> -->
+				<!-- <input type="text" name="title" class={inputClass} /> -->
+				<Label style="modal" for="title" required>Title</Label>
+				<Input style="modal" name="title"/>
 			</div>
 
 			<div class={fieldClass}>
-				<label class={labelClass} for="leader">Project Leader<span class="text-red-500"> *</span></label>
-				<input type="text" name="leader" class={inputClass} />
+				<!-- <label class={labelClass} for="leader">Project Leader<span class="text-red-500"> *</span></label> -->
+				<!-- <input type="text" name="leader" class={inputClass} /> -->
+				<Label style="modal" for="leader" required>Project Leader</Label>
+				<Select style="modal" name="leader" options={allAccounts} placeholder="Project Leader"/>
 			</div>
 
 			<div class={fieldClass}>
-				<label class={labelClass} for="numParticipants">Number of Participants<span class="text-red-500"> *</span></label>
-				<input type="number" name="numParticipants" class={inputClass} />
+				<!-- <label class={labelClass} for="numParticipants">Number of Participants<span class="text-red-500"> *</span></label>
+				<input type="number" name="numParticipants" class={inputClass} /> -->
+				<Label style="modal" for="numParticipants" required>Number of Participants</Label>
+				<Input type="number" style="modal" name="numParticipants"/>
 			</div>
 
 			<div class={fieldClass}>
-				<label class={labelClass} for="trainingId">Type of Training<span class="text-red-500"> *</span></label>
-				<select name="trainingId" class={inputClass}>
+				<!-- <label class={labelClass} for="trainingId">Type of Training<span class="text-red-500"> *</span></label> -->
+				<!-- <select name="trainingId" class={inputClass}>
 					<option value="" disabled selected>Select training type</option>
 					{#each training as t}
 					<option value={t.id}>{t.type}</option>
 					{/each}
-				</select>
+				</select> -->
+				<Label style="modal" for="trainingId" required>Type of Training</Label>
+				<Select style="modal" name="trainingId" options={training} placeholder="Training Type"/>
 			</div>
 			<!-- <div class={fieldClass}>
 				<label class={labelClass} for="trainingType">Type of Training<span class="text-red-500"> *</span></label>
@@ -193,14 +206,18 @@
 			</div> -->
 
 			<div class={fieldClass}>
-				<label class={labelClass} for="date">Date<span class="text-red-500"> *</span></label>
-				<input type="date" name="date" class={inputClass} />
+				<!-- <label class={labelClass} for="date">Date<span class="text-red-500"> *</span></label>
+				<input type="date" name="date" class={inputClass} /> -->
+				<Label style="modal" for="date" required>Date</Label>
+				<Input type="date" style="modal" name="date"/>
 			</div>
 
 			<div class={fieldClass}>
-				<label class={labelClass} for="imageUrl">Upload Image</label>
+				<!-- <label class={labelClass} for="imageUrl">Upload Image</label>
 				<input type="file" accept="image/*" onchange={handleFileChange}
-					class="file:border-0 file:py-2 file:px-4 file:rounded file:bg-[#1B663E] file:text-white file:font-semibold text-sm transition-all duration-300" />
+					class="file:border-0 file:py-2 file:px-4 file:rounded file:bg-[#1B663E] file:text-white file:font-semibold text-sm transition-all duration-300" /> -->
+				<Label style="modal" for="imageUrl">Upload Image</Label>
+				<Input type="file" accept="image/*" onchange={handleFileChange} name="imageUrl" style="modal-file" />
 			</div>
 
 			<div class="flex justify-end gap-3 pt-4">
