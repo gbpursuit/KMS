@@ -1,9 +1,10 @@
 <script lang="ts">
-    let { style = 'default', options, selected = $bindable(), placeholder = '', addStyle = '', ...props } = $props()
+    let { style = 'default', options, selected = $bindable(), value = $bindable(), placeholder = '', addStyle = '', ...props } = $props()
     let styleValue = $state('')
 
-    function onSelect() {
-        console.log(this.options[this.selectedIndex].text)
+    function onChange(this: { options: Record<any, any>, value: any }) {
+        selected = this.options[this.options.selectedIndex].text
+        value = parseInt(this.value)
     }
 
     $effect(() => {
@@ -22,17 +23,11 @@
 
 </script>
 
-<select class="{styleValue} {addStyle}" onselect={onSelect} {...props}>
-    {#if !selected}
-        <option value="" disabled selected>Select {placeholder}</option>
-        {#each options as o}
-            <option>{o}</option>
-        {/each}
-    {:else}
-        {#each options as o}
-            <option selected={o === selected}>{o}</option>
-        {/each}
-    {/if}
+<select class="{styleValue} {addStyle}" onchange={onChange} bind:value={value} {...props}>
+    <option value="" disabled selected={!selected && !value} hidden={selected || value}>Select {placeholder}</option>
+    {#each options as o, i}
+        <option value={i+1} selected={o == selected || (i+1) == value}>{o}</option>
+    {/each}
 </select>
 
 <style>
