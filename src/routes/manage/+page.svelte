@@ -341,17 +341,23 @@
             </table>
         </div>
     </div>
-    
+    <div class="w-full h-[1.5px] bg-green-800 mb-4 mt-8"></div>
+    <div class="flex flex-col w-full gap-2 justify-center">
+        <Heading>Role Change Tester</Heading>
+        <Paragraph>
+            Test user, admin, and superuser roles. This feature is for testing only and will be removed before deployment.
+        </Paragraph>
+    </div>
     <div class="flex col w-full gap-8">
-    <Button style="submit" onclick={() => {if(data.user) changeRole(data.user.id, data.user.roleId, 1)}}>
-        {button1Text}
-    </Button>
-    <Button style="submit" onclick={() => {if(data.user) changeRole(data.user.id, data.user.roleId, 2)}}>
-        {button2Text}
-    </Button>
-    <Button style="submit" onclick={() => {if(data.user) changeRole(data.user.id, data.user.roleId, 3)}}>
-        {button3Text}
-    </Button>
+        <Button style="submit" addStyle="bg-red-800 font-bold" onclick={() => {if(data.user) changeRole(data.user.id, data.user.roleId, 1)}}>
+            {button1Text}
+        </Button>
+        <Button style="submit" addStyle="bg-green-800 font-bold" onclick={() => {if(data.user) changeRole(data.user.id, data.user.roleId, 2)}}>
+            {button2Text}
+        </Button>
+        <Button style="submit" addStyle="bg-yellow-600 font-bold" onclick={() => {if(data.user) changeRole(data.user.id, data.user.roleId, 3)}}>
+            {button3Text}
+        </Button>
     </div>
 </div>
 
