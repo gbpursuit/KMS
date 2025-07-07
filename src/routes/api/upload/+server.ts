@@ -1,6 +1,7 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { mkdir, writeFile } from 'fs/promises';
 import { data } from '$lib/functions/prisma'; 
+import { getFileType } from '$lib/functions/media';
 import path from 'path';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -9,7 +10,17 @@ export const POST: RequestHandler = async ({ request }) => {
     let leader = form.get('leader')?.toString() ?? 'uncategorized'; // if leader name is undefined, folder is named uncategorized -- for now leader muna category
 
     if (!file || typeof file === 'string') {
-		return data.json({ path: null });
+		  return data.json({ path: null });
+    }
+
+    let { type, maxSizeMB } = getFileType(file.name);
+
+    if (file.size > maxSizeMB * 1024 * 1024) {
+      return data.json({ error: `File too large. Max ${maxSizeMB}MB for ${type}` }, { status: 413 });
+    }
+
+    if (type === 'other') {
+      return data.json({ error: 'Unsupported file type' }, { status: 415 });
     }
 
     let buffer = Buffer.from(await file.arrayBuffer());    // file binary data to be saved

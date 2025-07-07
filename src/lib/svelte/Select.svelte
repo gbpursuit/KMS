@@ -15,6 +15,9 @@
             case 'default':
                 styleValue = 'flex w-48 p-0 bg-[#1B663E] focus:ring-0'
                 break;
+            case 'evaluation':
+                styleValue = 'w-64 py-2 px-3 rounded-xl bg-white text-black border border-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-green-600 appearance-none';
+                break; 
             default:
                 styleValue = ''
                 break;

@@ -1,0 +1,59 @@
+import { error } from '@sveltejs/kit';
+
+export function getFileType(filename: string): { type: 'image' | 'video' | 'pdf' | 'csv' | 'other'; maxSizeMB: number } {
+	if (/\.(png|jpe?g|gif|webp)$/i.test(filename)) return { type: 'image', maxSizeMB: 5 };
+	if (/\.(mp4|mov)$/i.test(filename)) return { type: 'video', maxSizeMB: 50 };
+	if (filename.endsWith('.pdf')) return { type: 'pdf', maxSizeMB: 10 };
+	if (filename.endsWith('.csv')) return { type: 'csv', maxSizeMB: 10 };
+	return { type: 'other', maxSizeMB: 1 };
+}
+
+export async function addImageData(file: File | null, leader: string | null = null) {
+    let data = new FormData();
+	if (file) data.append('file', file);
+    if (leader) data.append('leader', leader);
+
+    let res = await fetch(`/api/upload`, {
+        method: 'POST', 
+        body: data
+    })
+
+    if (!res.ok) {
+        throw error(500, 'Upload Failed');
+        // throw new Error('Upload failed');
+    }
+
+    let { path } = await res.json();
+    return path;
+}
+
+export async function uploadFileWithProgress(file: File | null, leader: string | null = null, onProgress: (percent: number) => void): Promise<string> {
+	return new Promise((resolve, reject) => {
+		let formData = new FormData();
+		if (file) formData.append('file', file);
+		if (leader) formData.append('leader', leader);
+
+		let xhr = new XMLHttpRequest();
+
+		xhr.upload.onprogress = (event) => {
+			if (event.lengthComputable) {
+				let percent = Math.round((event.loaded / event.total) * 100);
+				onProgress(percent);
+			}
+		};
+
+		xhr.onload = () => {
+			if (xhr.status >= 200 && xhr.status < 300) {
+				let response = JSON.parse(xhr.responseText);
+				resolve(response.path);
+			} else {
+				reject(new Error('Upload failed'));
+			}
+		};
+
+		xhr.onerror = () => reject(new Error('Network error during upload'));
+
+		xhr.open('POST', '/api/upload');
+		xhr.send(formData);
+	});
+}

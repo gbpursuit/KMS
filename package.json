@@ -26,6 +26,7 @@
 		"@tailwindcss/vite": "^4.0.0",
 		"@testing-library/jest-dom": "^6.6.3",
 		"@testing-library/svelte": "^5.2.4",
+		"@types/papaparse": "^5.3.16",
 		"jsdom": "^26.0.0",
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.3",
@@ -48,6 +49,7 @@
 		"html2pdf.js": "^0.10.3",
 		"jsonwebtoken": "^9.0.2",
 		"localtunnel": "^2.0.2",
-		"puppeteer": "^24.11.2"
+		"puppeteer": "^24.11.2",
+		"papaparse": "^5.5.3"
 	}
 }

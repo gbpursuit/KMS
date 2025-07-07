@@ -58,10 +58,10 @@
             {#if currentContent.type === 'plain' || currentContent.type === 'heading'}
                 <TextArea type="text" bind:style={currentContent.type} disabled={!editable} bind:text={currentContent.content} />
             {:else}
-                <UploadFile bind:style={currentContent.type} disabled={!editable} bind:filePath={currentContent.content}> </UploadFile>
+                <UploadFile bind:style={currentContent.type} disabled={!editable} bind:filePath={currentContent.content} editable={editable} />
             {/if}
             <div class="flex flex-row gap-2 transition-width duration-700 ease-in-out {editable? 'w-[60px]' : 'w-0'} overflow-hidden">
-                <Button addStyle="transition duration-100 hover:text-green-500 {editable? 'opacity-100': 'opacity-0'}" onclick={addItem} disabled={!editable}>
+                <Button addStyle="transition duration-100 hover:text-green-500 cursor-pointer {editable? 'opacity-100': 'opacity-0'}" onclick={addItem} disabled={!editable}>
                     <FontAwesomeIcon icon={faPlus}/>
                 </Button>
                 <div class="flex">
@@ -75,11 +75,11 @@
                         </div>
                     </div>
                     
-                    <Button addStyle="transition duration-500 hover:text-blue-500 {editable? 'opacity-100': 'opacity-0'}" onclick={() => {displayTextTypes = !displayTextTypes}} disabled={!editable}>
+                    <Button addStyle="transition duration-500 hover:text-blue-500 cursor-pointer {editable? 'opacity-100': 'opacity-0'}" onclick={() => {displayTextTypes = !displayTextTypes}} disabled={!editable}>
                         <FontAwesomeIcon icon={faList}/>
                     </Button>
                 </div>
-                <Button addStyle="transition duration-500 hover:text-red-500 {editable && (currentContent.prev || currentContent.next)? 'opacity-100': 'opacity-0'}" onclick={deleteItem} disabled={!editable && (currentContent.prev || currentContent.next)}>
+                <Button addStyle="transition duration-500 hover:text-red-500 cursor-pointer {editable && (currentContent.prev || currentContent.next)? 'opacity-100': 'opacity-0 pointer-events-none'}" onclick={deleteItem} disabled={!editable && (currentContent.prev || currentContent.next)}>
                     <FontAwesomeIcon icon={faMinus}/>
                 </Button>
             </div>

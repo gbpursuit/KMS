@@ -9,17 +9,18 @@
 	import { goto } from '$app/navigation';
 
 	import { currentModule, selectedModuleItem } from '$lib/functions/module';
-	import type { PageProps } from '../../../routes/program-[value]/$types';
+	import type { PageProps } from '../../../routes/professional-development/$types';
 
-	import Tab from '$lib/svelte/professionadevelopment/Tab.svelte';
-	import TabContent from '$lib/svelte/professionadevelopment/TabContent.svelte';
-	import GenerateContent from '$lib/svelte/professionadevelopment/GenerateContent.svelte';
+	import Tab from '$lib/svelte/professional-development/Tab.svelte';
+	import TabContent from '$lib/svelte/professional-development/TabContent.svelte';
+	import GenerateContent from '$lib/svelte/professional-development/GenerateContent.svelte';
 	import type { TabInterface } from '$lib/functions/tab-content'
 	import tabContentJSON from '$lib/data/tab-content.json'
 
 	import type { Training } from '@prisma/client';
 	import { smoothScrollTo } from '$lib/functions/function';
-	import { addData, addImageData } from '$lib/functions/database';
+	import { addData } from '$lib/functions/database';
+	import { addImageData } from '$lib/functions/media';
 
 	let { data } : PageProps = $props();
 

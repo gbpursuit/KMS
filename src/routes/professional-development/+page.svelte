@@ -12,7 +12,8 @@
 
 	import type { Training } from '@prisma/client';
 	import { smoothScrollTo } from '$lib/functions/function';
-	import { addData, addImageData, getData } from '$lib/functions/database';
+	import { addData, getData } from '$lib/functions/database';
+	import { addImageData } from '$lib/functions/media';
 	import Select from '$lib/svelte/Select.svelte';
 	import Label from '$lib/svelte/Label.svelte';
 	import Input from '$lib/svelte/Input.svelte';

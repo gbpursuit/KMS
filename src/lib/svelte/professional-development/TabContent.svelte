@@ -97,8 +97,8 @@
     <!-- Toggle Button -->
     <div class="{canEdit ? 'flex' : 'hidden'} flex-row-reverse w-full gap-2">
         <div class="flex w-full justify-between items-center px-2">
-            <div class="flex gap-3 items-center">
-                <Button style="save-revert" onclick={callAdd} addStyle={recentlyEdited? 'opacity-100 shadow-lg w-[100px]': 'opacity-0 w-0'}>
+            <div class="flex items-center">
+                <Button style="save-revert" onclick={callAdd} addStyle={recentlyEdited? 'opacity-100 shadow-lg w-[100px] static': 'opacity-0 w-0 absolute'}>
                     <div class="w-full h-full flex items-center justify-center text-[8px] font-bold overflow-hidden whitespace-nowrap">
                         {saved ? 'SAVE SUCCESSFUL' : 'SAVE CHANGES'}
                     </div>
@@ -121,6 +121,6 @@
     </div>
 
     <div class="flex-row w-full text-sm bg-white p-6 rounded-lg border border-[#AFAFAF] shadow-md mt-5">
-        <ActiveTab bind:title={tabContent[activeTab].title} bind:content={tabContent[activeTab].content} editable={editable} />
+        <ActiveTab bind:title={tabContent[activeTab].title} bind:content={tabContent[activeTab].content} bind:activeTab editable={editable} bind:initContent={initContent[activeTab].content} />
     </div>
 </div>
