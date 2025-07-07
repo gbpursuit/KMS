@@ -107,7 +107,7 @@
 				{/if}
 			</div>
 			<div>
-				<GenerateContent bind:tabContent />
+				<GenerateContent bind:tabContent bind:selectedItem = {data.selectedItem} bind:training = {data.training}/>
 			</div>
 		</div>
 
