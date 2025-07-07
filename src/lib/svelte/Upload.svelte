@@ -45,6 +45,31 @@
 	let uploading: boolean = $state(false);
 	let isError: boolean = $state(false);
 
+	let isDragging = $state(false);
+
+	function handleDragOver(event: DragEvent) {
+		event.preventDefault();
+		isDragging = true;
+		textDescription = 'Release to upload file';
+	}
+
+	function handleDragLeave() {
+		isDragging = false;
+		textDescription = originalDescription;
+	}
+
+	function handleDrop(event: DragEvent) {
+		event.preventDefault();
+		isDragging = false;
+		textDescription = originalDescription;
+
+		const droppedFiles = event.dataTransfer?.files;
+		if (droppedFiles && droppedFiles.length > 0) {
+			const multipleFiles = { target: { files: droppedFiles } } as unknown as Event; // turn to Event
+			handleFileChange(multipleFiles); // handle the first file 
+		}
+	}
+
 	function triggerFileSelect() {
         if(inputFile) {
 		    inputFile.click();
@@ -120,11 +145,6 @@
 			})();
 		}
 	});
-
-	$inspect(filePath); // blank
-	$inspect(selectedFile); // null
-	$inspect(editable); // false
-
 </script>
 
 <div class="relative w-full group">
@@ -136,7 +156,8 @@
 	{:else if editable && !selectedFile}
 		<input type="file" accept="image/*,video/*,application/pdf,text/csv,.csv" bind:this={inputFile} onchange={handleFileChange} class="hidden"/>
 		<Border style = "upload" uploadProgress={uploadProgress} isError={isError}></Border>
-		<Button style="upload" onclick={triggerFileSelect} {...props}>
+		<Button style="upload" onclick={triggerFileSelect} ondragover={handleDragOver} 
+		ondragleave={handleDragLeave} ondrop={handleDrop} {...props}>
 			{#key styleIcon}
 				<span class="{isError ? 'text-red-500' : 'text-black'} text-lg animate-bounce-slow transition duration-200 ease-in-out">
 					<FontAwesomeIcon icon={styleIcon} />
