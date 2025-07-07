@@ -2,7 +2,6 @@
   import TitlePage from './TitlePage.svelte';
   import TableOfContents from './TableOfContents.svelte';
   import Section from './Section.svelte';
-  import Button from '../Button.svelte';
 
   export let moduleTitle: string;
   export let date: string;
@@ -28,6 +27,7 @@
         padding: 2rem;
         color: #000;
         background: #fff;
+        counter-reset: page 1;
       }
 
       h1, h2, h3 { color: #1a1a1a; }
@@ -37,7 +37,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        min-height: 90vh; /* avoid forced extra page */
+        min-height: 90vh;
         page-break-after: always;
         text-align: center;
       }
@@ -98,6 +98,31 @@
         margin-bottom: 1.5rem;
       }
 
+      .page-break {
+        page-break-before: always;
+      }
+
+      .page-number {
+        position: fixed;
+        bottom: 1.5cm;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 0.8rem;
+        color: #888;
+      }
+
+      .section::after {
+        content: counter(page);
+        position: absolute;
+        bottom: 1.5cm;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 0.8rem;
+        color: #888;
+      }
+
       @page {
         margin: 2cm;
       }
@@ -133,7 +158,7 @@
     </div>
 
     {#each sections as section}
-      <div class="section">
+      <div class="section page-break" id={"section-" + section.index}>
         <Section {...section} />
       </div>
     {/each}

@@ -4,7 +4,7 @@
   export let content: string;
 </script>
 
-<div class="section">
+<div class="section page-break">
   <h2>{index}. {title}</h2>
   {#each content.split('\n') as line}
     <p>{line}</p>
@@ -28,5 +28,8 @@
     line-height: 1.6;
     font-size: 1rem;
     margin-bottom: 1rem;
+  }
+  .page-break {
+    page-break-before: always;
   }
 </style>

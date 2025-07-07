@@ -47,9 +47,6 @@ export const POST: RequestHandler = async ({ request }) => {
 	const selectedItem = req.selectedItem ?? {};
 	const trainingTypes = req.trainingTypes ?? [];
 
-	// console.log('Selected item being sent:', selectedItem);
-
-
 	// Safely extract values from selectedItem with fallbacks
 	const moduleTitle = selectedItem.title ?? 'Untitled Module';
 	const leader = selectedItem.leader ?? '—';
@@ -119,7 +116,18 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const pdfBuffer = await page.pdf({
 		format: 'A4',
-		printBackground: true
+		printBackground: true,
+		displayHeaderFooter: true,
+		footerTemplate: `
+			<div style="font-size:10px; width:100%; text-align:center; color:gray; padding:10px;">
+			<span class="pageNumber"></span> / <span class="totalPages"></span>
+			</div>`,
+		margin: {
+			top: '1cm',
+			bottom: '2cm',
+			left: '1.5cm',
+			right: '1.5cm'
+		}
 	});
 
 	await browser.close();
