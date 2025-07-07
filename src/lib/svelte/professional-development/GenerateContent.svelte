@@ -64,38 +64,45 @@
 	}
 </script>
 
-<!-- PDF Button -->
+<!-- PDF Generate Button -->
 <div class="w-full flex justify-center mt-10">
 	<Button style="submit" addStyle="max-w-[400px]" onclick={generatePDF}>
 		<div>Generate Training Report PDF</div>
 	</Button>
 </div>
 
-<!-- PDF Preview -->
+<!-- PDF Preview & Actions -->
 {#if !hideContent}
-	<div class="w-full mt-10">
-		<Heading type="h2">PDF Preview</Heading>
+	<div class="w-full flex justify-center mt-12">
+		<div class="w-full max-w-5xl bg-[#F9FAFB] border border-gray-300 rounded-xl p-6 shadow-lg">
+			<!-- Heading + Buttons in a Row -->
+			{#if showPrintButton}
+				<div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+					<Heading type="h2" addStyle="text-[#185A37]">PDF Preview</Heading>
 
-		{#if showPrintButton}
-			<div class="flex justify-center mt-4 gap-4">
-				<Button style="underline" onclick={printPDF}>
-					<div class="font-bold text-lg tracking-wide">Print PDF</div>
-				</Button>
-
-				{#if downloadURL}
-					<a href={downloadURL} download="Training_Report.pdf">
-						<Button style="underline">
-							<div class="font-bold text-lg tracking-wide">Download PDF</div>
+					<div class="flex gap-4">
+						<Button style="underline" onclick={printPDF} addStyle="text-green-700">
+							<div class="font-bold text-lg tracking-wide">Print PDF</div>
 						</Button>
-					</a>
-				{/if}
-			</div>
-		{/if}
 
-		<iframe
-			id="pdf-preview"
-			class="w-full h-[600px] border mt-4"
-			title="PDF Preview of Training Report">
-		</iframe>
+						{#if downloadURL}
+							<a href={downloadURL} download="Training_Report.pdf">
+								<Button style="underline" addStyle="text-green-700">
+									<div class="font-bold text-lg tracking-wide">Download PDF</div>
+								</Button>
+							</a>
+						{/if}
+					</div>
+				</div>
+			{:else}
+				<Heading type="h2" addStyle="text-gray-900 mb-6">PDF Preview</Heading>
+			{/if}
+
+			<iframe
+				id="pdf-preview"
+				class="w-full h-[600px] border border-gray-300 rounded-md shadow"
+				title="PDF Preview of Training Report"
+			></iframe>
+		</div>
 	</div>
 {/if}
