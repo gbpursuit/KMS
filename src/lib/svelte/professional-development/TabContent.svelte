@@ -16,12 +16,21 @@
     let editable: boolean = $state(false)
 
     async function toggleMode() {
-        let wasEditable = editable; // if button is initially on, we save it afterwards
-        editable = !editable;
+        // let wasEditable = editable; // if button is initially on, we save it afterwards
+        let hasUnsavedChanges = JSON.stringify(tabContent) !== JSON.stringify(initContent) || JSON.stringify(item) !== JSON.stringify(initItem);
 
-        // if (wasEditable) {
-        //     await callAdd();
-        // }
+        if (hasUnsavedChanges) {
+            const confirmed = confirm('Unsaved changes will be lost if you turn off editor mode. Are you sure you want to proceed?');
+            if (!confirmed) return;
+
+            await callRevert();
+            editable = false;
+            return;
+        }
+
+        editable = !editable;
+        recentlyEdited = false
+        recentlySaved = false
     }
 
     let saved: boolean = $state(false);
