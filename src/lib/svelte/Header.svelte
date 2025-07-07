@@ -78,6 +78,11 @@
 	$effect(() => {
 		let parts = currentPath.split('/').filter(Boolean);
 		parts = currentPath === '/' ? [...parts] : ['program', ...parts];
+
+		if (data.user.roleId === 3) {
+			parts = parts.filter((part) => part !== 'program');
+		}
+
 		pathIdParts = [...parts];
 		pathNameParts = parts.map((part: string) => {
 			if (part === 'program') return 'Programs'; 
