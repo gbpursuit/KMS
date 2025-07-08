@@ -46,6 +46,9 @@ export const POST: RequestHandler = async ({ request }) => {
 	const tabContent: TabInterface = req.tabContent ?? {};
 	const selectedItem = req.selectedItem ?? {};
 	const trainingTypes = req.trainingTypes ?? [];
+	const window = req.window ?? {};
+
+	console.log
 
 	// Safely extract values from selectedItem with fallbacks
 	const moduleTitle = selectedItem.title ?? 'Untitled Module';
@@ -72,7 +75,8 @@ export const POST: RequestHandler = async ({ request }) => {
 	const sectionData = Object.values(tabContent).map((tab, i) => ({
 		index: i + 1,
 		title: tab?.title ?? `Untitled Section ${i + 1}`,
-		content: renderTabContent(tab?.content ?? null)
+		// content: renderTabContent(tab?.content ?? null)
+		content: tab?.content
 	}));
 
 	// Final props passed to Base.svelte
@@ -83,7 +87,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		numParticipants,
 		trainingType,
 		tocItems,
-		sections: sectionData
+		sections: sectionData,
+		window
 	};
 
 	// console.log('Generating PDF with:', props);

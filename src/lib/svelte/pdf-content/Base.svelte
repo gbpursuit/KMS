@@ -2,6 +2,7 @@
   import TitlePage from './TitlePage.svelte';
   import TableOfContents from './TableOfContents.svelte';
   import Section from './Section.svelte';
+	import type { EditableContent } from '$lib/functions/tab-content';
 
   export let moduleTitle: string;
   export let date: string;
@@ -9,7 +10,8 @@
   export let numParticipants: number;
   export let trainingType: string;
   export let tocItems: { index: number; title: string }[];
-  export let sections: { index: number; title: string; content: string }[];
+  export let sections: { index: number; title: string; content: EditableContent }[];
+  export let window: any;
 
   const tocWithPages = tocItems.map((item, i) => ({
     ...item,
@@ -20,7 +22,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Training Report</title>
+    <!-- <title>Training Report</title> -->
     <style>
       body {
         font-family: sans-serif;
@@ -84,7 +86,7 @@
       .section {
         padding: 1rem 0;
         page-break-after: auto;
-      }
+      } 
 
       h2 {
         font-size: 1.25rem;
@@ -159,7 +161,7 @@
 
     {#each sections as section}
       <div class="section page-break" id={"section-" + section.index}>
-        <Section {...section} />
+        <Section origin={window.origin} {...section} />
       </div>
     {/each}
   </body>

@@ -28,7 +28,8 @@
 			body: JSON.stringify({
 				tabContent,
 				selectedItem,
-				trainingTypes: training
+				trainingTypes: training,
+				window: window.location
 			})
 		});
 
