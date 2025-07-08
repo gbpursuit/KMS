@@ -83,25 +83,44 @@
             hi
         </div>
     {:else}
-        <h1 class="mt-4 font-bold text-2xl">{selectedName}'s response</h1>
-        <div class="flex flex-col gap-1 p-4 ">
-            {#each Object.entries(cleanCSV()[selectedName]) as [group, items]}
-                <h2 class="font-bold text-xl">{group}</h2>
-                <table class="w-full border border-black rounded overflow-hidden">
-                    <tbody>
-                        {#each Object.entries(items) as [category, value]}
-                            <tr class="border-t">
+        <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
+
+            <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2">
+                {selectedName}'s Response
+            </h1>
+
+            <div class="space-y-6">
+                {#each Object.entries(cleanCSV()[selectedName]) as [group, items]}
+                    <div class="border-l-4 border-[var(--font-green)] bg-gray-50 rounded-md p-4 shadow-sm transition-shadow]">
+
+                        <h2 class="text-lg font-semibold text-gray-800 mb-3">
+                            {group}
+                        </h2>
+
+                        <div class="flex flex-col gap-5">
+                            {#each Object.entries(items) as [category, value]}
                                 {#if category !== 'Unknown'}
-                                    <td class="p-2 font-medium w-1/2">{category}</td>
-                                    <td class="p-2">{value}</td>
+                                    <div class="flex flex-col md:flex-row md:items-start justify-between gap-3 p-3 border border-transparent rounded-md transition-all duration-200
+                                        hover:border-[var(--font-green)] hover:bg-[rgba(27,102,62,0.05)]">
+
+                                        <div class="md:w-1/2 font-semibold text-[var(--font-green)]">
+                                            {category}
+                                        </div>
+
+                                        <div class="md:w-1/2 text-gray-900 bg-[rgba(0,0,0,0.04)] px-3 py-2 rounded">
+                                            {value}
+                                        </div>
+                                    </div>
                                 {:else}
-                                    <td class="p-2" colspan="2">{value}</td>
+                                    <div class="italic text-gray-600 text-sm px-2 py-1">
+                                        {value}
+                                    </div>
                                 {/if}
-                            </tr>
-                        {/each}
-                    </tbody>
-                </table>
-            {/each}
+                            {/each}
+                        </div>
+                    </div>
+                {/each}
+            </div>
         </div>
     {/if}
 {/if}
