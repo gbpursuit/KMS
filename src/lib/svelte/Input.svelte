@@ -36,7 +36,7 @@
 </script>
 
 {#if type === 'password'}
-<div class="flex flex-col w-full">
+<div class="flex flex-col w-full relative">
     <input bind:value={password} type={showPassword ? 'text' : 'password'} class="{styleValue} {addStyle}" {...props}/>
 
     <button type="button"
