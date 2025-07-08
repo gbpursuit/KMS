@@ -8,8 +8,8 @@
     import Content from "./Content.svelte";
     let { editable, currentContent = $bindable() }: { editable: boolean, currentContent: EditableContent | null} = $props()
     let displayTextTypes = $state(false)
-
-	function addItem(e: PointerEvent) {
+	
+    function addItem(e: PointerEvent) {
         if(currentContent) {
             if(e.ctrlKey) {
                 let temp = JSON.parse(JSON.stringify(currentContent))
@@ -50,16 +50,18 @@
 	}
 
     function verifyChange(currentType: EditableContent | null, changeType: string) {
-        if(currentType) {
-            if(currentType.type ==='plain' || currentType.type === 'heading') {
-                let confirmed = confirm('Changing this to an upload type will remove current content. Continue?');
-                if (!confirmed) return;
+        if (!currentType) return;
 
-                currentType.content = "";
-            } 
-            currentType.type = changeType;
-            displayTextTypes = ! displayTextTypes;
+        const isTextType = currentType.type === 'plain' || currentType.type === 'heading';
+
+        if (isTextType && currentType.content) {
+            const confirmed = confirm('Changing this to an upload type will remove current content. Continue?');
+            if (!confirmed) return;
+            currentType.content = "";
         }
+
+        currentType.type = changeType;
+        displayTextTypes = !displayTextTypes;
     }
 
 </script>
