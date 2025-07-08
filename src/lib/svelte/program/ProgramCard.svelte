@@ -2,6 +2,7 @@
 	import { type ProgramAll } from '$lib/functions/module';
     import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import { ROUTE } from '../../../routes/routes';
+	import Button from '../Button.svelte';
     // import type { PageProps } from './$types';
 
     export let program: ProgramAll;
@@ -31,9 +32,7 @@
     }
 </script>
 
-<button class="group relative h-full w-full py-16 px-4 border-2 border-[#C3C6CE] rounded-[20px] shadow-[0_4px_10px_rgba(0,0,0,0.1)] transition-all duration-500 hover:shadow-[0_4px_18px_rgba(27,102,62,0.5)] hover:border-[#1B663E] hover:-translate-y-3"
-on:click={(e) => handleButton(e, program.id, data.user)}
->
+<Button style='program-card' onclick={(e) => handleButton(e, program.id, data.user)}>
     <div class="flex flex-col w-full h-[100%] gap-2 justify-center items-center">
         <FontAwesomeIcon icon={program.icon} class="text-xl lg:text-2xl xl:text-3xl text-[var(--font-green)]"/>
         <div class="flex flex-col text-black group-hover:text-[var(--font-green)] transition duration-400 ease-in-out justify-center items-center w-[80%] text-center">
@@ -44,4 +43,4 @@ on:click={(e) => handleButton(e, program.id, data.user)}
         </div>
     </div>
     <span class="absolute left-1/2 bottom-0 translate-x-[-50%] translate-y-[125%] opacity-0 group-hover:translate-y-[50%] group-hover:opacity-100 transition-all duration-300 ease-out bg-[#1B663E] text-white text-sm px-4 py-1.5 rounded-xl shadow-lg">View Program</span>
-</button>
+</Button>
