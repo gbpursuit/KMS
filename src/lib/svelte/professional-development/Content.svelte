@@ -49,6 +49,19 @@
             }
 	}
 
+    function verifyChange(currentType: EditableContent | null, changeType: string) {
+        if(currentType) {
+            if(currentType.type ==='plain' || currentType.type === 'heading') {
+                let confirmed = confirm('Changing this to an upload type will remove current content. Continue?');
+                if (!confirmed) return;
+
+                currentType.content = "";
+            } 
+            currentType.type = changeType;
+            displayTextTypes = ! displayTextTypes;
+        }
+    }
+
 </script>
 
 {#if currentContent}
@@ -69,9 +82,12 @@
                         <div class="flex flex-col items-start">
                             <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='plain'; displayTextTypes=!displayTextTypes}}> Plain </Button>
                             <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='heading'; displayTextTypes=!displayTextTypes}}> Heading </Button>
-                            <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='image'; displayTextTypes=!displayTextTypes}}> Image </Button>
+                            <Button style = "add-item" onclick={() => {verifyChange(currentContent, 'image')}}> Image </Button>
+                            <Button style = "add-item" onclick={() => {verifyChange(currentContent, 'video')}}> Video </Button>
+                            <Button style = "add-item" onclick={() => {verifyChange(currentContent, 'pdf')}}> PDF </Button>
+                            <!-- <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='image'; displayTextTypes=!displayTextTypes}}> Image </Button>
                             <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='video'; displayTextTypes=!displayTextTypes}}> Video </Button>
-                            <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='pdf'; displayTextTypes=!displayTextTypes}}> PDF </Button>
+                            <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='pdf'; displayTextTypes=!displayTextTypes}}> PDF </Button> -->
                         </div>
                     </div>
                     
