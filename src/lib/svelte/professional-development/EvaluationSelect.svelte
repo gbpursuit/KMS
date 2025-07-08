@@ -71,18 +71,18 @@
 		}
 	});
 
-    let allCSV = $derived(() => [...Object.keys(cleanCSV()), 'All']);
+    // let allCSV = $derived(() => [...Object.keys(cleanCSV()), 'All']);
 
 </script>
 
-<Select style = 'evaluation' options={allCSV().sort()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
+<Select style = 'evaluation' options={Object.keys(cleanCSV()).sort()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
 
 {#if selectedName}
-    {#if selectedName === 'All'}
+    <!-- {#if selectedName === 'All'}
         <div class="flex flex-col mt-4">
             hi
         </div>
-    {:else}
+    {:else} -->
         <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
 
             <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2">
@@ -122,7 +122,7 @@
                 {/each}
             </div>
         </div>
-    {/if}
+    <!-- {/if} -->
 {/if}
 
 <!-- {#each Object.entries(allValues()[selectedName]) as [key, value]}
