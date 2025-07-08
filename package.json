@@ -45,11 +45,13 @@
 		"@fortawesome/free-solid-svg-icons": "^6.7.2",
 		"@fortawesome/svelte-fontawesome": "^0.2.3",
 		"@prisma/client": "^6.11.1",
+		"apexcharts": "^4.7.0",
 		"bcrypt": "^6.0.0",
 		"html2pdf.js": "^0.10.3",
 		"jsonwebtoken": "^9.0.2",
 		"localtunnel": "^2.0.2",
+		"papaparse": "^5.5.3",
 		"puppeteer": "^24.11.2",
-		"papaparse": "^5.5.3"
+		"svelte-apexcharts": "^1.0.2"
 	}
 }
