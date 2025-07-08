@@ -144,13 +144,13 @@
                 </Paragraph>
             </div>
             <div class="flex col w-full gap-8">
-              <Button style="submit" addStyle="bg-red-800 font-bold" onclick={() => {if(data.user) changeRole(data.user.id, 1)}}>
+              <Button style="submit" addStyle="bg-red-800 hover:bg-red-700 font-bold" onclick={() => {if(data.user) changeRole(data.user.id, 1)}}>
                 {button1Text}
               </Button>
               <Button style="submit" addStyle="bg-green-800 font-bold" onclick={() => {if(data.user) changeRole(data.user.id, 2)}}>
                 {button2Text}
               </Button>
-              <Button style="submit" addStyle="bg-yellow-600 font-bold" onclick={() => {if(data.user) changeRole(data.user.id, 3)}}>
+              <Button style="submit" addStyle="bg-yellow-600 hover:bg-yellow-500 font-bold" onclick={() => {if(data.user) changeRole(data.user.id, 3)}}>
                 {button3Text}
               </Button>
             </div>
