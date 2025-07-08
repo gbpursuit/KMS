@@ -5,8 +5,6 @@
 	import type { EditableContent } from '$lib/functions/tab-content';
 	let { filePath }: { filePath: string } = $props();
 
-    // cleanCSV: Record<string, Record<string, Record<string, string>>>, csvData: Record<string,string>[]
-
     let selectedName: string = $state("");
 
     let csvData: Record<string, string>[] = $state([]); // or $state<Record<string, string>[]>([]);
@@ -73,31 +71,39 @@
 		}
 	});
 
+    let allCSV = $derived(() => [...Object.keys(cleanCSV()), 'All']);
+
 </script>
 
-<Select style = 'evaluation' options={Object.keys(cleanCSV())} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
+<Select style = 'evaluation' options={allCSV().sort()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
 
 {#if selectedName}
-    <h1 class="mt-4 font-bold text-2xl">{selectedName}'s response</h1>
-    <div class="flex flex-col gap-1 p-4 ">
-        {#each Object.entries(cleanCSV()[selectedName]) as [group, items]}
-            <h2 class="font-bold text-xl">{group}</h2>
-            <table class="w-full border border-black rounded overflow-hidden">
-                <tbody>
-                    {#each Object.entries(items) as [category, value]}
-                        <tr class="border-t">
-                            {#if category !== 'Unknown'}
-                                <td class="p-2 font-medium w-1/2">{category}</td>
-                                <td class="p-2">{value}</td>
-                            {:else}
-                                <td class="p-2" colspan="2">{value}</td>
-                            {/if}
-                        </tr>
-                    {/each}
-                </tbody>
-            </table>
-        {/each}
-    </div>
+    {#if selectedName === 'All'}
+        <div class="flex flex-col mt-4">
+            hi
+        </div>
+    {:else}
+        <h1 class="mt-4 font-bold text-2xl">{selectedName}'s response</h1>
+        <div class="flex flex-col gap-1 p-4 ">
+            {#each Object.entries(cleanCSV()[selectedName]) as [group, items]}
+                <h2 class="font-bold text-xl">{group}</h2>
+                <table class="w-full border border-black rounded overflow-hidden">
+                    <tbody>
+                        {#each Object.entries(items) as [category, value]}
+                            <tr class="border-t">
+                                {#if category !== 'Unknown'}
+                                    <td class="p-2 font-medium w-1/2">{category}</td>
+                                    <td class="p-2">{value}</td>
+                                {:else}
+                                    <td class="p-2" colspan="2">{value}</td>
+                                {/if}
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            {/each}
+        </div>
+    {/if}
 {/if}
 
 <!-- {#each Object.entries(allValues()[selectedName]) as [key, value]}
