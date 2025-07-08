@@ -32,7 +32,7 @@
     }
 </script>
 
-<Button style='program-card' onclick={(e) => handleButton(e, program.id, data.user)}>
+<Button style='program-card' onclick={(e: Event) => handleButton(e, program.id, data.user)}>
     <div class="flex flex-col w-full h-[100%] gap-2 justify-center items-center">
         <FontAwesomeIcon icon={program.icon} class="text-xl lg:text-2xl xl:text-3xl text-[var(--font-green)]"/>
         <div class="flex flex-col text-black group-hover:text-[var(--font-green)] transition duration-400 ease-in-out justify-center items-center w-[80%] text-center">
