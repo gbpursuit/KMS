@@ -63,12 +63,15 @@
         case 'upload':
             styleValue = "flex flex-col gap-3 bg-[#E8E8E8] w-full h-[125px] rounded-lg justify-center items-center cursor-pointer"
             break;
+        case 'program-card':
+            styleValue = "group relative h-full w-full py-16 px-4 border-2 border-[#C3C6CE] rounded-[20px] shadow-[0_4px_10px_rgba(0,0,0,0.1)] transition-all duration-500 hover:shadow-[0_4px_18px_rgba(27,102,62,0.5)] hover:border-[#1B663E] hover:-translate-y-3"
+            break;
         default:
             break;
     }
 
 </script>
 
-<button type={toButtonType(type)} class="{styleValue} {addStyle}" {...props}>
+<button type={toButtonType(type)} class="cursor-pointer {styleValue} {addStyle}" {...props}>
     {@render children()}
 </button>
