@@ -7,7 +7,7 @@
 	import FileType from '$lib/svelte/File.svelte';
     import { addImageData, uploadFileWithProgress } from '$lib/functions/media';
 
-    let { style = $bindable(), editable = false, addStyle = '', filePath = $bindable(), ...props } = $props()
+    let { style = $bindable(), editable = false, addStyle = '', filePath = $bindable(), title, ...props } = $props()
     let textDescription = $state('');
 	let originalDescription = '';
     let styleIcon = $state(faArrowUpFromBracket);
@@ -136,7 +136,7 @@
 		if (selectedFile) {
 			uploading = true;
 			(async () => {
-				let uploadedPath = await uploadFileWithProgress(selectedFile, 'uncategorized', (percent) => {
+				let uploadedPath = await uploadFileWithProgress(selectedFile, title, (percent) => {
 					console.log('Percent: ', percent);
 					uploadProgress = percent;
 				});

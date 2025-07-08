@@ -7,7 +7,7 @@ import path from 'path';
 export const POST: RequestHandler = async ({ request }) => {
     let form = await request.formData();
     let file = form.get('file') as File | null;
-    let leader = form.get('leader')?.toString() ?? 'uncategorized'; // if leader name is undefined, folder is named uncategorized -- for now leader muna category
+    let title = form.get('title')?.toString() ?? 'uncategorized'; // if title name is undefined, folder is named uncategorized -- for now title muna category
 
     if (!file || typeof file === 'string') {
 		  return data.json({ path: null });
@@ -25,14 +25,14 @@ export const POST: RequestHandler = async ({ request }) => {
 
     let buffer = Buffer.from(await file.arrayBuffer());    // file binary data to be saved
 
-    let folderPath = path.join('static', 'uploads', leader);
+    let folderPath = path.join('static', 'uploads', title);
     await mkdir(folderPath, { recursive: true })            // automatic creation of folders if not existing
 
     let fileName = `${file.name}`;         
     let filePath = path.join(folderPath, fileName);
     await writeFile(filePath, buffer);                      // save image to filePath
 
-    const PATH = `/uploads/${leader}/${fileName}`;
+    const PATH = `/uploads/${title}/${fileName}`;
     return data.json({ path: PATH });                       // return PATH file to store in database
 
 }

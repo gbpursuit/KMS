@@ -93,6 +93,7 @@
     }
 
     let canEdit = data.user?.permission?.includes('can_edit');
+    let moduleTitle = `module-${data.selectedItem.id}-` + data.selectedItem.title.toLowerCase().replace(' ', '-')
 
     $effect(() => {
         if(JSON.stringify(tabContent) != JSON.stringify(initContent) || JSON.stringify(item) != JSON.stringify(initItem)) recentlyEdited = true
@@ -130,6 +131,6 @@
     </div>
 
     <div class="flex-row w-full text-sm bg-white p-6 rounded-lg border border-[#AFAFAF] shadow-md mt-5">
-        <ActiveTab bind:title={tabContent[activeTab].title} bind:content={tabContent[activeTab].content} bind:activeTab editable={editable} bind:initContent={initContent[activeTab].content} />
+        <ActiveTab moduleTitle={moduleTitle} bind:title={tabContent[activeTab].title} bind:content={tabContent[activeTab].content} bind:activeTab editable={editable} bind:initContent={initContent[activeTab].content} />
     </div>
 </div>

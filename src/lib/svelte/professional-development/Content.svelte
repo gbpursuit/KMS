@@ -6,7 +6,7 @@
     import UploadFile from "../Upload.svelte";
 	import Button from "../Button.svelte";
     import Content from "./Content.svelte";
-    let { editable, currentContent = $bindable() }: { editable: boolean, currentContent: EditableContent | null} = $props()
+    let { editable, currentContent = $bindable(), title }: { editable: boolean, currentContent: EditableContent | null, title: string} = $props()
     let displayTextTypes = $state(false)
 	
     function addItem(e: PointerEvent) {
@@ -73,7 +73,7 @@
             {#if currentContent.type === 'plain' || currentContent.type === 'heading'}
                 <TextArea type="text" bind:style={currentContent.type} disabled={!editable} bind:text={currentContent.content} />
             {:else}
-                <UploadFile bind:style={currentContent.type} disabled={!editable} bind:filePath={currentContent.content} editable={editable} />
+                <UploadFile title={title} bind:style={currentContent.type} disabled={!editable} bind:filePath={currentContent.content} editable={editable} />
             {/if}
             <div class="flex flex-row gap-2 transition-width duration-700 ease-in-out {editable? 'w-[60px]' : 'w-0'} overflow-hidden">
                 <Button addStyle="transition duration-100 hover:text-green-500 cursor-pointer {editable? 'opacity-100': 'opacity-0'}" onclick={addItem} disabled={!editable}>
@@ -104,7 +104,7 @@
         </div>
 
         {#if currentContent.next}
-            <Content editable={editable} bind:currentContent={currentContent.next}/>
+            <Content title={title} editable={editable} bind:currentContent={currentContent.next}/>
         {/if}
     </div>
 {/if}

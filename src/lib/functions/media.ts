@@ -27,11 +27,11 @@ export async function addImageData(file: File | null, leader: string | null = nu
     return path;
 }
 
-export async function uploadFileWithProgress(file: File | null, leader: string | null = null, onProgress: (percent: number) => void): Promise<string> {
+export async function uploadFileWithProgress(file: File | null, title: string | null = null, onProgress: (percent: number) => void): Promise<string> {
 	return new Promise((resolve, reject) => {
 		let formData = new FormData();
 		if (file) formData.append('file', file);
-		if (leader) formData.append('leader', leader);
+		if (title) formData.append('title', title);
 
 		let xhr = new XMLHttpRequest();
 

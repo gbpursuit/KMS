@@ -86,18 +86,6 @@
       .section {
         padding: 1rem 0;
         page-break-after: auto;
-      } 
-
-      h2 {
-        font-size: 1.25rem;
-        font-weight: 600;
-        border-bottom: 1px solid #ccc;
-        margin: 2rem 0 0.5rem;
-      }
-
-      p {
-        white-space: pre-line;
-        margin-bottom: 1.5rem;
       }
 
       .page-break {
