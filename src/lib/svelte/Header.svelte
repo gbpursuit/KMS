@@ -135,8 +135,8 @@
 		<div class="flex items-center gap-2">
 			<img src="/NISMED.png" alt="NISMED Logo" class="h-full object-cover">
             <a href="/" class="flex flex-col text-black cursor-pointer">
-				<h1 class="text-4xl font-bold  ">UP NISMED</h1>
-				<h1 class="text-xs font-bold ">Knowledge Management System</h1>
+				<h1 class="text-2xl sm:text-4xl font-bold">UP NISMED</h1>
+				<h1 class="text-[8px] sm:text-xs font-bold ">Knowledge Management System</h1>
             </a>
 			<!-- <button class="flex flex-col text-black cursor-pointer"
 			onclick = {() => window.location.href = "/"}
@@ -203,15 +203,15 @@
 	</nav>
 	<div class="{isOpen ? 'h-[calc(65dvh-120px)]' : 'h-0'} relative z-9 flex w-full transition-height duration-600 ease-in-out">
 		<div class="{isOpen ? 'translate-y-0' : '-translate-y-[calc(65dvh)]'} absolute w-full shadow-[0_15px_20px_rgba(0,0,0,0.1)] transition duration-600 ease-in-out overflow-hidden">
-			<div class="flex w-full bg-[#1B663E] justify-center items-start py-6 px-6 pb-12 overflow-hidden">
-				<div class="flex flex-col w-full max-w-[1280px] gap-6 overflow-hidden">
+			<div class="flex w-full bg-[#1B663E] justify-center items-start sm:py-6 px-6 sm:pb-12 overflow-hidden py-0 pb-0">
+				<div class="flex flex-col w-full max-w-[1280px] xl:gap-6 {isOpen? 'py-4': ''} overflow-hidden">
 					<div class="flex items-center justify-right">
 						<h1 class="text-xl sm:text-2xl md:text-3xl font-semibold text-white text-shadow-[0_5px_5px_rgba(0,0,0,0.5)] truncate">
 							Summary Table List
 						</h1>
 					</div>
 
-					<div class="flex flex-wrap justify-center items-start gap-6 w-full p-2">
+					<div class="flex flex-wrap justify-center items-start gap-6 w-full sm:p-2">
 						{#each grids as g}
 							<div class="flex flex-shrink w-full sm:w-[45%] md:w-[30%] min-w-0 rounded-md bg-white px-6 py-5 shadow-[0_2px_4px_rgba(0,0,0,0.15),_0_15px_20px_rgba(0,0,0,0.18)] 
 							will-change-transform transition-transform duration-500 ease-in-out hover:scale-[1.03]">
