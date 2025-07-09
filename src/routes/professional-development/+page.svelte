@@ -120,9 +120,22 @@
 	let pageButtons: number[] = $state([]);
 	let selectedFilter = $state('All');
 	let filterOptions = $state(['All', 'Online', 'Face-to-Face', 'Hybrid']);
+	let filteredItems: typeof data.pd.items;
 
-	$effect(() => {
+	$effect(() => {		
 		if(!data.selectedItem) {
+			if (selectedFilter === 'All') {
+				filteredItems = data.pd.items;
+			} else {
+				const matchedTraining = data.training.find(t => t.type === selectedFilter);
+				if (matchedTraining) {
+					const selectedId = matchedTraining.id;
+					filteredItems = data.pd.items.filter(item => item.trainingId === selectedId);
+				} else {
+					filteredItems = [];
+				}
+			}
+
 			totalPages = Math.max(1, Math.ceil(data.pd.items.length / tasksPerPage));
 
 			if (currentPage > totalPages) currentPage = totalPages;
@@ -130,7 +143,7 @@
 
 			startIndex = (currentPage - 1) * tasksPerPage;
 			endIndex = startIndex + tasksPerPage;
-			visibleTasks = data.pd.items.slice(startIndex, endIndex);
+			visibleTasks = filteredItems.slice(startIndex, endIndex);
 
 			pageButtons = getPageButtons(currentPage, totalPages);
 		}
