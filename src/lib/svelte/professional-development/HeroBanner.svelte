@@ -52,12 +52,6 @@
 </script>
 
 {#if pageLoaded}
-<div class="flex items-center gap-3 text-sm font-light text-yellow-400 mb-2">
-    <p class="text-sm font-semibold">23 of 50</p>
-    <div class="relative w-40 h-[6px] bg-gray-200 rounded-full overflow-hidden">
-        <div class="absolute top-0 left-0 h-full bg-yellow-500" style="width: 46%"></div>
-    </div>
-</div>
 
 <div class="flex-row w-full">
     <!-- Page title -->
