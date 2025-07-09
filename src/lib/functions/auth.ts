@@ -65,6 +65,7 @@ export function createSession(userId: number, cookies: Cookies) {
     cookies.set('session', token, {
         path: '/',
         httpOnly: true,
+        secure: false,
         sameSite: 'strict',
         maxAge: duration
     })
