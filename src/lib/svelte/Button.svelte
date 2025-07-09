@@ -66,6 +66,9 @@
         case 'program-card':
             styleValue = "group relative h-full w-full py-16 px-4 border-2 border-[#C3C6CE] rounded-[20px] shadow-[0_4px_10px_rgba(0,0,0,0.1)] transition-all duration-500 hover:shadow-[0_4px_18px_rgba(27,102,62,0.5)] hover:border-[#1B663E] hover:-translate-y-3"
             break;
+        case 'search':
+            styleValue = "flex justify-center items-center text-[var(--font-green)] hover:scale-110 transition-transform duration-200"
+            break;
         default:
             break;
     }

@@ -17,6 +17,7 @@
 	import Select from '$lib/svelte/Select.svelte';
 	import Label from '$lib/svelte/Label.svelte';
 	import Input from '$lib/svelte/Input.svelte';
+	import Button from '$lib/svelte/Button.svelte';
 
 	let { data } : PageProps = $props();
 
@@ -112,18 +113,19 @@
 
 	let currentPage = $state(1);
 	let tasksPerPage = 5;
-
 	let totalPages = $state(0);
 	let startIndex = $state(0);
 	let endIndex = $state(0);
+	let searchQuery = $state('');
 	let visibleTasks: any[] = $state([]);
 	let pageButtons: number[] = $state([]);
 	let selectedFilter = $state('All');
 	let filterOptions = $state(['All', 'Online', 'Face-to-Face', 'Hybrid']);
 	let filteredItems: typeof data.pd.items;
+	let searchTimeout: ReturnType<typeof setTimeout>;
 
-	$effect(() => {		
-		if(!data.selectedItem) {
+	function updateVisibleTasks() {
+		if (!data.selectedItem) {
 			if (selectedFilter === 'All') {
 				filteredItems = data.pd.items;
 			} else {
@@ -136,7 +138,17 @@
 				}
 			}
 
-			totalPages = Math.max(1, Math.ceil(data.pd.items.length / tasksPerPage));
+			// Filter by search query
+			const query = searchQuery.toLowerCase().trim();
+			if (query.length > 0) {
+				filteredItems = filteredItems.filter(item =>
+					item.title.toLowerCase().includes(query) ||
+					item.leader.toLowerCase().includes(query)
+				);
+			}
+
+			// Pagination
+			totalPages = Math.max(1, Math.ceil(filteredItems.length / tasksPerPage));
 
 			if (currentPage > totalPages) currentPage = totalPages;
 			if (currentPage < 1) currentPage = 1;
@@ -145,8 +157,13 @@
 			endIndex = startIndex + tasksPerPage;
 			visibleTasks = filteredItems.slice(startIndex, endIndex);
 
+			// Page buttons
 			pageButtons = getPageButtons(currentPage, totalPages);
 		}
+	}
+
+	$effect(() => {
+		updateVisibleTasks();
 	});
 
 	async function goToPage(page: number) {
@@ -251,10 +268,17 @@
 
 				<!-- Search Bar -->
 				<div class="flex items-center gap-2 px-3 py-1 border border-[var(--font-green)] rounded-full shadow-sm bg-white transition duration-200 focus-within:ring-2 focus-within:ring-[var(--font-green)]">
-					<input type="text" placeholder="Search modules..." class="w-[23ch] text-sm text-black placeholder-gray-400 bg-transparent border-none focus:outline-none focus:ring-0">
-					<button type="button" class="flex justify-center items-center text-[var(--font-green)] hover:scale-110 transition-transform duration-200">
+					<input type="text" placeholder="Search modules..." bind:value={searchQuery}
+						oninput={() => {
+							clearTimeout(searchTimeout);
+							searchTimeout = setTimeout(() => {
+								currentPage = 1; 
+								updateVisibleTasks();
+							}, 300); 
+						}} class="w-[23ch] text-sm text-black placeholder-gray-400 bg-transparent border-none focus:outline-none focus:ring-0"/>
+					<Button style="search" type="button" onclick={() => { clearTimeout(searchTimeout); searchTimeout = setTimeout(() => { currentPage = 1; updateVisibleTasks(); }, 10); }}>
 						<FontAwesomeIcon icon={faMagnifyingGlass} />
-					</button>
+					</Button>
 				</div>
 			</div>
 		</div>
