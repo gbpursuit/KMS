@@ -8,13 +8,19 @@ const USEHTTPS = fs.existsSync('./kms.local+1.pem') && fs.existsSync('./kms.loca
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
-	// server: {
-	// 	host: '0.0.0.0',
-	// 	https: USEHTTPS ? {
-	// 		key: fs.readFileSync('./kms.local+1-key.pem'),
-	// 		cert: fs.readFileSync('./kms.local+1.pem')
-	// 	}: undefined
-	// },
+	server: {
+		host: '0.0.0.0',
+		// https: USEHTTPS ? {
+		// 	key: fs.readFileSync('./kms.local+1-key.pem'),
+		// 	cert: fs.readFileSync('./kms.local+1.pem')
+		// }: undefined
+		https: undefined
+	},
+	preview: {
+		host: '0.0.0.0',
+		https: undefined,
+		allowedHosts: ['kms-online.local', 'kms.local'],
+	},
 	test: {
 		projects: [
 			{
