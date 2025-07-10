@@ -6,15 +6,21 @@
     import UploadFile from "../Upload.svelte";
 	import Button from "../Button.svelte";
     import Content from "./Content.svelte";
-    let { editable, currentContent = $bindable(), title }: { editable: boolean, currentContent: EditableContent | null, title: string} = $props()
+	import Select from "../Select.svelte";
+    let { editable, currentContent = $bindable(), title, leader = $bindable(), allAccounts = $bindable() }: { editable: boolean, currentContent: EditableContent | null, title: string, leader: string, allAccounts: Array<string>} = $props()
     let displayTextTypes = $state(false)
+
+    $effect(() => {
+        if(currentContent?.type == 'select-leader') currentContent.content = leader
+    })
 	
     function addItem(e: PointerEvent) {
         if(currentContent) {
             if(e.ctrlKey) {
                 let temp = JSON.parse(JSON.stringify(currentContent))
                 let prev: EditableContent = {
-                    type: 'plain',
+                    type: currentContent.type,
+                    disabled: false,
                     content: '',
                     prev: temp.prev,
                     next: temp,
@@ -26,7 +32,8 @@
             else {
                 let temp = JSON.parse(JSON.stringify(currentContent))
                 let next: EditableContent = {
-                    type: 'plain',
+                    type: currentContent.type,
+                    disabled: false,
                     content: '',
                     prev: true,
                     next: temp.next,
@@ -71,10 +78,15 @@
         <div class="flex flex-row w-full items-center gap-2">
             <!-- {JSON.stringify(currentContent)} -->
             {#if currentContent.type === 'plain' || currentContent.type === 'heading'}
-                <TextArea type="text" bind:style={currentContent.type} disabled={!editable} bind:text={currentContent.content} />
+                <TextArea type="text" bind:style={currentContent.type} disabled={!editable || currentContent.disabled} bind:text={currentContent.content} />
+            {:else if currentContent.type === 'select-leader'}
+                <Select style="module-select" options={allAccounts} bind:selected={leader} disabled={!editable || currentContent.disabled} placeholder='a User'/>
+            {:else if currentContent.type === 'select-account'}
+                <Select style="module-select" options={allAccounts} bind:selected={currentContent.content} disabled={!editable || currentContent.disabled} placeholder='a User'/>
             {:else}
-                <UploadFile title={title} bind:style={currentContent.type} disabled={!editable} bind:filePath={currentContent.content} editable={editable} />
+                <UploadFile title={title} bind:style={currentContent.type} disabled={!editable || currentContent.disabled} bind:filePath={currentContent.content} editable={editable} />
             {/if}
+            {#if !currentContent.disabled && currentContent.type != 'select-leader'}
             <div class="flex flex-row gap-2 transition-width duration-700 ease-in-out {editable? 'w-[60px]' : 'w-0'} overflow-hidden">
                 <Button addStyle="transition duration-100 hover:text-green-500 cursor-pointer {editable? 'opacity-100': 'opacity-0'}" onclick={addItem} disabled={!editable}>
                     <FontAwesomeIcon icon={faPlus}/>
@@ -84,6 +96,7 @@
                         <div class="flex flex-col items-start">
                             <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='plain'; displayTextTypes=!displayTextTypes}}> Plain </Button>
                             <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='heading'; displayTextTypes=!displayTextTypes}}> Heading </Button>
+                            <Button style = "add-item" onclick={() => {if(currentContent) currentContent.type='select-account'; displayTextTypes=!displayTextTypes}}> Accounts </Button>
                             <Button style = "add-item" onclick={() => {verifyChange(currentContent, 'image')}}> Image </Button>
                             <Button style = "add-item" onclick={() => {verifyChange(currentContent, 'video')}}> Video </Button>
                             <Button style = "add-item" onclick={() => {verifyChange(currentContent, 'pdf')}}> PDF </Button>
@@ -101,10 +114,11 @@
                     <FontAwesomeIcon icon={faMinus}/>
                 </Button>
             </div>
+            {/if}
         </div>
 
         {#if currentContent.next}
-            <Content title={title} editable={editable} bind:currentContent={currentContent.next}/>
+            <Content title={title} editable={editable} bind:currentContent={currentContent.next} bind:leader bind:allAccounts/>
         {/if}
     </div>
 {/if}

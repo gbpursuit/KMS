@@ -6,6 +6,7 @@
       "content":
         {
           "type": "plain",
+          "disabled": false,
           "prev": false, 
           "content": "", 
           "next": null,
@@ -25,6 +26,7 @@
       "content":
         {
           "type": "plain",
+          "disabled": false,
           "prev": false, 
           "content": "",
           "next": null,
@@ -42,10 +44,53 @@
       "title": "Personnel",
       "index": "3",
       "content":{
-          "type": "plain",
+          "type": "heading",
+          "disabled": true,
           "prev": false, 
-          "content": "",
-          "next": null,
+          "content": "Project Leader",
+          "next": 
+            {
+              "type": "select-leader",
+              "disabled": false,
+              "prev": true, 
+              "content": "",
+              "next": 
+                {
+                  "type": "heading",
+                  "disabled": true,
+                  "prev": true, 
+                  "content": "Training Team",
+                  "next": 
+                    {
+                      "type": "select-account",
+                      "disabled": false,
+                      "prev": true, 
+                      "content": "",
+                      "next": null,
+                      "style": {
+                        "type": "",
+                        "size": "",
+                        "spacing": "",
+                        "color": "",
+                        "align": ""
+                      }
+                    },
+                  "style": {
+                    "type": "",
+                    "size": "",
+                    "spacing": "",
+                    "color": "",
+                    "align": ""
+                  }
+                },
+              "style": {
+                "type": "",
+                "size": "",
+                "spacing": "",
+                "color": "",
+                "align": ""
+              }
+            },
           "style": {
             "type": "",
             "size": "",
@@ -62,6 +107,7 @@
       "content":
         {
           "type": "plain",
+          "disabled": false,
           "prev": false, 
           "content": "", 
           "next": null,
@@ -81,6 +127,7 @@
       "content":
         {
           "type": "plain",
+          "disabled": false,
           "prev": false, 
           "content": "", 
           "next": null,
@@ -100,6 +147,7 @@
       "content":
         {
           "type": "plain",
+          "disabled": false,
           "prev": false, 
           "content": "", 
           "next": null,

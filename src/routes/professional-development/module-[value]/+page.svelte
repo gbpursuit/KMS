@@ -24,6 +24,8 @@
 
 	let item = $state({ id: -1, title: '', leader: '', numParticipants: -1, training: [{}], trainingId: -1, date: ''})
 
+	let allAccounts: Array<string> = $state([])
+
 	onMount(async () => {
 		if (!data || !data.selectedItem) return;
 
@@ -36,6 +38,10 @@
 		item.date = data.selectedItem.date
 
 		tabContent = await updateTabContent(data.selectedItem.id);
+
+        let error: any = await getData('account').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName })
+        if(error) console.error('Error: Failed to get all accounts', error)
+
 		pageLoaded = true
 		console.log(tabContent);
 	});
@@ -89,7 +95,7 @@
 				Loading Contents
 			</div>
 		{:else}
-			<HeroBanner bind:item bind:canEdit />
+			<HeroBanner bind:item bind:canEdit bind:allAccounts />
 		{/if}
 	</div>
 
@@ -107,7 +113,7 @@
 						Loading Contents
 					</div>
 				{:else}
-					<TabContent bind:activeTab data={data} bind:item bind:tabContent bind:recentlyEdited bind:recentlySaved/>
+					<TabContent bind:activeTab data={data} bind:item bind:tabContent bind:recentlyEdited bind:recentlySaved bind:allAccounts/>
 				{/if}
 			</div>
 			<div>

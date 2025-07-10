@@ -3,7 +3,7 @@
 	import Input from "../Input.svelte";
     import EvaluationUpload from "./EvaluationUpload.svelte";
 
-	let { editable, activeTab = $bindable(), content = $bindable(), title = $bindable(), initContent = $bindable(), moduleTitle } = $props();
+	let { editable, activeTab = $bindable(), content = $bindable(), title = $bindable(), initContent = $bindable(), moduleTitle, leader = $bindable(), allAccounts = $bindable() } = $props();
     let _moduleTitle = $state(`${moduleTitle}/${activeTab.toLowerCase().replace(' ', '-')}`)
     $effect(() => {
         _moduleTitle = `${moduleTitle}/${activeTab.toLowerCase().replace(' ', '-')}`
@@ -16,6 +16,6 @@
     {#if activeTab.toLowerCase() === 'evaluation'}
         <EvaluationUpload title={_moduleTitle} editable={editable} bind:currentContent={content} bind:initialContent={initContent} />
     {:else}
-        <Content title={_moduleTitle} editable={editable} bind:currentContent={content}/>
+        <Content title={_moduleTitle} editable={editable} bind:currentContent={content} bind:leader bind:allAccounts />
     {/if}
 </div>

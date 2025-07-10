@@ -7,18 +7,16 @@
 	import { onMount } from "svelte";
 	import { deleteData, getData } from "$lib/functions/database";
 
-    let { item = $bindable(), canEdit = $bindable() } = $props()
+    let { item = $bindable(), canEdit = $bindable(), allAccounts = $bindable() } = $props()
 
-	let allAccounts: Array<string> = $state([])
 	let allTraining: Array<string> = $state([])
     let editable: boolean = $state(false)
 
     let pageLoaded = $state(false)
 
     onMount(async() => {
-        let error: any = await getData('account').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName })
-        if(error) console.error('Error: Failed to get all accounts', error)
 
+        let error: any | null = null
         error = await getData('pd/training').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allTraining[i] = v[i].type })
         if(error) console.error('Error: Failed to get all training types', error)
         
