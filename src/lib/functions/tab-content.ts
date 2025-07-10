@@ -12,18 +12,13 @@ export interface EditableContent {
     content: string
     prev: boolean
     next: EditableContent | null
-    style: Record<string, any>;
+    style: Style
 }
 
 export interface Tab {
-<<<<<<< Updated upstream
     title: string,
     content: EditableContent,
     index: number
-=======
-    title: string
-    content: EditableContent
->>>>>>> Stashed changes
 }
 
 export interface TabInterface {
