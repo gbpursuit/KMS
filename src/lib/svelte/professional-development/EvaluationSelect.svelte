@@ -41,9 +41,18 @@
 
     function regexShi(headers: Record<string, Record<string, string>>) {
         let grouped: Record<string, Record<string, Record<string, string>>> = {};
+    
+        const skipFields = [
+            "Timestamp",
+            "Email Address",
+            "Grade Level(s) Taught",
+            "Read and understand the Data Privacy Notice in accomplishing the evaluation form for this training workshop."
+        ];
 
         Object.entries(headers).forEach(([name, answers]) => {
             Object.entries(answers).forEach(([key, value]) => {
+                if (skipFields.includes(key.trim())) return;
+
                 let match = key.match(/^(.*?)(?:\s*\[([^\]]+)\])?$/);
                 if(!match) return;
 
@@ -71,18 +80,157 @@
 		}
 	});
 
-    // let allCSV = $derived(() => [...Object.keys(cleanCSV()), 'All']);
+    let allCSV = $derived(() => [...Object.keys(cleanCSV()), 'All']);
+
+    function summarizeByLabelIndex(
+        groupedData: Record<string, Record<string, Record<string, string>>>
+    ) {
+        let result: Record<string,Record<string,
+                {
+                    rawCount: number;
+                    totalCount: number;
+                    totalIndex: number;
+                    labelIndex: Record<string, number>;
+                    indexLabel: string[];
+                    labelCounts: Record<string, number>;
+                }
+            >
+        > = {};
+
+        for (let [, groups] of Object.entries(groupedData)) {
+            for (let [group, items] of Object.entries(groups)) {
+                for (let [category, rawValue] of Object.entries(items)) {
+                    let value = rawValue.trim();
+
+                    if (!result[group]) result[group] = {};
+                    if (!result[group][category]) {
+                        result[group][category] = {
+                            rawCount: 0,
+                            totalCount: 0,
+                            totalIndex: 0,
+                            labelIndex: {},
+                            indexLabel: [],
+                            labelCounts: {}
+                        };
+                    }
+
+                    let data = result[group][category];
+
+                    if (!(value in data.labelIndex)) {
+                        data.labelIndex[value] = data.indexLabel.length;
+                        data.indexLabel.push(value);
+                    }
+
+                    let index = data.labelIndex[value];
+                    data.totalIndex += index;
+                    data.totalCount += 1;
+                    data.labelCounts[value] = (data.labelCounts[value] || 0) + 1;
+                }
+            }
+        }
+
+        console.dir(result, {depth:null});
+
+        let summarized: Record<
+            string,
+            Record<string, { averageLabel: string; rawCount: number; totalCount: number }>
+        > = {};
+
+        for (let [group, categories] of Object.entries(result)) {
+            summarized[group] = {};
+
+            for (let [category, data] of Object.entries(categories)) {
+                const avg = data.totalIndex / data.totalCount;
+
+                const distances = data.indexLabel.map((_, i) => Math.abs(i - avg));
+                const minDistance = Math.min(...distances);
+                const candidateIndices = distances
+                    .map((d, i) => (d === minDistance ? i : -1))
+                    .filter(i => i !== -1);
+
+                // NEW: Check if all labelCounts are equal across all labels (not just candidates)
+                const allCounts = Object.values(data.labelCounts);
+                const firstCount = allCounts[0];
+                const allEqual = allCounts.every(count => count === firstCount);
+
+                let label: string;
+                let rawCount: number;
+
+                if (allEqual && allCounts.length > 1) {
+                    label = "Tied All";
+                    rawCount = 0;
+                } else {
+                    // Pick label closest to avg, most frequent if multiple
+                    let bestIndex = candidateIndices[0];
+                    let bestCount = data.labelCounts[data.indexLabel[bestIndex]] ?? 0;
+
+                    for (let i = 1; i < candidateIndices.length; i++) {
+                        const candidate = candidateIndices[i];
+                        const lbl = data.indexLabel[candidate];
+                        const count = data.labelCounts[lbl] ?? 0;
+
+                        if (count > bestCount) {
+                            bestIndex = candidate;
+                            bestCount = count;
+                        }
+                    }
+
+                    label = data.indexLabel[bestIndex];
+                    rawCount = data.labelCounts[label] ?? 0;
+                }
+
+                summarized[group][category] = {
+                    averageLabel: label,
+                    rawCount,
+                    totalCount: data.totalCount,
+                };
+            }
+        }
+
+        console.dir(summarized, {depth:null});
+
+        return summarized;
+    }
+
+    let cleanSummary = $derived(() => summarizeByLabelIndex(cleanCSV()));
+
+    let dontInclude = '';
 
 </script>
 
-<Select style = 'evaluation' options={Object.keys(cleanCSV()).sort()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
+<Select style = 'evaluation' options={allCSV().sort()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
 
 {#if selectedName}
-    <!-- {#if selectedName === 'All'}
-        <div class="flex flex-col mt-4">
-            hi
-        </div>
-    {:else} -->
+    {#if selectedName === 'All'}
+        {#each Object.entries(cleanSummary()) as [group, categories]}
+            <div class="mt-8">
+                <h2 class="text-xl font-bold text-[var(--font-green)] mb-3">{group}</h2>
+                <table class="w-full text-sm border rounded overflow-hidden shadow-md">
+                    <thead class="bg-[var(--font-green)] text-white">
+                        <tr>
+                            <th class="text-left p-2">Category</th>
+                            <th class="text-left p-2">Most Representative Answer</th>
+                            <th>Respondents (out of total)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each Object.entries(categories) as [category, data]}
+                            <tr class="odd:bg-white even:bg-gray-100">
+                                <td class="text-center p-2">{category}</td>
+                                <td class="text-center p-2">{data.averageLabel}</td>
+                                {#if data.averageLabel !== 'Tied All'}
+                                    <td class="text-center p-2">{data.rawCount} / {data.totalCount}</td>
+                                {:else}
+                                    <td class="text-center p-2"> - </td>
+                                {/if}
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            </div>
+        {/each}
+
+    {:else}
         <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
 
             <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2">
@@ -122,7 +270,7 @@
                 {/each}
             </div>
         </div>
-    <!-- {/if} -->
+    {/if}
 {/if}
 
 <!-- {#each Object.entries(allValues()[selectedName]) as [key, value]}
