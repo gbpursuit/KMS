@@ -4,6 +4,20 @@ This website was designed and developed to organize the various programs offered
 
 ---
 
+## Table of Contents
+- [Project Structure Overview](#project-structure-overview)
+- [For Users](#for-users)
+  - [System Installation](#system-installation)
+- [For Developers](#for-developers)
+  - [1. Local Development Setup](#1-local-development-setup)
+  - [2. Environment Setup (MySQL)](#2-environment-setup-mysql)
+  - [3. Database (Prisma)](#3-database-prisma)
+  - [4. Project Scripts](#4-project-scripts)
+- [Code Formatting](#code-formatting)
+- [System Documentation](#system-documentation)
+
+---
+
 ## Project Structure Overview
 
 
@@ -35,7 +49,7 @@ This website was designed and developed to organize the various programs offered
 
 ## For Users
 
-### Getting Started
+### System Installation
 
 > **Note:** The following setup is different from the local development connection. This is only intended for manually accessing the GitHub repository or codebase of the Knowledge Management System. Go to the following [Local Development Setup](#1-development-setup) section to follow the instructions for accessing the main local development environment.
 
@@ -66,20 +80,41 @@ This website was designed and developed to organize the various programs offered
 
 ## For Developers
 
-### 1. Development Setup
+### 1. Local Development Setup
 
+#### Clone the Project
 ```bash
 git clone https://github.com/gbpursuit/KMS.git
 cd KMS
-npm install
-npm run dev
 ```
+#### Install Dependencies
+```
+npm install
+```
+#### Build the Project
+```
+npm run build
+```
+> Generates the `.svelte-kit` folder, which contains the client/server-optimized output
+```
+npm run preview
+```
+> **This will show**:
+> - Local Access [http://localhost:5173](http://localhost:5173)
+> - Network Access (e.g., [http://192.168.x.x:4173](http://192.168.x.x:4173)) to test on other devices connected to the same Wi-Fi
 
-> Starts a local dev server with HMR at [http://localhost:5173](http://localhost:5173)
+#### Optional: Custom Domain Mapping (Windows Only)
+> To preview the site using a custom domain (e.g., `kms.local`):
+> - Open `C:\Windows\System32\drivers\etc\hosts` in Notepad as Administrator
+> - Add this line at the bottom:
+```
+192.168.x.x   kms.local
+```
+> Save and visit: [http://localhost:4173](http://localhost:4173)
 
 ---
 
-### 2. Environment Setup
+### 2. Environment Setup (MySQL)
 
 To configure the environment and connect to the database, follow these steps:
 
@@ -114,8 +149,8 @@ CREATE DATABASE kms;
 ### 3. Database (Prisma)
 
 ```bash
-npx prisma migrate dev
-npx prisma studio  # Opens Prisma GUI
+npx prisma migrate dev     # Run and apply migrations
+npx prisma studio          # Opens Prisma visual database editor
 ```
 
 Schema is located in `/prisma/schema.prisma`.
@@ -133,16 +168,24 @@ Schema is located in `/prisma/schema.prisma`.
 
 ---
 
-## Contributing & Notes
-
+## Code Formatting
+#### General Rules
 - Follow the component structure in `/lib/svelte` for reusable elements.
 - Pages use SvelteKit routing (file-based).
 - Forms and modals should follow accessible standards.
 - Use TailwindCSS conventions (see `app.css` for base styles).
+#### Component Structure
+- All reusable components (e.g., modals, inputs, dropdowns) should be placed in `/src/lib/svelte/`.
+- Static files (PDFs, logos) should go into `/static/`.
 
 ---
 
-
+## System Documentation
+The drive contains notes for future developers, which includes the files
+- [Use Testing Guide](https://docs.google.com/document/d/1VloF-rOJdO7rOtoSL0kSPsUfCJsUgHuEo5Py41jiqpw/edit?usp=sharing)
+- [Hosting Recommendations](https://docs.google.com/document/d/1N7fU2h90BoAdvVCj2UImusdpQUR7XyVJNUeuquwUC68/edit?usp=sharing)
+- [System Database](https://docs.google.com/document/d/1o9Lm8PC0MO2EzU67zN0sGB9MdoIXEIePkpDzDZWEPXE/edit?usp=sharing)
+- [Future Developments Recommendations](https://docs.google.com/document/d/1o9Lm8PC0MO2EzU67zN0sGB9MdoIXEIePkpDzDZWEPXE/edit?usp=sharing)
 
 <!-- # sv
 
