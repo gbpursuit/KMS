@@ -66,13 +66,17 @@ export const POST: RequestHandler = async ({ request }) => {
 		day: 'numeric'
 	});
 
-	// Render TOC and sections safely
-	const tocItems = Object.values(tabContent).map((tab, i) => ({
+	const entries = Object.entries(tabContent);
+	const sortedEntries = entries.map(([key, tab]) => ({...tab, index: Number(tab.index) || 0 })).sort((a, b) => a.index - b.index);
+
+	// console.log(tabContent)
+
+	const tocItems = sortedEntries.map((tab, i) => ({
 		index: i + 1,
 		title: tab?.title ?? `Untitled Section ${i + 1}`
 	}));
 
-	const sectionData = Object.values(tabContent).map((tab, i) => ({
+	const sectionData = sortedEntries.map((tab, i) => ({
 		index: i + 1,
 		title: tab?.title ?? `Untitled Section ${i + 1}`,
 		// content: renderTabContent(tab?.content ?? null)
