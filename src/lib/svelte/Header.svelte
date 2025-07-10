@@ -130,6 +130,29 @@
 		return check;
 	}
 
+	let container: HTMLDivElement;
+	let hasActivated = false;
+
+	$effect(() => {
+		if (!isOpen) return;	// nothing happens if dropdown is closed
+		hasActivated = false;	// initialize variable
+
+		const handleClickOutside = (event: MouseEvent) => {
+			if (!hasActivated) {		// first click (open) triggers this
+				hasActivated = true;	// prevents open then closing of the dropdown
+				return;
+			}
+
+			if (container && !container.contains(event.target as Node)) { 	// if clicked outside modal
+				isOpen = false;												// close the modal
+			}
+		};
+
+		window.addEventListener('click', handleClickOutside);
+		return () => window.removeEventListener('click', handleClickOutside);	// cleanup
+	});
+
+
 </script>
 
 <header id="topbar"class="fixed z-10 flex flex-col w-full min-h-[120px] top-0">
@@ -192,7 +215,7 @@
 				<div class="flex justify-center items-center text black">
 					<span class = "text-lg">Summary</span>
 				</div>
-				<button class="flex justify-center items-center w-10 h-10"
+				<button class="flex justify-center items-center w-10 h-10 cursor-pointer"
 					onclick={() => isOpen = !isOpen}
 				>
 					<div class="flex justify-center items-center p-1 {isOpen ? "animatedDown" : "animatedUp"}">
@@ -203,7 +226,7 @@
 			</div>
 		</div>
 	</nav>
-	<div class="{isOpen ? 'h-[calc(65dvh-120px)]' : 'h-0'} relative z-9 flex w-full transition-height duration-600 ease-in-out">
+	<div bind:this={container} class="{isOpen ? 'h-[calc(65dvh-120px)]' : 'h-0'} relative z-9 flex w-full transition-height duration-600 ease-in-out">
 		<div class="{isOpen ? 'translate-y-0' : '-translate-y-[calc(65dvh)]'} absolute w-full shadow-[0_15px_20px_rgba(0,0,0,0.1)] transition duration-600 ease-in-out overflow-hidden">
 			<div class="flex w-full bg-[#1B663E] justify-center items-start sm:py-6 px-6 sm:pb-12 overflow-hidden py-0 pb-0">
 				<div class="flex flex-col w-full max-w-[1280px] xl:gap-6 {isOpen? 'py-4': ''} overflow-hidden">
