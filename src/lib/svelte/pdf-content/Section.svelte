@@ -5,7 +5,7 @@
 </script>
 
 {#snippet CONTENT(_content: EditableContent)}
-  {#if _content.type == 'plain'} <p> {_content.content} </p>
+  {#if _content.type == 'plain' || _content.type == 'select-leader' || _content.type == 'select-account'} <p> {_content.content} </p>
   {:else if _content.type == 'heading'} <h2> {_content.content} </h2>
   {:else if _content.type == 'image'} <img src="{origin}{_content.content}" alt=""/>
   {:else} <p> {_content.type} format is not yet supported. :( </p>
