@@ -1,7 +1,18 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
+import { compare } from 'bcrypt';
+import { hashedKey } from '$lib/functions/auth';
 
-export const GET: RequestHandler = ({ cookies }) => {
+let ORIGTOKEN = await hashedKey(process.env.VITE_VIEW_API_KEY);
+
+export const GET: RequestHandler = async ({ cookies, url }) => {
+    let tokenKey = url.searchParams.get('token');   
+    if (!tokenKey) throw error(403, 'Forbidden');
+    
+    let isValid = await compare(tokenKey, ORIGTOKEN);
+    if (!isValid) throw error(403, 'Forbidden');
+
     cookies.delete('session', {
         path: '/',
         httpOnly: true,

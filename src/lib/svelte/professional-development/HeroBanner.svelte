@@ -6,6 +6,7 @@
 	import { faChartSimple, faClock, faFile, faGraduationCap } from "@fortawesome/free-solid-svg-icons";
 	import { onMount } from "svelte";
 	import { deleteData, getData } from "$lib/functions/database";
+    import { VIEW_CLIENT } from '$lib/functions/env';
 
     let { item = $bindable(), canEdit = $bindable() } = $props()
 
@@ -13,13 +14,16 @@
 	let allTraining: Array<string> = $state([])
     let editable: boolean = $state(false)
 
+    let rawToken: any;
+
     let pageLoaded = $state(false)
 
     onMount(async() => {
-        let error: any = await getData('account').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName })
+        rawToken = VIEW_CLIENT;
+        let error: any = await getData(rawToken, 'account').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName })
         if(error) console.error('Error: Failed to get all accounts', error)
 
-        error = await getData('pd/training').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allTraining[i] = v[i].type })
+        error = await getData(rawToken, 'pd/training').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allTraining[i] = v[i].type })
         if(error) console.error('Error: Failed to get all training types', error)
         
         pageLoaded = true
@@ -37,7 +41,7 @@
 
 		try {
 			if(id) {
-				let isDeleted = await deleteData('pd', id);
+				let isDeleted = await deleteData(rawToken, 'pd', id);
 				if (isDeleted) {
 					alert('Module deleted successfully!');
 					window.location.href = '/professional-development'

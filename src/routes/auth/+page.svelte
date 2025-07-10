@@ -8,6 +8,8 @@
     import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
 
+    import { VIEW_CLIENT } from '$lib/functions/env';
+
 	let { data }: PageProps = $props();
 
     let leaving = $state(false);
@@ -35,6 +37,7 @@
 
     async function submitForm(e: Event) {
         e?.preventDefault();
+        let rawToken = VIEW_CLIENT;
         let form = e.target as HTMLFormElement;
 
         try {
@@ -47,7 +50,7 @@
                 throw new Error (errorMessage);
             }
 
-            let result = await addData(endpoint, item);
+            let result = await addData(rawToken, endpoint, item);
 
             if (result.ok) {
                 form.reset();

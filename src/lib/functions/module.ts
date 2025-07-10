@@ -14,7 +14,6 @@ export interface Summary {
 	count: string;
 	icon: IconDefinition;
 	label: string;
-
 }
 
 export type ProgramTypes = {

@@ -10,17 +10,19 @@
 	import { getData } from '$lib/functions/database';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
 
-	import { currentModule, selectedModuleItem, type ProgramAll } from '$lib/functions/module';
+	import { selectedModuleItem, type ProgramAll } from '$lib/functions/module';
 	import { ROUTE } from '../../routes/routes';
+	import { VIEW_CLIENT } from '$lib/functions/env';
 
-	let { data, currentPath } = $props()
+	let { data, currentPath } = $props();
 
 	let grids: Summary[] = $state([]);
+	let rawToken: any;
 
 	onMount(async () => {
-		let target = new URLSearchParams(window.location.search).get('scroll');
+		rawToken = VIEW_CLIENT;
+		let target = new URLSearchParams(window.location.search).get('scroll'); //scroll=programs /api?token=something/...
 		if (target) {
 			setTimeout(() => {
 				smoothScrollTo(target);
@@ -31,7 +33,7 @@
 			}, 100);
 		}
 
-		let pd = await getData('pd');
+		let pd = await getData(rawToken, 'pd');
 
 		let currentYear = new Date().getFullYear();
 		let teachersCount: string = '';
@@ -98,7 +100,7 @@
 	async function handleAccount(e: Event, view: 'login' | 'register' | 'logout' = 'logout') {
 		e?.preventDefault();
 		if (view === 'logout') {
-			window.location.href = '/api/logout';
+			window.location.href = `/api/logout?token=${rawToken}`;
 			return;
 		} else {
 			window.location.href = `${ROUTE.AUTH}?view=${view}`;

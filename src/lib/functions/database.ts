@@ -1,28 +1,34 @@
 
 /* PROGRAM DATA */
 // GET data
-import { error as svelteError } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import type { TabInterface } from '$lib/functions/tab-content'
 
-export async function getData(type: string, fetchFn?: typeof fetch, id?: number | string) {
-	let useFetch = fetchFn ?? fetch;
+export async function getData(tokenKey: string | undefined, type: string, fetchFn?: typeof fetch, id?: number | string) {
+    try {
+        let useFetch = fetchFn ?? fetch;
+        let url = id ? `/api/${type}/${id}` : `/api/${type}`;
+        url += `?token=${tokenKey}`;
 
-    let url = id ? `/api/${type}/${id}` : `/api/${type}`;
+        let res = await useFetch(url);
+        if (!res.ok) {
+            let json = await res.json().catch(() => ({}));
+            throw error(res.status, json?.message ?? `GET ${type} failed`);
+        }
 
-	let res = await useFetch(url);
-	if (!res.ok) {
-		let json = await res.json().catch(() => ({}));
-		throw svelteError(res.status, json?.message ?? `GET ${type} failed`);
-	}
-
-    let result = await res.json();
-	return result;
+        let result = await res.json();
+        return result;
+    } catch (err) {
+        console.error('Error', err);
+        throw err;
+    }
+    
 }
 
 // POST data
-export async function addData(type: string, data: Record<string, any>) {
+export async function addData(tokenKey: string | undefined, type: string, data: Record<string, any>) {
 
-    let res = await fetch(`/api/${type}`, {
+    let res = await fetch(`/api/${type}?token=${tokenKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -37,9 +43,9 @@ export async function addData(type: string, data: Record<string, any>) {
 }
 
 // PUT or UPDATE data
-export async function updateData(type: string, data: Record<string, any>, id:number) {
+export async function updateData(tokenKey: string | undefined, type: string, data: Record<string, any>, id:number) {
     try {
-        let res = await fetch(`/api/${type}/${id}`, {
+        let res = await fetch(`/api/${type}/${id}?token=${tokenKey}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -55,9 +61,9 @@ export async function updateData(type: string, data: Record<string, any>, id:num
 }
 
 // DELETE data
-export async function deleteData(type:string, id: number) {
+export async function deleteData(tokenKey: string | undefined, type: string, id: number) {
     try {
-        let res = await fetch(`/api/${type}/${id}`, {
+        let res = await fetch(`/api/${type}/${id}?token=${tokenKey}`, {
             method: 'DELETE',
         });
 
@@ -72,12 +78,12 @@ export async function deleteData(type:string, id: number) {
 
 }
 
-export async function addContent(data: Record<string, any> | null, tabContent: TabInterface) {
+export async function addContent(tokenKey: string | undefined, data: Record<string, any> | null, tabContent: TabInterface) {
     if(!data) return;
 
     data.content = tabContent;
     try {
-        let result = await updateData(`pd`, data, data.id);
+        let result = await updateData(tokenKey, `pd`, data, data.id);
         return result;
 
     } catch(err) {

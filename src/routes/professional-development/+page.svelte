@@ -19,6 +19,8 @@
 	import Input from '$lib/svelte/Input.svelte';
 	import Button from '$lib/svelte/Button.svelte';
 
+	import { VIEW_CLIENT } from '$lib/functions/env';
+
 	let { data } : PageProps = $props();
 
 	function observer_func() {
@@ -47,9 +49,12 @@
 		// if (!$selectedModuleItem) setTimeout(() => observer_func(), 0);
 	});
 
+	let rawToken: any;
+
 	onMount(async () => {
+		rawToken = VIEW_CLIENT;
 		for(let i = 0; i < data.training.length; i++) training = training.concat(data.training[i].type)
-		let error: any = await getData('account').then((v: Array<any>) => {for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName })
+		let error: any = await getData(rawToken, 'account').then((v: Array<any>) => {for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName })
 		if(error) console.error('Error: Failed to get all accounts')
 		pageLoaded = true;
 	});
@@ -93,7 +98,7 @@
 		let PATH = await addImageData(imageUrl, item.leader);
 		item.imageUrl = PATH;
 
-		let result = await addData('pd', item);
+		let result = await addData(rawToken, 'pd', item);
 		if(result.ok) {
 			form.reset();
 			imageUrl = null;

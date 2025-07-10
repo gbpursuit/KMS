@@ -3,6 +3,8 @@
 	import type { TabInterface } from "$lib/functions/tab-content";
 	import ActiveTab from "./ActiveTab.svelte";
     import { addContent } from '$lib/functions/database';
+    import { VIEW_CLIENT } from '$lib/functions/env';
+    import { onMount } from 'svelte';
 
     let { activeTab = $bindable(), tabContent = $bindable(), data, item = $bindable(), recentlyEdited = $bindable(), recentlySaved = $bindable() }: { activeTab: string, editable?: boolean, tabContent: TabInterface, data: Record<string, any>, item: Record<string, any>, recentlyEdited: boolean, recentlySaved: boolean } = $props()
     
@@ -35,11 +37,16 @@
 
     let saved: boolean = $state(false);
     let reverted: boolean = $state(false);
+    let rawToken: any;
+
+    onMount(() => {
+        rawToken = VIEW_CLIENT;
+    })
 
 	async function callAdd() {
 
         try {
-            let result: {ok: true, result: any} | any = await addContent(data.selectedItem, tabContent);
+            let result: {ok: true, result: any} | any = await addContent(rawToken, data.selectedItem, tabContent);
 
             if (!result) throw new Error('Error saving module content to database');
 
@@ -67,7 +74,7 @@
 
     async function callRevert() {
         try {
-            let result: {ok: true, result: any} | any = await addContent(data.selectedItem, preSavedContent);
+            let result: {ok: true, result: any} | any = await addContent(rawToken, data.selectedItem, preSavedContent);
 
             if (!result) throw new Error('Error reverting module content to database');
 

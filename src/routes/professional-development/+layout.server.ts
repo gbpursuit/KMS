@@ -4,6 +4,7 @@ import { getData } from '$lib/functions/database';
 import { capitalizeWords } from '$lib/functions/function'
 import type { ProgramAll, ProgramModule, ProgramItem } from '$lib/functions/module';
 import type { Training } from '@prisma/client';
+import { hashedKey } from '$lib/functions/auth';
 
 export const load: LayoutServerLoad = async ({ fetch, params, url, parent }) => {
     let { user, training } = await parent();
@@ -18,8 +19,9 @@ export const load: LayoutServerLoad = async ({ fetch, params, url, parent }) => 
     if (segments.length > 1 ) {
         itemId = segments[1].split('-')[1];
     }
-    // let itemId = segments[1].split('-')[1];
-    let rawPrograms: ProgramAll[] = await getData('program', fetch);
+
+
+    let rawPrograms: ProgramAll[] = await getData(process.env.VITE_VIEW_API_KEY, 'program', fetch);
 
     let selectedProgram = rawPrograms.find((p) => p.name.toLowerCase() === pathName);
     if (!selectedProgram) {
@@ -47,16 +49,6 @@ export const load: LayoutServerLoad = async ({ fetch, params, url, parent }) => 
 
     let selectedItem: ProgramItem | null = null;
 
-    // try {
-    //     let temp: ProgramItem | undefined = pd.items.find((i) => i.id.toString() === itemId)
-    //     if(!temp) throw error(404, 'Module Not Found');
-    //     else selectedItem = temp
-    // } catch (err) {
-    //     console.log(err)
-    //     return;
-    // }
-
-    // if (itemId) {
     switch (pd.type) {
         case 'pd':
             selectedItem = pd.items.find((i) => i.id.toString() === itemId) ?? null;
@@ -65,9 +57,7 @@ export const load: LayoutServerLoad = async ({ fetch, params, url, parent }) => 
             selectedItem = null;
             break;
     }
-    // }
-
-
+    
     return {
         programId: 3,
         name: capitalizeWords(pathName),

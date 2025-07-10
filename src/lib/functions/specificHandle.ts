@@ -1,8 +1,11 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { data } from '$lib/functions/prisma'; 
 import { error } from '@sveltejs/kit';
+import { compare, hash } from 'bcrypt';
+import { hashedKey } from './auth';
 
 type ModelName = keyof typeof data.PRISMA;
+let ORIGTOKEN = await hashedKey(process.env.VITE_VIEW_API_KEY);
 
 export function createHandlers(
     modelName: ModelName,
@@ -15,10 +18,26 @@ export function createHandlers(
 ) {
     let { include = undefined, logPrefix = modelName as string, errorHandle = modelName as string, useMany = false } = options || {};
 
-    const GET: RequestHandler = async ({ params }) => {
+// url.searchParams.get('token');
+
+// 	if (!token) throw error(401, 'Missing token');
+
+// 	const isValid = await compare(token, ORIGTOKEN);
+// 	if (!isValid) throw error(403, 'Forbidden');
+
+// 	return json({ message: 'Valid token!' });
+
+    const GET: RequestHandler = async ({ params, url }) => {
         let item: any;
         if (useMany) {
             try {
+
+                let tokenKey = url.searchParams.get('token');   
+                if (!tokenKey) throw error(403, 'Forbidden');
+                
+            	let isValid = await compare(tokenKey, ORIGTOKEN);
+            	if (!isValid) throw error(403, 'Forbidden');
+
                 item = await (data.PRISMA[modelName] as any).findMany({
                     orderBy: {
                         id: 'asc'
@@ -39,6 +58,12 @@ export function createHandlers(
                 console.warn(400, `GET: Invalid ${errorHandle} ID`);
             }
             try {
+                let tokenKey = url.searchParams.get('token');   
+                if (!tokenKey) throw error(403, 'Forbidden');
+                
+            	let isValid = await compare(tokenKey, ORIGTOKEN);
+            	if (!isValid) throw error(403, 'Forbidden');
+
                 item = await (data.PRISMA[modelName] as any).findUnique({
                     where: { id: id },
                     include
@@ -57,8 +82,14 @@ export function createHandlers(
         return data.json(item);
     };
 
-    const POST: RequestHandler = async ({ request }) => {
+    const POST: RequestHandler = async ({ request, url }) => {
         try {
+            let tokenKey = url.searchParams.get('token');   
+            if (!tokenKey) throw error(403, 'Forbidden');
+            
+            let isValid = await compare(tokenKey, ORIGTOKEN);
+            if (!isValid) throw error(403, 'Forbidden');
+
             let item = await request.json();
             if(!item) {
                 throw error(400, `${errorHandle} data is missing`)
@@ -75,12 +106,19 @@ export function createHandlers(
         }
     };
 
-    const PUT: RequestHandler = async ({ params, request }) => {
+    const PUT: RequestHandler = async ({ params, request, url }) => {
         let id = Number(params.id);
         if(isNaN(id)) {
             throw error(400, `Invalid ${errorHandle} ID. Update Failed.`);
         }
         try {
+
+            let tokenKey = url.searchParams.get('token');   
+            if (!tokenKey) throw error(403, 'Forbidden');
+            
+            let isValid = await compare(tokenKey, ORIGTOKEN);
+            if (!isValid) throw error(403, 'Forbidden');
+
             let item = await request.json();
             if(!item) {
                 throw error(400, `PUT: ${logPrefix} data is missing`);
@@ -99,12 +137,18 @@ export function createHandlers(
         }   
     };
 
-    const DELETE: RequestHandler = async ({ params }) => {
+    const DELETE: RequestHandler = async ({ params, url }) => {
         let id = Number(params.id);
         if(isNaN(id)) {
             throw error(400, `Invalid ${errorHandle} ID. Delete Failed.`);
         }
         try {
+            let tokenKey = url.searchParams.get('token');   
+            if (!tokenKey) throw error(403, 'Forbidden');
+            
+            let isValid = await compare(tokenKey, ORIGTOKEN);
+            if (!isValid) throw error(403, 'Forbidden');
+
             let deleted = await (data.PRISMA[modelName] as any).delete({
                 where: { id }
             })

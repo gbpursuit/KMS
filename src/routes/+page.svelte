@@ -13,6 +13,8 @@
 	import { getData } from '$lib/functions/database';
 	import type { Account } from '@prisma/client';
 
+  import { VIEW_CLIENT } from '$lib/functions/env';
+
   let { data } : PageProps = $props();
 	let accounts: Account[] = $state([]); // REMOVE AFTER TESTING
   let button1Text = $state('SWITCH TO USER') // REMOVE AFTER TESTING
@@ -29,11 +31,14 @@
     'Extension': faPalette
   };
 
+  let rawToken: any;
+
   onMount(async () => {
+    rawToken = VIEW_CLIENT;
     programList = data.programs.map((p) => ({...p, icon: iconMap[p.name]}));
     pageLoaded = true
     
-    accounts = await getData('account'); // REMOVE AFTER USER TESTING
+    accounts = await getData(rawToken, 'account'); // REMOVE AFTER USER TESTING
 
     if(!data.user) return; // REMOVE AFTER TESTING
     roleId = data.user.roleId // REMOVE AFTER TESTING

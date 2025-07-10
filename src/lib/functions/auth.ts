@@ -1,9 +1,9 @@
 import { compare, hash } from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
-import type { Cookies } from '@sveltejs/kit';
+import { type Cookies, error } from '@sveltejs/kit';
 import { data } from '$lib/functions/prisma';
 
-const SECRET = 'super-secret'; // replace with env var
+const SECRET = process.env.SECRET_KEY; // replace with env var
 const { sign, verify } = jsonwebtoken;
 
 export async function registerUser(item: Record<string, any>) {
@@ -58,17 +58,37 @@ export async function loginUser(item: Record<string, any>) {
     }
 }
 
-export function createSession(userId: number, cookies: Cookies) {
+export async function hashedKey(item: string | undefined) {
+    try {
+        if(!item || !process.env.SALT_ROUNDS) throw new Error('Invalid Request');
+        return await hash(item, parseInt(process.env.SALT_ROUNDS));
 
-    let duration = 7200; // 2 hours
-    let token = sign({ userId }, SECRET, {expiresIn: duration});
-    cookies.set('session', token, {
-        path: '/',
-        httpOnly: true,
-        secure: false,
-        sameSite: 'strict',
-        maxAge: duration
-    })
+    } catch(err) {  
+        console.error('Error:', err);
+        throw err;
+    }
+    // if(!item || !process.env.SALT_ROUNDS) throw error(400, 'Invalid Request');
+    // return await hash(item, parseInt(process.env.SALT_ROUNDS));
+}
+
+export async function createSession(userId: number, cookies: Cookies) {
+
+    try {
+        let duration = 7200; // 2 hours
+
+        if(!SECRET) throw error(400, 'No SECRET KEY');
+        let token = sign({ userId }, SECRET, {expiresIn: duration});
+        cookies.set('session', token, {
+            path: '/',
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict',
+            maxAge: duration
+        })
+    } catch (err) {
+        console.error('Error', err);
+        throw err;
+    }
 }
 
 export async function getUserFromCookie(cookies: Cookies) {
@@ -76,6 +96,7 @@ export async function getUserFromCookie(cookies: Cookies) {
     if(!token) return null;
 
     try {
+        if(!SECRET) throw error(400, 'No SECRET KEY');
         let decoded = verify(token, SECRET) as { userId: number };
         let userInitial = await data.PRISMA.account.findUnique({
             where: { id: decoded.userId },

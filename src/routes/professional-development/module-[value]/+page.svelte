@@ -10,6 +10,7 @@
 
 	import { getData } from '$lib/functions/database';
 	import HeroBanner from '$lib/svelte/professional-development/HeroBanner.svelte';
+	import { VIEW_CLIENT } from '$lib/functions/env';
 	
     let { data }: PageProps = $props();
 	let pageLoaded = $state(false)
@@ -24,7 +25,9 @@
 
 	let item = $state({ id: -1, title: '', leader: '', numParticipants: -1, training: [{}], trainingId: -1, date: ''})
 
+	let rawToken: any;
 	onMount(async () => {
+		rawToken = VIEW_CLIENT;
 		if (!data || !data.selectedItem) return;
 
 		item.id = data.selectedItem.id
@@ -60,7 +63,7 @@
 	async function updateTabContent(id: number | string){
 		if(!data.selectedItem) return;
 
-		let temp = await getData('pd', fetch, data.selectedItem.id);
+		let temp = await getData(rawToken, 'pd', fetch, data.selectedItem.id);
 
 		console.log("amp",temp.content);
 		console.log("amp2",tabContentJSON);

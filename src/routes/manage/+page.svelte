@@ -10,6 +10,8 @@
 	import Heading from '$lib/svelte/Heading.svelte';
 	import Paragraph from '$lib/svelte/Paragraph.svelte';
 
+    import { VIEW_CLIENT } from '$lib/functions/env';
+
 	let accounts: Account[] = $state([]);
     let { data }: PageProps = $props()
     
@@ -40,8 +42,11 @@
         if(roleId == 1 || roleId == 2) window.location.pathname = '/' // REMOVE AFTER TESTING
     })
 
+    let rawToken: any;
+
 	onMount(async () => {
-		accounts = await getData('account');
+        rawToken = VIEW_CLIENT;
+		accounts = await getData(rawToken, 'account');
 
         if(!data.user) return; // REMOVE AFTER TESTING
         roleId = data.user.roleId // REMOVE AFTER TESTING
