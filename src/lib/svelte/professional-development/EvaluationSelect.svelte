@@ -5,7 +5,7 @@
 	import type { EditableContent } from '$lib/functions/tab-content';
 	let { filePath }: { filePath: string } = $props();
 
-    let selectedName: string = $state("");
+    let selectedName: string = $state("Summary"); // default summary
 
     let csvData: Record<string, string>[] = $state([]); // or $state<Record<string, string>[]>([]);
     let csvHeaders: string[] = $state([]);
@@ -39,7 +39,13 @@
 		}
 	}
 
-    function regexShi(headers: Record<string, Record<string, string>>) {
+    $effect(() => {
+		if (filePath) {
+			parseCSV(filePath);
+		}
+	});
+
+    function cleanRegex(headers: Record<string, Record<string, string>>) {
         let grouped: Record<string, Record<string, Record<string, string>>> = {};
     
         const skipFields = [
@@ -62,7 +68,7 @@
                 // Map record to their respective names
 
                 let group = match[1].trim();
-                let category = match[2]?.trim() || "Unknown";
+                let category = match[2]?.trim() || "--";
 
                 if(!grouped[name]) grouped[name] = {};
                 if(!grouped[name][group]) grouped[name][group] = {};
@@ -73,15 +79,8 @@
         return grouped;
     }
     
-    let cleanCSV = $derived(() => regexShi(nameGrouped));
-
-    $effect(() => {
-		if (filePath) {
-			parseCSV(filePath);
-		}
-	});
-
-    let allCSV = $derived(() => [...Object.keys(cleanCSV()), 'All']);
+    let filteredCSV = $derived(() => cleanRegex(nameGrouped));
+    let selectOptions = $derived(() => ['Summary', ...Object.keys(filteredCSV()).sort()]);
 
     function summarizeByLabelIndex(
         groupedData: Record<string, Record<string, Record<string, string>>>
@@ -136,24 +135,23 @@
             summarized[group] = {};
 
             for (let [category, data] of Object.entries(categories)) {
-                const avg = data.totalIndex / data.totalCount;
+                let avg = data.totalIndex / data.totalCount;
 
-                const distances = data.indexLabel.map((_, i) => Math.abs(i - avg));
-                const minDistance = Math.min(...distances);
-                const candidateIndices = distances
+                let distances = data.indexLabel.map((_, i) => Math.abs(i - avg));
+                let minDistance = Math.min(...distances);
+                let candidateIndices = distances
                     .map((d, i) => (d === minDistance ? i : -1))
                     .filter(i => i !== -1);
 
-                // NEW: Check if all labelCounts are equal across all labels (not just candidates)
-                const allCounts = Object.values(data.labelCounts);
-                const firstCount = allCounts[0];
-                const allEqual = allCounts.every(count => count === firstCount);
+                let allCounts = Object.values(data.labelCounts);
+                let firstCount = allCounts[0];
+                let allEqual = allCounts.every(count => count === firstCount);
 
                 let label: string;
                 let rawCount: number;
 
                 if (allEqual && allCounts.length > 1) {
-                    label = "Tied All";
+                    label = "All Tied";
                     rawCount = 0;
                 } else {
                     // Pick label closest to avg, most frequent if multiple
@@ -161,9 +159,9 @@
                     let bestCount = data.labelCounts[data.indexLabel[bestIndex]] ?? 0;
 
                     for (let i = 1; i < candidateIndices.length; i++) {
-                        const candidate = candidateIndices[i];
-                        const lbl = data.indexLabel[candidate];
-                        const count = data.labelCounts[lbl] ?? 0;
+                        let candidate = candidateIndices[i];
+                        let lbl = data.indexLabel[candidate];
+                        let count = data.labelCounts[lbl] ?? 0;
 
                         if (count > bestCount) {
                             bestIndex = candidate;
@@ -186,41 +184,46 @@
         return summarized;
     }
 
-    let cleanSummary = $derived(() => summarizeByLabelIndex(cleanCSV()));
+    let summarizedTable = $derived(() => summarizeByLabelIndex(filteredCSV()));
 </script>
 
-<Select style = 'evaluation' options={allCSV().sort()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
+<Select style = 'evaluation' options={selectOptions()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
 
 {#if selectedName}
-    {#if selectedName === 'All'}
-        {#each Object.entries(cleanSummary()) as [group, categories]}
-            <div class="mt-8">
-                <h2 class="text-xl font-bold text-[var(--font-green)] mb-3">{group}</h2>
-                <table class="w-full text-sm border rounded overflow-hidden shadow-md">
-                    <thead class="bg-[var(--font-green)] text-white">
-                        <tr>
-                            <th class="text-left p-2">Category</th>
-                            <th class="text-left p-2">Most Representative Answer</th>
-                            <th>Respondents (out of total)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {#each Object.entries(categories) as [category, data]}
-                            <tr class="odd:bg-white even:bg-gray-100">
-                                <td class="text-center p-2">{category}</td>
-                                <td class="text-center p-2">{data.averageLabel}</td>
-                                {#if data.averageLabel !== 'Tied All'}
-                                    <td class="text-center p-2">{data.rawCount} / {data.totalCount}</td>
-                                {:else}
-                                    <td class="text-center p-2"> - </td>
-                                {/if}
+    {#if selectedName === 'Summary'}
+        <div class="mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
+            {#each Object.entries(summarizedTable()) as [group, categories]}
+                <div class="overflow-x-auto scrollbarTheme border-l-4 border-[var(--font-green)] bg-gray-50 rounded-md p-4 shadow-sm transition-shadow">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-3">{group}</h2>
+                    <table class="w-full min-w-[500px]  table-fixed text-sm border rounded overflow-hidden shadow-md">
+                        <thead class="bg-[var(--font-green)] text-white">
+                            <tr>
+                                <th class="text-center p-2 w-1/2">Category</th>
+                                <th class="text-center p-2 w-1/4">Most Representative Answer</th>
+                                <th class="text-center p-2 w-1/4">Respondents</th>
                             </tr>
-                        {/each}
-                    </tbody>
-                </table>
-            </div>
-        {/each}
+                        </thead>
+                        <tbody>
+                            {#each Object.entries(categories) as [category, data]}
+                                <tr class="odd:bg-white even:bg-gray-100 font-normal hover:text-[var(--hover-green)]
+                                    transition-all duration-300 ease-in-out ">
+                                    <td class="text-left px-4 py-2">{category}</td>
+                                    <td class="text-center p-2">
+                                        {data.averageLabel || ' - '}
+                                    </td>
 
+                                    <td class="text-center p-2">
+                                        {data.averageLabel !== 'All Tied'
+                                            ? `${data.rawCount} / ${data.totalCount}`
+                                            : ' - '}
+                                    </td>
+                                </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                </div>
+            {/each}
+        </div>
     {:else}
         <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
 
@@ -229,8 +232,8 @@
             </h1>
 
             <div class="space-y-6">
-                {#each Object.entries(cleanCSV()[selectedName]) as [group, items]}
-                    <div class="border-l-4 border-[var(--font-green)] bg-gray-50 rounded-md p-4 shadow-sm transition-shadow]">
+                {#each Object.entries(filteredCSV()[selectedName]) as [group, items]}
+                    <div class="border-l-4 border-[var(--font-green)] bg-gray-50 rounded-md p-4 shadow-sm transition-shadow">
 
                         <h2 class="text-lg font-semibold text-gray-800 mb-3">
                             {group}
@@ -238,7 +241,7 @@
 
                         <div class="flex flex-col gap-5">
                             {#each Object.entries(items) as [category, value]}
-                                {#if category !== 'Unknown'}
+                                {#if category !== '--'}
                                     <div class="flex flex-col md:flex-row md:items-start justify-between gap-3 p-3 border border-transparent rounded-md transition-all duration-200
                                         hover:border-[var(--font-green)] hover:bg-[rgba(27,102,62,0.05)]">
 
@@ -264,28 +267,13 @@
     {/if}
 {/if}
 
-<!-- {#each Object.entries(allValues()[selectedName]) as [key, value]}
-    <p><strong>{key}:</strong> {value}</p>
-{/each} -->
-<!-- {#if selectedName} 
-    {#if selectedName === 'combined'}
-        <h3 class="mt-4 font-bold">Every</h3>
-        <div class="border rounded mt-2">
-            {#each combined() as entry, i}
-                <div class="mb-4 border-b p-2">
-                    <h4 class="font-semibold">Entry {i + 1}</h4>
-                    {#each Object.entries(entry) as [key, value]}
-                        <p><strong>{key}:</strong> {value}</p>
-                    {/each}
-                </div>
-            {/each}
-        </div>
-    {:else}
-        <h3 class="mt-4 font-bold">{selectedName}'s Response</h3>
-        <div class="p-4 border rounded mt-2">
-            {#each Object.entries(allValues()[selectedName]) as [key, value]}
-                <p><strong>{key}:</strong> {value}</p>
-            {/each}
-        </div>
-    {/if}
-{/if} -->
+<style>
+    .scrollbarTheme {
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .scrollbarTheme:hover {
+        scrollbar-width: thin;
+        scrollbar-color: var(--font-green) transparent;
+    }
+</style>
