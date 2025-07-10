@@ -81,7 +81,6 @@
             let view = new URL(window.location.href);
             view.searchParams.set('view', 'login');
             goto(`${view.pathname}?${view.searchParams}`, {replaceState: true});
-            // window.history.replaceState({}, '', url);
         }
 
         let view = new URL(window.location.href)

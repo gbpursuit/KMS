@@ -15,10 +15,12 @@
     let initItem = $state(JSON.parse(JSON.stringify(item))) // deep copy the initial item
     let preSavedItem = $state(JSON.parse(JSON.stringify(item))) // used for storing previously saved item
 
-    let editable: boolean = $state(false)
+    let editable: boolean = $state(false);
+    let saved: boolean = $state(false);
+    let reverted: boolean = $state(false);
+    let rawToken: any;
 
     async function toggleMode() {
-        // let wasEditable = editable; // if button is initially on, we save it afterwards
         let hasUnsavedChanges = JSON.stringify(tabContent) !== JSON.stringify(initContent) || JSON.stringify(item) !== JSON.stringify(initItem);
 
         if (hasUnsavedChanges) {
@@ -27,20 +29,21 @@
 
             await callRevert();
             editable = false;
+            localStorage.setItem('editor', 'false');
             return;
         }
 
         editable = !editable;
+        localStorage.setItem('editor', editable.toString());
         recentlyEdited = false
         recentlySaved = false
     }
 
-    let saved: boolean = $state(false);
-    let reverted: boolean = $state(false);
-    let rawToken: any;
-
     onMount(() => {
         rawToken = VIEW_CLIENT;
+
+        let savedEditorState = localStorage.getItem('editor');
+        editable = savedEditorState === 'true';
     })
 
 	async function callAdd() {
@@ -101,7 +104,7 @@
 
     let canEdit = data.user?.permission?.includes('can_edit');
     let moduleTitle = `module-${data.selectedItem.id}-` + data.selectedItem.title.toLowerCase().replace(' ', '-')
-    let isFirstTime = $state(true)
+    let isFirstTime = $state(true);
 
     $effect(() => {
         if(activeTab == 'Personnel' && isFirstTime) {

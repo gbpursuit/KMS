@@ -100,6 +100,7 @@
 	async function handleAccount(e: Event, view: 'login' | 'register' | 'logout' = 'logout') {
 		e?.preventDefault();
 		if (view === 'logout') {
+			localStorage.removeItem('editor');
 			window.location.href = `/api/logout?token=${rawToken}`;
 			return;
 		} else {
@@ -107,7 +108,6 @@
 		}	
 	}
 
-	// Mano mano pa
 	function clickFunction(link: string, e: Event) {
 		e?.preventDefault();
 
