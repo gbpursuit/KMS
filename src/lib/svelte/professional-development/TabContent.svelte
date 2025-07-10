@@ -101,8 +101,15 @@
 
     let canEdit = data.user?.permission?.includes('can_edit');
     let moduleTitle = `module-${data.selectedItem.id}-` + data.selectedItem.title.toLowerCase().replace(' ', '-')
+    let isFirstTime = $state(true)
 
     $effect(() => {
+        if(activeTab == 'Personnel' && isFirstTime) {
+            initContent = JSON.parse(JSON.stringify(tabContent))
+            preSavedContent = JSON.parse(JSON.stringify(tabContent))
+            isFirstTime = false
+        }
+
         if(JSON.stringify(tabContent) != JSON.stringify(initContent) || JSON.stringify(item) != JSON.stringify(initItem)) recentlyEdited = true
         else recentlyEdited = false
     })
