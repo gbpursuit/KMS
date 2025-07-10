@@ -1,6 +1,6 @@
 <script lang="ts">
     import '@fortawesome/fontawesome-svg-core/styles.css';
-    import { faFileCircleExclamation, faFolderMinus, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'; 
+    import { faFileCircleExclamation, faFolderMinus, faMagnifyingGlass, faPlus, faPlusCircle } from '@fortawesome/free-solid-svg-icons'; 
 	import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 	import { faChartSimple, faGraduationCap, faFile, faClock} from '@fortawesome/free-solid-svg-icons';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
@@ -22,6 +22,7 @@
 	import { VIEW_CLIENT } from '$lib/functions/env';
 	import Modal from '$lib/svelte/program/Modal.svelte';
 	import Heading from '$lib/svelte/Heading.svelte';
+	import Paragraph from '$lib/svelte/Paragraph.svelte';
 
 	let { data } : PageProps = $props();
 
@@ -62,7 +63,7 @@
 	});
 
 
-	function open_item(id:string) {
+	function openItem(id:string) {
 		let url = new URL(window.location.href);
 		// console.log('hi');
 		window.location.href = `${url}/module-${id}`;
@@ -235,7 +236,7 @@
 					<div class="flex w-full h-full items-center justify-center text-[var(--font-green)]">
 						Loading Modules
 					</div>
-				{:else if visibleTasks.length > 0}
+				{:else if visibleTasks.length > 0 || (!searchQuery && selectedFilter == "All")}
 					{#each visibleTasks as item}
 						<div class="scroll-card flex w-full rounded-3xl gap-2 border-2 border-gray-100">
 							<div
@@ -244,47 +245,52 @@
 							></div>
 							<div class="flex h-full w-[55%] p-2 pr-5">
 								<div class="flex flex-col w-full h-full rounded-3xl gap-3">
-									<h1 class="text-lg font-semibold ">{item.title}</h1>
+									<Heading style="modules-title">{item.title}</Heading>
 									<div class="flex flex-col w-full h-full gap-1">
 										<div class="flex gap-2 items-center mt-4">
 											<FontAwesomeIcon icon = {faChartSimple} class = "text-[var(--font-green)]"/>
-											<p class="font-light text-sm">{ 'leader' in item ? item.leader : 'Project Leader' }</p>
+											<Paragraph style="modules-content">{ 'leader' in item ? item.leader : 'Project Leader' }</Paragraph>
 										</div>
 										<div class="flex gap-1 items-center">
 											<FontAwesomeIcon icon = {faGraduationCap} class = "text-[var(--font-green)]"/>
-											<p class="font-light text-sm">{item.numParticipants}</p>
+											<Paragraph style="modules-content">{item.numParticipants}</Paragraph>
 										</div>
 										<div class="flex gap-2 items-center">
 											<FontAwesomeIcon icon = {faFile} class = "text-[var(--font-green)]"/>
-											<p class="font-light text-sm">
-												{data.training.find(t => t.id === item.trainingId)?.type ?? 'Unknown'}
-											</p>
+											<Paragraph style="modules-content">{data.training.find(t => t.id === item.trainingId)?.type ?? 'Unknown'}</Paragraph>
 										</div>
 										<div class="flex gap-2">
 											<div class="flex items-center gap-2">
 												<FontAwesomeIcon icon={faClock} class="text-[var(--font-green)]" />
-												<p class="font-light text-sm">{handleDate(item.dateStart)}</p>
+												<Paragraph style="modules-content">{handleDate(item.dateStart)}</Paragraph>
 											</div>
 											<div class="flex items-center gap-2">
 												-
-												<p class="font-light text-sm">{handleDate(item.dateEnd)}</p>
+												<Paragraph style="modules-content">{handleDate(item.dateEnd)}</Paragraph>
 											</div>
 										</div>
 									</div>
 									<div class="relative flex w-full h-full border-t border-gray-200 justify-center items-center">
-										<button class="flex h-full p-1 font-medium hover:text-[var(--font-green)] hover:tracking-wide transition-all duration-300 ease-in-out cursor-pointer"
-										onclick={() => open_item(item.id.toString())}
-										>View More</button>
+										<Button style="modules-view-more" onclick={() => openItem(item.id.toString())}>View More</Button>
 									</div>
 								</div>
 							</div>		
 						</div>
 					{/each}
+					{#if !searchQuery && selectedFilter == "All"}
+						<div role="button" tabindex="0" aria-label="add module" onclick={() => showModal=true} 
+							onkeydown={(e) => { e.preventDefault(); if (e.key === 'Enter' || e.key === 'Escape') showModal = true; }} 
+							class="flex w-full p-20 justify-center items-center gap-4 scroll-card cursor-pointer rounded-3xl 
+								border-dashed border-2 border-gray-400 text-gray-400 hover:border-[var(--font-green)] hover:text-[var(--font-green)] 
+								hover:tracking-wide transition-all duration-300 ease-in-out">
+							<FontAwesomeIcon icon={faPlusCircle} size="2x"/>
+							<Heading type="h4" addStyle="text-inherit">Add Training Module</Heading>
+						</div>
+					{/if}
 				{:else}
 					<div class="flex flex-col w-full h-full justify-center items-center text-center text-gray-500 gap-4 py-26">
 						<FontAwesomeIcon icon={faFileCircleExclamation} class="text-5xl text-[var(--font-green)]" />
-						<p class="text-xl font-medium">No training modules currently available</p>
-						<p class="text-sm text-gray-400">Please add a new module using the button below</p>
+						<Paragraph style="modules-not-found">No Training Modules currently available</Paragraph>
 					</div>
 				{/if}
 			</div>
@@ -310,9 +316,6 @@
 			</div>
 			<div class="flex-grow"></div>
 		</div>
-		<button onclick={() => showModal = true} class="w-full bg-[#185A37] text-white rounded-xl p-2 mt-4 transition duration-300 ease-in-out hover:bg-[#146e47] hover:scale-[1.01]">
-			Add Training Module
-		</button>
 
 	</div>
 </div>

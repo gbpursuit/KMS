@@ -9,6 +9,12 @@
         case 'modal':
             styleValue = "text-sm text-center font-semibold text-[#1B663E] mb-4 transition-opacity duration-300"
             break;
+        case 'modules-content':
+            styleValue = "font-light text-sm"
+            break;
+        case 'modules-not-found':
+            styleValue = "text-xl font-medium"
+            break;
         default:
             styleValue = ''
             break;
