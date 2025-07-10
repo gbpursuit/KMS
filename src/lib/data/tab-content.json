@@ -2,6 +2,7 @@
   "Overview": 
     {
       "title": "Training Overview",
+      "index": "1",
       "content":
         {
           "type": "plain",
@@ -20,6 +21,7 @@
   "Participants": 
     {
       "title": "Training Participants",
+      "index": "2",
       "content":
         {
           "type": "plain",
@@ -38,6 +40,7 @@
   "Personnel": 
     {
       "title": "Personnel",
+      "index": "3",
       "content":{
           "type": "plain",
           "prev": false, 
@@ -55,6 +58,7 @@
   "Highlights":
     {
       "title": "Highlights",
+      "index": "4",
       "content":
         {
           "type": "plain",
@@ -73,6 +77,7 @@
   "Evaluation":
     {
       "title": "Evaluation",
+      "index": "5",
       "content":
         {
           "type": "plain",
@@ -91,6 +96,7 @@
   "Appendix":
     {
       "title": "Appendix",
+      "index": "6",
       "content":
         {
           "type": "plain",

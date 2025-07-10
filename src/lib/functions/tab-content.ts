@@ -17,6 +17,7 @@ export interface EditableContent {
 export interface Tab {
     title: string,
     content: EditableContent,
+    index: number
 }
 
 export interface TabInterface {
