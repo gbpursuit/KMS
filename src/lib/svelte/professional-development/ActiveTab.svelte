@@ -14,7 +14,7 @@
     <Input style="title" type="text" disabled={!editable} bind:text={title}/>
     <div class="h-[1px] bg-[rgb(175,175,175)] mb-4"></div>
     {#if activeTab.toLowerCase() === 'evaluation'}
-        <EvaluationUpload title={_moduleTitle} editable={editable} bind:currentContent={content} bind:initialContent={initContent} />
+        <EvaluationUpload title={_moduleTitle} editable={editable} bind:currentContent={content} bind:initContent />
     {:else}
         <Content title={_moduleTitle} editable={editable} bind:currentContent={content} bind:leader bind:allAccounts />
     {/if}

@@ -4,13 +4,13 @@
     import UploadFile from '../Upload.svelte';
 	import Button from "../Button.svelte";
 	import type { EditableContent } from '$lib/functions/tab-content';
-	let { editable, currentContent = $bindable(), initialContent = $bindable(), title }: { editable: boolean, currentContent: EditableContent | null, initialContent: EditableContent | null, title: string } = $props();
+	let { editable, currentContent = $bindable(), initContent = $bindable(), title }: { editable: boolean, currentContent: EditableContent | null, initContent: EditableContent | null, title: string } = $props();
 
 	$effect(() => {
 		if (currentContent && currentContent.type !== 'csv') {
 			currentContent.type = 'csv';
-			if (initialContent) {
-				initialContent.type = 'csv';
+			if (initContent) {
+				initContent.type = 'csv';
 			}
 		}
 	});
