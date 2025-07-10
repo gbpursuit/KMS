@@ -12,7 +12,9 @@ This website was designed and developed to organize the various programs offered
   - [1. Local Development Setup](#1-local-development-setup)
   - [2. Environment Setup (MySQL)](#2-environment-setup-mysql)
   - [3. Database (Prisma)](#3-database-prisma)
-  - [4. Project Scripts](#4-project-scripts)
+  - [4. Initial Database Content](#4-initial-database-content)
+  - [5. Project Scripts](#4-project-scripts)
+
 - [Code Formatting](#code-formatting)
 - [System Documentation](#system-documentation)
 
@@ -51,7 +53,7 @@ This website was designed and developed to organize the various programs offered
 
 ### System Installation
 
-> **Note:** The following setup is different from the local development connection. This is only intended for manually accessing the GitHub repository or codebase of the Knowledge Management System. Go to the following [Local Development Setup](#1-development-setup) section to follow the instructions for accessing the main local development environment.
+> **Note:** The following setup is different from the local development connection. This is only intended for manually accessing the GitHub repository or codebase of the Knowledge Management System. Go to the following [Local Development Setup](#1-local-development-setup) section to follow the instructions for accessing the main local development environment.
 
 1. **Install Dependencies**
 
@@ -156,8 +158,16 @@ npx prisma studio          # Opens Prisma visual database editor
 Schema is located in `/prisma/schema.prisma`.
 
 ---
+### 4. Initial Database Content
+Navigate to the directory containing your database seeding functions (replace `path/to/functions` with the actual path):
+```
+cd path/to/functions
+npx tsx index.ts
+```
+> This command runs the seeding script to populate the database with initial content.
+---
 
-### 4. Project Scripts
+### 5. Project Scripts
 
 | Command              | Description                                |
 |----------------------|--------------------------------------------|
