@@ -90,6 +90,8 @@ async function main() {
   const allRolePerms = await prisma.rolePermission.findMany()
   const allTraining = await prisma.training.findMany()
 
+  const allAccounts = await prisma.account.deleteMany()
+
   const PROGRAMS = ['Research', 'Curriculum Development', 'Professional Development', 'Extension']
   const PERMISSIONS = ['can_view', 'can_add', 'can_edit', 'can_delete', 'can_assign']
   const ROLES = ['User', 'Admin', 'Super User']
@@ -101,6 +103,7 @@ async function main() {
   console.log('Roles:', allRoles.length, allRoles)
   console.log('Role Permissions:', allRolePerms.length, allRolePerms)
   console.log('Training Types:', allTraining.length, allTraining)
+  console.log('All Accounts', allAccounts)
 
   if(allPrograms.length < PROGRAMS.length) await createPrograms(PROGRAMS)
   if(allPerms.length < PERMISSIONS.length) await createPerms(PERMISSIONS)

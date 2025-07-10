@@ -308,13 +308,10 @@
 								style={`background: ${item.imageUrl ? `url('${item.imageUrl}') center/cover no-repeat` : 'var(--font-green)'}`}
 							></div>
 							<div class="flex h-full w-[55%] p-2 pr-5">
-								<div class="flex flex-col w-full h-full rounded-3xl gap-2">
+								<div class="flex flex-col w-full h-full rounded-3xl gap-3">
 									<h1 class="text-lg font-semibold ">{item.title}</h1>
 									<div class="flex flex-col w-full h-full gap-1">
-										<div class="flex gap-2 items-center">
-											<p class = "font-light text-sm">Module Completeness</p>
-										</div>
-										<div class="flex gap-2 items-center">
+										<div class="flex gap-2 items-center mt-4">
 											<FontAwesomeIcon icon = {faChartSimple} class = "text-[var(--font-green)]"/>
 											<p class="font-light text-sm">{ 'leader' in item ? item.leader : 'Project Leader' }</p>
 										</div>

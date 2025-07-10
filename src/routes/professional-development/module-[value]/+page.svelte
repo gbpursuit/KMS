@@ -78,7 +78,6 @@
 
 		if (!temp?.content) return tabContentJSON;	// Return defaults if database is empty
 		return temp.content;						// Return the items inside database
-
 	}
 
 </script>

@@ -72,6 +72,7 @@
 
         return grouped;
     }
+    
     let cleanCSV = $derived(() => regexShi(nameGrouped));
 
     $effect(() => {
@@ -129,12 +130,7 @@
             }
         }
 
-        console.dir(result, {depth:null});
-
-        let summarized: Record<
-            string,
-            Record<string, { averageLabel: string; rawCount: number; totalCount: number }>
-        > = {};
+        let summarized: Record<string, Record<string, { averageLabel: string; rawCount: number; totalCount: number }>> = {};
 
         for (let [group, categories] of Object.entries(result)) {
             summarized[group] = {};
@@ -187,15 +183,10 @@
             }
         }
 
-        console.dir(summarized, {depth:null});
-
         return summarized;
     }
 
     let cleanSummary = $derived(() => summarizeByLabelIndex(cleanCSV()));
-
-    let dontInclude = '';
-
 </script>
 
 <Select style = 'evaluation' options={allCSV().sort()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
