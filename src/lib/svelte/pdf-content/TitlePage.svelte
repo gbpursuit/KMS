@@ -1,6 +1,7 @@
 <script lang="ts">
   export let moduleTitle: string;
-  export let date: string;
+  export let dateStart: string;
+  export let dateEnd: string;
   export let leader: string;
   export let numParticipants: number;
   export let trainingType: string;
@@ -10,8 +11,9 @@
   <h1>{moduleTitle}</h1>
   <p class="meta"><strong>Training Type:</strong> {trainingType}</p>
   <p class="meta"><strong>Number of Participants:</strong> {numParticipants}</p>
-  <p class="meta"><strong>Training Leader:</strong> {leader}</p>
-  <p class="meta"><strong>Date:</strong> {date}</p>
+  <p class="meta"><strong>Project Leader:</strong> {leader}</p>
+  <p class="meta"><strong>Date Started:</strong> {dateStart}</p>
+  <p class="meta"><strong>Date End:</strong> {dateEnd}</p>
 </div>
 
 <style>

@@ -79,10 +79,17 @@
             <span hidden={editable}>{item.training.find((t: { id: any; }) => t.id === item.trainingId)?.type}</span>
             <Select disabled={!editable} hidden={!editable} options={allTraining} bind:value={item.trainingId} addStyle={editable? "border-[0px_0px_2px_0px] border-white" : "border-0"} />
         </div>
-        <div class="flex items-center gap-2">
-            <FontAwesomeIcon icon={faClock} class="text-yellow-400" />
-            <span hidden={editable}>{handleDate(item.date)}</span>
-            <Input disabled={!editable} inverted hidden={!editable} type="date" style="module-details" bind:text={item.date} addStyle={editable? "border-[0px_0px_2px_0px] border-white focus:ring-0": ""}/>
+        <div class="flex gap-2">
+            <div class="flex items-center gap-2">
+                <FontAwesomeIcon icon={faClock} class="text-yellow-400" />
+                <span hidden={editable}>{handleDate(item.dateStart)}</span>
+                <Input disabled={!editable} inverted hidden={!editable} type="date" style="module-details" bind:text={item.dateStart} addStyle={editable? "border-[0px_0px_2px_0px] border-white focus:ring-0": ""}/>
+            </div>
+            <div class="flex items-center gap-2">
+                -
+                <span hidden={editable}>{handleDate(item.dateEnd)}</span>
+                <Input disabled={!editable} inverted hidden={!editable} type="date" style="module-details" bind:text={item.dateEnd} addStyle={editable? "border-[0px_0px_2px_0px] border-white focus:ring-0": ""}/>
+            </div>
         </div>
     </div>
 </div>

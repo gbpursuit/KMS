@@ -23,7 +23,7 @@
 	let recentlyEdited: boolean = $state(false)
 	let recentlySaved: boolean = $state(false)
 
-	let item = $state({ id: -1, title: '', leader: '', numParticipants: -1, training: [{}], trainingId: -1, date: ''})
+	let item = $state({ id: -1, title: '', leader: '', numParticipants: -1, training: [{}], trainingId: -1, dateStart: '', dateEnd: ''})
 
 	let rawToken: any;
 	let allAccounts: Array<string> = $state([])
@@ -38,11 +38,12 @@
 		item.leader = data.selectedItem.leader
 		item.numParticipants = data.selectedItem.numParticipants
 		item.trainingId = data.selectedItem.trainingId
-		item.date = data.selectedItem.date
+		item.dateStart = data.selectedItem.dateStart
+		item.dateEnd = data.selectedItem.dateEnd
 
 		tabContent = await updateTabContent(data.selectedItem.id);
 
-        let error: any = await getData('account').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName })
+        let error: any = await getData(rawToken, 'account').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName })
         if(error) console.error('Error: Failed to get all accounts', error)
 
 		pageLoaded = true
@@ -55,16 +56,17 @@
 
 		if(data.selectedItem.title != item.title) data.selectedItem.title = item.title
 		if(data.selectedItem.leader != item.leader) data.selectedItem.leader = item.leader
-		if(data.selectedItem.date != item.date) data.selectedItem.date = item.date
+		if(data.selectedItem.dateStart != item.dateStart) data.selectedItem.dateStart = item.dateStart
+		if(data.selectedItem.dateEnd != item.dateEnd) data.selectedItem.dateEnd = item.dateEnd
 		if(data.selectedItem.trainingId != item.trainingId) data.selectedItem.trainingId = item.trainingId
 		if(data.selectedItem.numParticipants != item.numParticipants) data.selectedItem.numParticipants = item.numParticipants
 	})
 
-	function handleDate(date: string) {
-		return new Date(date).toLocaleDateString('en-PH', {
-			year: 'numeric', month: 'long', day: 'numeric'
-		})
-	}
+	// function handleDate(date: string) {
+	// 	return new Date(date).toLocaleDateString('en-PH', {
+	// 		year: 'numeric', month: 'long', day: 'numeric'
+	// 	})
+	// }
 	
 	async function updateTabContent(id: number | string){
 		if(!data.selectedItem) return;

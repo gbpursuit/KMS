@@ -55,16 +55,29 @@ export const POST: RequestHandler = async ({ request }) => {
 	const leader = selectedItem.leader ?? '—';
 	const numParticipants = selectedItem.numParticipants ?? 0;
 	const trainingId = selectedItem.trainingId ?? null;
-	const dateString = selectedItem.date ?? new Date().toISOString();
+	const dateStartString = selectedItem.dateStart ?? new Date().toISOString();
+	const dateEndString = selectedItem.dateEnd ?? new Date().toISOString();
+
 
 	const trainingType =
 		trainingTypes.find((t: any) => t.id === trainingId)?.type ?? '—';
 
-	const formattedDate = new Date(dateString).toLocaleDateString('en-PH', {
-		year: 'numeric',
-		month: 'long',
-		day: 'numeric'
-	});
+	function checking(dateParameter: string) {
+		return new Date(dateParameter).toLocaleDateString('en-PH', {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		});
+	}
+
+	// const formattedDate = new Date(dateStartString).toLocaleDateString('en-PH', {
+	// 	year: 'numeric',
+	// 	month: 'long',
+	// 	day: 'numeric'
+	// });
+
+	const formattedDateStart = checking(dateStartString);
+	const formattedDateEnd = checking(dateEndString);
 
 	const entries = Object.entries(tabContent);
 	const sortedEntries = entries.map(([key, tab]) => ({...tab, index: Number(tab.index) || 0 })).sort((a, b) => a.index - b.index);
@@ -86,7 +99,8 @@ export const POST: RequestHandler = async ({ request }) => {
 	// Final props passed to Base.svelte
 	const props = {
 		moduleTitle,
-		date: formattedDate,
+		dateStart: formattedDateStart,
+		dateEnd: formattedDateEnd,
 		leader,
 		numParticipants,
 		trainingType,

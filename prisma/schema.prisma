@@ -43,7 +43,8 @@ model ProfessionalDevelopment {  // professional development module table -- no 
   title           String            @db.Text
   leader          String
   numParticipants Int
-  date            String
+  dateStart       String
+  dateEnd         String?
   imageUrl        String?           @db.Text     
   trainingId      Int
   training        Training          @relation(fields: [trainingId], references: [id], map: "PD_trainingId_fkey")

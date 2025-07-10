@@ -228,9 +228,16 @@
 				<Select style="modal" name="trainingId" options={training} placeholder="Training Type"/>
 			</div>
 
-			<div class={fieldClass}>
-				<Label style="modal" for="date" required>Date</Label>
-				<Input type="date" style="modal" name="date"/>
+			<div class="flex gap-2 w-full">
+				<div class={`${fieldClass} w-1/2`}>
+					<Label style="modal" for="dateStart" required>Date Started</Label>
+					<Input type="date" style="modal" name="dateStart"/>
+				</div>
+
+				<div class={`${fieldClass} w-1/2`}>
+					<Label style="modal" for="dateEnd" required>Date Ended</Label>
+					<Input type="date" style="modal" name="dateEnd"/>
+				</div>
 			</div>
 
 			<div class={fieldClass}>
@@ -321,9 +328,15 @@
 												{data.training.find(t => t.id === item.trainingId)?.type ?? 'Unknown'}
 											</p>
 										</div>
-										<div class="flex gap-2 items-center">
-											<FontAwesomeIcon icon = {faClock} class = "text-[var(--font-green)]"/>
-											<p class="font-light text-sm">{handleDate(item.date)}</p>
+										<div class="flex gap-2">
+											<div class="flex items-center gap-2">
+												<FontAwesomeIcon icon={faClock} class="text-[var(--font-green)]" />
+												<p class="font-light text-sm">{handleDate(item.dateStart)}</p>
+											</div>
+											<div class="flex items-center gap-2">
+												-
+												<p class="font-light text-sm">{handleDate(item.dateEnd)}</p>
+											</div>
 										</div>
 									</div>
 									<div class="relative flex w-full h-full border-t border-gray-200 justify-center items-center">
