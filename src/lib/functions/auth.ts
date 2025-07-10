@@ -3,7 +3,7 @@ import jsonwebtoken from 'jsonwebtoken';
 import { type Cookies, error } from '@sveltejs/kit';
 import { data } from '$lib/functions/prisma';
 
-const SECRET = process.env.SECRET_KEY; // replace with env var
+const SECRET = await hashedKey(process.env.SECRET_KEY);
 const { sign, verify } = jsonwebtoken;
 
 export async function registerUser(item: Record<string, any>) {
@@ -67,8 +67,6 @@ export async function hashedKey(item: string | undefined) {
         console.error('Error:', err);
         throw err;
     }
-    // if(!item || !process.env.SALT_ROUNDS) throw error(400, 'Invalid Request');
-    // return await hash(item, parseInt(process.env.SALT_ROUNDS));
 }
 
 export async function createSession(userId: number, cookies: Cookies) {
