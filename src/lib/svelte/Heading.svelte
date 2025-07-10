@@ -21,6 +21,9 @@
         case 'saved':
             styleValue = "text-xl font-semibold text-[#1B663E]";
             break;
+        case 'modal':
+            styleValue = "text-2xl font-extrabold text-center text-[#185A37] mb-1 transition-colors duration-300"
+            break;
         default:
             styleValue = "text-3xl font-semibold text-[var(--font-green)] text-shadow-[0_2px_5px_rgb(0_0_0_/_0.1)]"
             break;

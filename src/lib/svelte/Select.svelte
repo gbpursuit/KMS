@@ -21,6 +21,9 @@
             case 'module-select':
                 styleValue = 'w-full bg-white font-exo font-regular px-2 rounded-lg border-0'
                 break;
+            case 'modal-select':
+                styleValue = 'text-sm py-3 px-3 w-[120px] border border-[var(--font-green)] rounded-full text-[var(--font-green)] bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--font-green)] transition duration-200'
+                break;
             default:
                 styleValue = ''
                 break;

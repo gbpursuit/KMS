@@ -27,6 +27,9 @@
             case 'modal-file':
                 styleValue = "file:border-0 file:py-2 file:px-4 file:rounded file:bg-[#1B663E] file:text-white file:font-semibold text-sm transition-all duration-300"
                 break;
+            case 'module-search':
+                styleValue = "w-[23ch] text-sm text-black placeholder-gray-400 bg-transparent border-none focus:outline-none focus:ring-0"
+                break;
             default:
                 styleValue = "flex w-full py-1 px-3 border-2 border-[#C5C5C5] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
                 break;

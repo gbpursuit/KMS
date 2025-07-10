@@ -69,6 +69,12 @@
         case 'search':
             styleValue = "flex justify-center items-center text-[var(--font-green)] hover:scale-110 transition-transform duration-200"
             break;
+        case 'modal-cancel':
+            styleValue = "bg-[#AFAFAF] text-black font-semibold px-4 py-2 rounded-lg hover:bg-[#999999] transition-all duration-200"
+            break;
+        case 'modal-submit':
+            styleValue = "bg-[#185A37] text-white font-semibold px-4 py-2 rounded-lg hover:bg-[#0C2D1C] transition-all duration-200"
+            break;
         default:
             break;
     }

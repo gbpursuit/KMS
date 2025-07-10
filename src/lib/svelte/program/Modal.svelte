@@ -1,54 +1,121 @@
-<script>
+<script lang="ts">
 	import Label from "../Label.svelte";
+    import Input from "../Input.svelte";
+    import Select from "../Select.svelte";
+	import { addImageData } from "$lib/functions/media";
+	import { addData } from "$lib/functions/database";
+	import Heading from "../Heading.svelte";
+	import Paragraph from "../Paragraph.svelte";
+    import { VIEW_CLIENT  } from "$lib/functions/env";
+	import Button from "../Button.svelte";
 
+    let { programId, allAccounts = $bindable(), training = $bindable(), showModal = $bindable() } = $props()
+
+	let imageUrl: File | null = null;
+
+	function handleFileChange(event: Event): void {
+		const target = event.target as HTMLInputElement;
+		if (target.files && target.files.length > 0) {
+		imageUrl = target.files[0];
+		}
+	}
+
+	async function handleSubmit(e: Event) {
+		e?.preventDefault();
+		let form = e.target as HTMLFormElement;
+		let formData = new FormData(form);
+		let item = Object.fromEntries(formData) as Record<string, any>;
+	
+		item.numParticipants = parseInt(item.numParticipants);
+		item.trainingId = parseInt(item.trainingId);
+		item.programId = programId;
+		item.leader = allAccounts[item.leader - 1]
+		
+
+		console.log(item, formData)
+
+		if (Object.values(item).some(value => !value)) {
+			alert("Please fill in all required fields");
+		}
+
+		let PATH = await addImageData(imageUrl, item.leader);
+		item.imageUrl = PATH;
+
+		let result = await addData(VIEW_CLIENT, 'pd', item);
+		if(result.ok) {
+			form.reset();
+			imageUrl = null;
+			window.location.reload();
+		} else {
+			throw new Error(result.result.error);
+		}
+	}
 
 </script>
 
-<!-- Backdrop -->
-<!-- <div role="button" tabindex="0" aria-label="Close modal"
-    class="fixed inset-0 bg-[#030B07]/70 z-40 transition-opacity duration-300 ease-in-out"
-    onclick={() => showModal = false}
-    onkeydown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') showModal = false; }}
-></div> -->
+{#if showModal}
+	<!-- Backdrop -->
+	<div role="button" tabindex="-1" aria-label="Close modal"
+		class="fixed inset-0 bg-[#030B07]/70 z-40 transition-opacity duration-300 ease-in-out"
+		onclick={() => showModal = false}
+		onkeydown={(e) => { e.preventDefault(); if (e.key === 'Enter' || e.key === 'Escape') showModal = false; }}
+	></div>
 
-<!-- Modal -->
-<!-- <div class="fixed top-1/2 left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl border-2 border-[#1B663E] shadow-[3px_4px_0px_1px_#1B663E] w-[85%] max-w-xl px-10 py-10 transition-all duration-300 ease-in-out">
-    <h2 class="text-2xl font-extrabold text-center text-[#185A37] mb-1 transition-colors duration-300">Add Training Module</h2>
-    <p class="text-sm text-center font-semibold text-[#1B663E] mb-4 transition-opacity duration-300">Complete the form below</p>
-    <div class="h-[1px] bg-[#AFAFAF] mb-6"></div>
+	<!-- Modal -->
+	<div class="flex flex-col overflow-y-scroll custom-scrollbar w-[85%] h-[85%] fixed top-1/2 left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl border-2 border-[#1B663E] shadow-[0px_4px_1px_0px_#1B663E] max-w-xl px-10 py-10 transition-all duration-300 ease-in-out">
+        <Heading type="h2" style="modal">Add Training Module</Heading>
+        <Paragraph style="modal">Complete the form below</Paragraph>
+		<div class="h-[1px] bg-[#002e14] mb-6"></div>
+ 
+		<form class="flex flex-col gap-5" onsubmit={handleSubmit}>
+			<div class="flex flex-col gap-1 transition-all duration-300">
+				<Label style="modal" for="title" required>Title</Label>
+				<Input style="modal" name="title"/>
+			</div>
 
-    <form class="flex flex-col gap-5">
-        <div class={fieldClass}>
-            <Label type=''>Project Leader</Label>
-            <input type="text" bind:value={projectLeader} class={inputClass} />
-        </div>
+			<div class="flex flex-col gap-1 transition-all duration-300">
+				<Label style="modal" for="leader" required>Project Leader</Label>
+				<Select style="modal" name="leader" options={allAccounts} placeholder="Project Leader"/>
+			</div>
 
-        <div class={fieldClass}>
-            <label class={labelClass}>Number of Participants</label>
-            <input type="number" bind:value={participants} class={inputClass} />
-        </div>
+			<div class="flex flex-col gap-1 transition-all duration-300">
+				<Label style="modal" for="numParticipants" required>Number of Participants</Label>
+				<Input type="number" style="modal" name="numParticipants"/>
+			</div>
 
-        <div class={fieldClass}>
-            <label class={labelClass}>Type of Training</label>
-            <input type="text" bind:value={trainingType} class={inputClass} />
-        </div>
+			<div class="flex flex-col gap-1 transition-all duration-300">
+				<Label style="modal" for="trainingId" required>Type of Training</Label>
+				<Select style="modal" name="trainingId" options={training} placeholder="Training Type"/>
+			</div>
 
-        <div class={fieldClass}>
-            <label class={labelClass}>Date</label>
-            <input type="date" bind:value={trainingDate} class={inputClass} />
-        </div>
+			<div class="flex w-full gap-2">
+				<div class={"flex flex-col gap-1 transition-all duration-300 w-1/2"}>
+					<Label style="modal" for="dateStart" required>Date Start</Label>
+					<Input type="date" style="modal" name="dateStart"/>
+				</div>
 
-        <div class={fieldClass}>
-            <label class={labelClass}>Upload Image</label>
-            <input type="file" accept="image/*" onchange={handleFileChange}
-                class="file:border-0 file:py-2 file:px-4 file:rounded file:bg-[#1B663E] file:text-white file:font-semibold text-sm transition-all duration-300" />
-        </div>
+				<div class={"flex flex-col gap-1 transition-all duration-300 w-1/2"}>
+					<Label style="modal" for="dateEnd" required>Date End</Label>
+					<Input type="date" style="modal" name="dateEnd"/>
+				</div>
+			</div>
 
-        <div class="flex justify-end gap-3 pt-4">
-            <button type="button" onclick={() => showModal = false}
-                class="bg-[#AFAFAF] text-black font-semibold px-4 py-2 rounded-lg hover:bg-[#999999] transition-all duration-200">Cancel</button>
-            <button type="button" onclick={handleSubmit}
-                class="bg-[#185A37] text-white font-semibold px-4 py-2 rounded-lg hover:bg-[#0C2D1C] transition-all duration-200">Submit</button>
-        </div>
-    </form>
-</div> -->
+			<div class="flex flex-col gap-1 transition-all duration-300">
+				<Label style="modal" for="imageUrl">Upload Image</Label>
+				<Input type="file" accept="image/*" onchange={handleFileChange} name="imageUrl" style="modal-file" />
+			</div>
+
+			<div class="flex justify-end gap-3 pt-4">
+				<Button style="modal-cancel" onclick={() => showModal = false}>Cancel</Button>
+				<Button style="modal-submit" type="submit">Submit</Button>
+			</div>
+		</form>
+	</div>
+{/if}
+
+<style>
+    .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #185A37 white;
+    }
+</style>

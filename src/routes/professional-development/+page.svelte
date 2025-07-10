@@ -20,6 +20,8 @@
 	import Button from '$lib/svelte/Button.svelte';
 
 	import { VIEW_CLIENT } from '$lib/functions/env';
+	import Modal from '$lib/svelte/program/Modal.svelte';
+	import Heading from '$lib/svelte/Heading.svelte';
 
 	let { data } : PageProps = $props();
 
@@ -193,74 +195,14 @@
 	<title>{data.name}</title> 
 </svelte:head>
 
-{#if showModal}
-	<!-- Backdrop -->
-	<div role="button" tabindex="0" aria-label="Close modal"
-		class="fixed inset-0 bg-[#030B07]/70 z-40 transition-opacity duration-300 ease-in-out"
-		onclick={() => showModal = false}
-		onkeydown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') showModal = false; }}
-	></div>
-
-	<!-- Modal -->
-	<div class="fixed top-1/2 left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl border-2 border-[#1B663E] shadow-[0px_4px_1px_0px_#1B663E] w-[85%] max-w-xl px-10 py-10 transition-all duration-300 ease-in-out">
-		<h2 class="text-2xl font-extrabold text-center text-[#185A37] mb-1 transition-colors duration-300">Add Training Module</h2>
-		<p class="text-sm text-center font-semibold text-[#1B663E] mb-4 transition-opacity duration-300">Complete the form below</p>
-		<div class="h-[1px] bg-[#002e14] mb-6"></div>
- 
-		<form class="flex flex-col gap-5" onsubmit={handleSubmit}>
-			<div class={fieldClass}>
-				<Label style="modal" for="title" required>Title</Label>
-				<Input style="modal" name="title"/>
-			</div>
-
-			<div class={fieldClass}>
-				<Label style="modal" for="leader" required>Project Leader</Label>
-				<Select style="modal" name="leader" options={allAccounts} placeholder="Project Leader"/>
-			</div>
-
-			<div class={fieldClass}>
-				<Label style="modal" for="numParticipants" required>Number of Participants</Label>
-				<Input type="number" style="modal" name="numParticipants"/>
-			</div>
-
-			<div class={fieldClass}>
-				<Label style="modal" for="trainingId" required>Type of Training</Label>
-				<Select style="modal" name="trainingId" options={training} placeholder="Training Type"/>
-			</div>
-
-			<div class="flex gap-2 w-full">
-				<div class={`${fieldClass} w-1/2`}>
-					<Label style="modal" for="dateStart" required>Date Started</Label>
-					<Input type="date" style="modal" name="dateStart"/>
-				</div>
-
-				<div class={`${fieldClass} w-1/2`}>
-					<Label style="modal" for="dateEnd" required>Date Ended</Label>
-					<Input type="date" style="modal" name="dateEnd"/>
-				</div>
-			</div>
-
-			<div class={fieldClass}>
-				<Label style="modal" for="imageUrl">Upload Image</Label>
-				<Input type="file" accept="image/*" onchange={handleFileChange} name="imageUrl" style="modal-file" />
-			</div>
-
-			<div class="flex justify-end gap-3 pt-4">
-				<button type="button" onclick={() => showModal = false}
-					class="bg-[#AFAFAF] text-black font-semibold px-4 py-2 rounded-lg hover:bg-[#999999] transition-all duration-200">Cancel</button>
-				<button type="submit"
-					class="bg-[#185A37] text-white font-semibold px-4 py-2 rounded-lg hover:bg-[#0C2D1C] transition-all duration-200">Submit</button>
-			</div>
-		</form>
-	</div>
-{/if}
+<Modal programId={data.programId} bind:training bind:allAccounts bind:showModal/>
 
 {#if !data.selectedItem}
 <div class="flex flex-col w-full min-h-[calc(100dvh-120px)] mt-[120px] justify-center items-center">
 	<div class="flex flex-col w-[65%] flex-grow gap-10 py-20">
 		<div class="flex w-full items-center justify-between border-b-2 border-[var(--font-green)]/20 pb-4">
 			<!-- Title -->
-			<h1 class="text-4xl font-semibold text-[var(--font-green)]">All Training Modules</h1>
+			<Heading>All Training Modules</Heading>
 
 			<div class="flex-grow"></div>
 
@@ -268,26 +210,19 @@
 			<div class="flex items-center gap-3">
 				<!-- Filter Dropdown -->
 				<div class="relative">
-					<select
-						bind:value={selectedFilter}
-						class="text-sm py-3 px-3 w-[120px] border border-[var(--font-green)] rounded-full text-[var(--font-green)] bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--font-green)] transition duration-200"
-					>
-						{#each filterOptions as option}
-							<option value={option}>{option}</option>
-						{/each}
-					</select>
+					<Select style="modal-select" options={filterOptions} bind:selected={selectedFilter} />
 				</div>
 
 				<!-- Search Bar -->
 				<div class="flex items-center gap-2 px-3 py-1 border border-[var(--font-green)] rounded-full shadow-sm bg-white transition duration-200 focus-within:ring-2 focus-within:ring-[var(--font-green)]">
-					<input type="text" placeholder="Search modules..." bind:value={searchQuery}
+					<Input style="module-search" type="text" placeholder="Search modules..." bind:text={searchQuery}
 						oninput={() => {
 							clearTimeout(searchTimeout);
 							searchTimeout = setTimeout(() => {
 								currentPage = 1; 
 								updateVisibleTasks();
 							}, 300); 
-						}} class="w-[23ch] text-sm text-black placeholder-gray-400 bg-transparent border-none focus:outline-none focus:ring-0"/>
+						}}/>
 					<Button style="search" type="button" onclick={() => { clearTimeout(searchTimeout); searchTimeout = setTimeout(() => { currentPage = 1; updateVisibleTasks(); }, 10); }}>
 						<FontAwesomeIcon icon={faMagnifyingGlass} />
 					</Button>
