@@ -8,9 +8,8 @@
 	import { deleteData, getData } from "$lib/functions/database";
     import { VIEW_CLIENT } from '$lib/functions/env';
 
-    let { item = $bindable(), canEdit = $bindable() } = $props()
+    let { item = $bindable(), canEdit = $bindable(), allAccounts = $bindable() } = $props()
 
-	let allAccounts: Array<string> = $state([])
 	let allTraining: Array<string> = $state([])
     let editable: boolean = $state(false)
 
@@ -20,8 +19,10 @@
 
     onMount(async() => {
         rawToken = VIEW_CLIENT;
-        let error: any = await getData(rawToken, 'account').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName })
-        if(error) console.error('Error: Failed to get all accounts', error)
+
+        let error: any | null = null
+
+        error = await getData(rawToken, 'pd/training').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allTraining[i] = v[i].type })
 
         error = await getData(rawToken, 'pd/training').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allTraining[i] = v[i].type })
         if(error) console.error('Error: Failed to get all training types', error)

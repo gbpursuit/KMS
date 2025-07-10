@@ -6,7 +6,7 @@
     import { VIEW_CLIENT } from '$lib/functions/env';
     import { onMount } from 'svelte';
 
-    let { activeTab = $bindable(), tabContent = $bindable(), data, item = $bindable(), recentlyEdited = $bindable(), recentlySaved = $bindable() }: { activeTab: string, editable?: boolean, tabContent: TabInterface, data: Record<string, any>, item: Record<string, any>, recentlyEdited: boolean, recentlySaved: boolean } = $props()
+    let { activeTab = $bindable(), tabContent = $bindable(), data, item = $bindable(), recentlyEdited = $bindable(), recentlySaved = $bindable(), allAccounts = $bindable() }: { activeTab: string, editable?: boolean, tabContent: TabInterface, data: Record<string, any>, item: Record<string, any>, recentlyEdited: boolean, recentlySaved: boolean, allAccounts: Array<string> } = $props()
     
 	// const CurrentComponent = derived(activeTab, ($activeTab) => tabContent[$activeTab]);
     let initContent = $state(JSON.parse(JSON.stringify(tabContent))) // deep copy the initial tabContent
@@ -138,6 +138,6 @@
     </div>
 
     <div class="flex-row w-full text-sm bg-white p-6 rounded-lg border border-[#AFAFAF] shadow-md mt-5">
-        <ActiveTab moduleTitle={moduleTitle} bind:title={tabContent[activeTab].title} bind:content={tabContent[activeTab].content} bind:activeTab editable={editable} bind:initContent={initContent[activeTab].content} />
+        <ActiveTab moduleTitle={moduleTitle} bind:allAccounts bind:leader={item.leader} bind:title={tabContent[activeTab].title} bind:content={tabContent[activeTab].content} bind:activeTab editable={editable} bind:initContent={initContent[activeTab].content} />
     </div>
 </div>
