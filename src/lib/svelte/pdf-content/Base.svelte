@@ -4,15 +4,17 @@
   import Section from './Section.svelte';
 	import type { EditableContent } from '$lib/functions/tab-content';
 
-  export let moduleTitle: string;
-  export let dateStart: string;
-  export let dateEnd: string;
-  export let leader: string;
-  export let numParticipants: number;
-  export let trainingType: string;
-  export let tocItems: { index: number; title: string }[];
-  export let sections: { index: number; title: string; content: EditableContent }[];
-  export let window: any;
+  let { moduleTitle, dateStart, dateEnd, leader, numParticipants, trainingType, tocItems, sections, origin }: {
+    moduleTitle: string, 
+    dateStart: string, 
+    dateEnd: string
+    leader: string, 
+    numParticipants: number, 
+    trainingType: string, 
+    tocItems: { index: number, title: string }[],
+    sections: { index: number, title: string, content: EditableContent }[]
+    origin: string
+  } = $props()
 
   const tocWithPages = tocItems.map((item, i) => ({
     ...item,
@@ -151,7 +153,7 @@
 
     {#each sections as section}
       <div class="section page-break" id={"section-" + section.index}>
-        <Section origin={window.origin} {...section} />
+        <Section origin={origin} {...section} />
       </div>
     {/each}
   </body>

@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		trainingType,
 		tocItems,
 		sections: sectionData,
-		window
+		origin: window.origin
 	};
 
 	// console.log('Generating PDF with:', props);
