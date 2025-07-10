@@ -5,7 +5,8 @@
 	import type { EditableContent } from '$lib/functions/tab-content';
 
   export let moduleTitle: string;
-  export let date: string;
+  export let dateStart: string;
+  export let dateEnd: string;
   export let leader: string;
   export let numParticipants: number;
   export let trainingType: string;
@@ -136,7 +137,8 @@
     <div class="title-page">
       <TitlePage
         {moduleTitle}
-        {date}
+        {dateStart}
+        {dateEnd}
         {leader}
         {numParticipants}
         {trainingType}
