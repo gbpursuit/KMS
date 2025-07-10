@@ -42,7 +42,7 @@
 
 		tabContent = await updateTabContent(data.selectedItem.id);
 
-        let error: any = await getData('account').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName })
+        let error: any = await getData(rawToken, 'account').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allAccounts[i] = v[i].acctName })
         if(error) console.error('Error: Failed to get all accounts', error)
 
 		pageLoaded = true

@@ -23,8 +23,6 @@
         let error: any | null = null
 
         error = await getData(rawToken, 'pd/training').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allTraining[i] = v[i].type })
-
-        error = await getData(rawToken, 'pd/training').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allTraining[i] = v[i].type })
         if(error) console.error('Error: Failed to get all training types', error)
         
         pageLoaded = true
