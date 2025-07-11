@@ -27,7 +27,7 @@ export async function registerUser(item: Record<string, any>) {
 				lastName: item.lastName,
 				acctName: acctName,
 				password: hashed,
-				roleId: 2
+				roleId: 1
             }
         });
         
