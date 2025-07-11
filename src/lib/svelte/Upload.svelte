@@ -5,7 +5,7 @@
     import Button from '$lib/svelte/Button.svelte';
 	import Border from '$lib/svelte/Border.svelte';
 	import FileType from '$lib/svelte/File.svelte';
-    import { addImageData, uploadFileWithProgress } from '$lib/functions/media';
+    import { addImageData, removeFile, uploadFileWithProgress } from '$lib/functions/media';
 
     let { style = $bindable(), editable = false, addStyle = '', filePath = $bindable(), title, ...props } = $props()
     let textDescription = $state('');
@@ -44,6 +44,8 @@
     let uploadProgress: number = $state(0);
 	let uploading: boolean = $state(false);
 	let isError: boolean = $state(false);
+
+	let _filePath: string = $state('')
 
 	let isDragging = $state(false);
 
@@ -133,7 +135,14 @@
 	}
 
 	$effect(() => {
-		if (selectedFile) {
+		if (_filePath !== '' && filePath === '') {
+			console.log('REMOVING FILE:', selectedFile?.name);
+			(async () => {
+				await removeFile(selectedFile, title);
+				_filePath = ''
+				selectedFile = null
+			})();
+		} else if (selectedFile) {
 			uploading = true;
 			(async () => {
 				let uploadedPath = await uploadFileWithProgress(selectedFile, title, (percent) => {
@@ -141,6 +150,7 @@
 					uploadProgress = percent;
 				});
 				filePath = uploadedPath;
+				_filePath = uploadedPath;
 				uploading = false;
 			})();
 		}
@@ -150,7 +160,7 @@
 <div class="relative w-full group">
 	<!-- Display Media -->
 	{#if (selectedFile && !uploading) || filePath} 
-		<FileType style="upload" filePath={filePath} type={style}></FileType>
+		<FileType style="upload" bind:filePath={filePath} type={style} />
 
 	<!-- Upload Media -->
 	{:else if editable && !selectedFile}

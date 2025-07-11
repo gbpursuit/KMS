@@ -57,3 +57,27 @@ export async function uploadFileWithProgress(file: File | null, title: string | 
 		xhr.send(formData);
 	});
 }
+
+export async function removeFile(file: File | null, title: string | null = null): Promise<void> {
+	return new Promise((resolve, reject) => {
+		let formData = new FormData();
+		if (file) formData.append('file', file);
+		if (title) formData.append('title', title);
+
+		let xhr = new XMLHttpRequest();
+
+		xhr.onload = () => {
+			if (xhr.status >= 200 && xhr.status < 300) {
+				let response = JSON.parse(xhr.responseText);
+				resolve(response.path);
+			} else {
+				reject(new Error('Remove failed'));
+			}
+		};
+
+		xhr.onerror = () => reject(new Error('Network error during remove'));
+
+		xhr.open('POST', '/api/remove');
+		xhr.send(formData);
+	});
+}
