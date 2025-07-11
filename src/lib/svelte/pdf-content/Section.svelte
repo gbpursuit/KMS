@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { EditableContent } from "$lib/functions/tab-content";
-  let { origin, index, title, content } = $props()
+	import SummaryTable from "../professional-development/SummaryTable.svelte";
+  let { origin, index, title, content, summarizedTable } = $props()
 
 </script>
 
@@ -16,7 +17,11 @@
 {/snippet}
 
 <h1>{index}. {title}</h1>
+{#if title == 'Evaluation'}
+<SummaryTable summarizedTable={summarizedTable} />
+{:else}
 {@render CONTENT(content)}
+{/if}
 
 <style>
 
