@@ -27,7 +27,7 @@
         
         pageLoaded = true;
 
-        let savedEditorState = localStorage.getItem('editor');
+        let savedEditorState = localStorage.getItem('editor-banner');
         editable = savedEditorState === 'true';
     })
 
@@ -57,7 +57,7 @@
 
     async function toggleMode() {
         editable = !editable;
-        localStorage.setItem('editor', editable.toString());
+        localStorage.setItem('editor-banner', editable.toString());
     }
 
 </script>
