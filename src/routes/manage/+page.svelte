@@ -14,11 +14,6 @@
 
 	let accounts: Account[] = $state([]);
     let { data }: PageProps = $props()
-    
-    let button1Text = $state('SWITCH TO USER') // REMOVE AFTER TESTING
-    let button2Text = $state('SWITCH TO ADMIN') // REMOVE AFTER TESTING
-    let button3Text = $state('SWITCH TO SUPER USER') // REMOVE AFTER TESTING
-    let roleId = $state(3) // REMOVE AFTER TESTING
 
 	let searchUser = $state("");
 	let searchAdmin = $state("");
@@ -33,13 +28,6 @@
 	    userCount = accounts.filter(a => a.roleId === 1).length;
 	    adminCount = accounts.filter(a => a.roleId === 2).length;
         superCount = accounts.filter(a => a.roleId === 3).length;
-        
-        if(!data.user) return; // REMOVE AFTER TESTING
-        button1Text = roleId == 1? 'CURRENTLY A USER': 'SWITCH TO USER' // REMOVE AFTER TESTING
-        button2Text = roleId == 2? 'CURRENTLY AN ADMIN': 'SWITCH TO ADMIN' // REMOVE AFTER TESTING
-        button3Text = roleId == 3? 'CURRENTLY A SUPER USER': 'SWITCH TO SUPER USER' // REMOVE AFTER TESTING
-
-        if(roleId == 1 || roleId == 2) window.location.pathname = '/' // REMOVE AFTER TESTING
     })
 
     let rawToken: any;
@@ -47,12 +35,6 @@
 	onMount(async () => {
         rawToken = VIEW_CLIENT;
 		accounts = await getData(rawToken, 'account');
-
-        if(!data.user) return; // REMOVE AFTER TESTING
-        roleId = data.user.roleId // REMOVE AFTER TESTING
-        button1Text = roleId == 1? 'CURRENTLY A USER': 'SWITCH TO USER' // REMOVE AFTER TESTING
-        button2Text = roleId == 2? 'CURRENTLY AN ADMIN': 'SWITCH TO ADMIN' // REMOVE AFTER TESTING
-        button3Text = roleId == 3? 'CURRENTLY A SUPER USER': 'SWITCH TO SUPER USER' // REMOVE AFTER TESTING
 	});
 
     async function changeRole(id: number, currentRole: number, targetRole: number) {
@@ -66,7 +48,6 @@
             const data = await res.json();
 
             if (res.ok) {
-                roleId = targetRole // REMOVE AFTER TESTING
                 accounts = accounts.map(acc =>
                     acc.id === id ? { ...acc, roleId: targetRole } : acc
                 );
@@ -345,24 +326,6 @@
                 </tbody>
             </table>
         </div>
-    </div>
-    <div class="w-full h-[1.5px] bg-green-800 mb-4 mt-8"></div>
-    <div class="flex flex-col w-full gap-2 justify-center">
-        <Heading>Role Change Tester</Heading>
-        <Paragraph>
-            Test user, admin, and superuser roles. This feature is for testing only and will be removed before deployment.
-        </Paragraph>
-    </div>
-    <div class="flex col w-full gap-8">
-        <Button style="submit" addStyle="bg-red-800 hover:bg-red-700 font-bold" onclick={() => {if(data.user) changeRole(data.user.id, data.user.roleId, 1)}}>
-            {button1Text}
-        </Button>
-        <Button style="submit" addStyle="bg-green-800 font-bold" onclick={() => {if(data.user) changeRole(data.user.id, data.user.roleId, 2)}}>
-            {button2Text}
-        </Button>
-        <Button style="submit" addStyle="bg-yellow-600 hover:bg-yellow-500 font-bold" onclick={() => {if(data.user) changeRole(data.user.id, data.user.roleId, 3)}}>
-            {button3Text}
-        </Button>
     </div>
 </div>
 
