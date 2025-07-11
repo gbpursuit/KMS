@@ -4,21 +4,29 @@ This website was designed and developed to organize the various programs offered
 
 ---
 
+
 ## Table of Contents
+
 - [Project Structure Overview](#project-structure-overview)
+
 - [For Users](#for-users)
-  - [System Installation](#system-installation)
+  - [Host Server Installation](#host-server-installation)
+  - [Regular User Accessing](#regular-user-accessing)
+
 - [For Developers](#for-developers)
   - [1. Local Development Setup](#1-local-development-setup)
   - [2. Environment Setup (MySQL)](#2-environment-setup-mysql)
   - [3. Database (Prisma)](#3-database-prisma)
   - [4. Initial Database Content](#4-initial-database-content)
-  - [5. Project Scripts](#4-project-scripts)
+  - [5. Project Scripts](#5-project-scripts)
 
 - [Code Formatting](#code-formatting)
 - [System Documentation](#system-documentation)
+- [Contact the Developers](#contact-the-developers)
+
 
 ---
+
 
 ## Project Structure Overview
 
@@ -51,32 +59,62 @@ This website was designed and developed to organize the various programs offered
 
 ## For Users
 
-### System Installation
+### Host Server Installation
 
-> **Note:** The following setup is different from the local development connection. This is only intended for manually accessing the GitHub repository or codebase of the Knowledge Management System. Go to the following [Local Development Setup](#1-local-development-setup) section to follow the instructions for accessing the main local development environment.
+#### 1. Local Development Setup
 
-1. **Install Dependencies**
+Clone the project:
 
-   Open your `Windows Powershell` or `Command Prompt` and type in the following
+```bash
+git clone https://github.com/gbpursuit/KMS.git
+cd KMS
+```
 
-   ```bash
-   npm install
-   ```
+Install dependencies:
 
-2. **Launch the App**
+```bash
+npm install
+```
 
-   Start the local server:
+Build the project:
 
-   ```bash
-   npm run dev
-   ```
+```bash
+npm run build
+```
 
-   Visit: [http://localhost:5173](http://localhost:5173)
+Preview the production build:
 
-3. **Modules to Explore**
-   - `/manage`: Superuser interface for uploading and organizing modules.
-   - `/professional-development`: View and download training materials.
-   - `/auth`: Login/logout (if authentication is enabled).
+```bash
+npm run preview
+```
+
+> This will show:
+> - Local Access: [http://localhost:5173](http://localhost:5173)
+> - Network Access (e.g., [http://192.168.x.x:4173](http://192.168.x.x:4173)) for testing on other devices
+
+Modules to Explore:
+- `/manage`: Superuser interface for uploading and organizing modules
+- `/professional-development`: View and download training materials
+- `/auth`: Login/logout (if authentication is enabled)
+
+### Regular User Accessing
+
+Access the URL provided by the host server (e.g., [http://192.168.x.x:4173](http://192.168.x.x:4173))
+
+> **Note:** The user must be connected to the same Wi-Fi network as the host server.
+
+### Optional: Custom Domain Mapping (Windows Only)
+
+To preview the site using a custom domain (e.g., `kms.local`):
+
+- Open `C:\Windows\System32\drivers\etc\hosts` in Notepad as Administrator
+- Add the following line:
+
+```
+192.168.x.x   kms.local
+```
+
+Visit: [http://kms.local:4173](http://kms.local:4173)
 
 ---
 
@@ -84,35 +122,34 @@ This website was designed and developed to organize the various programs offered
 
 ### 1. Local Development Setup
 
-#### Clone the Project
+Clone the project:
+
 ```bash
 git clone https://github.com/gbpursuit/KMS.git
 cd KMS
 ```
-#### Install Dependencies
-```
+
+Install dependencies:
+
+```bash
 npm install
 ```
-#### Build the Project
-```
+
+Build the project:
+
+```bash
 npm run build
 ```
-> Generates the `.svelte-kit` folder, which contains the client/server-optimized output
-```
+
+Preview the build:
+
+```bash
 npm run preview
 ```
+
 > **This will show**:
 > - Local Access [http://localhost:5173](http://localhost:5173)
 > - Network Access (e.g., [http://192.168.x.x:4173](http://192.168.x.x:4173)) to test on other devices connected to the same Wi-Fi
-
-#### Optional: Custom Domain Mapping (Windows Only)
-> To preview the site using a custom domain (e.g., `kms.local`):
-> - Open `C:\Windows\System32\drivers\etc\hosts` in Notepad as Administrator
-> - Add this line at the bottom:
-```
-192.168.x.x   kms.local
-```
-> Save and visit: [http://localhost:4173](http://localhost:4173)
 
 ---
 
@@ -124,7 +161,7 @@ To configure the environment and connect to the database, follow these steps:
 
 If MySQL is not yet installed on your machine, download and install it from the official site:
 
-👉 [Download MySQL Community Server](https://dev.mysql.com/downloads/mysql/)
+[Download MySQL Community Server](https://dev.mysql.com/downloads/mysql/)
 
 #### Step 2: Create a `.env` File
 
@@ -150,21 +187,27 @@ CREATE DATABASE kms;
 
 ### 3. Database (Prisma)
 
+Run Prisma migrations:
+
 ```bash
 npx prisma migrate dev     # Run and apply migrations
-npx prisma studio          # Opens Prisma visual database editor
 ```
 
-Schema is located in `/prisma/schema.prisma`.
+> Prisma schema is located at `/prisma/schema.prisma`.
 
 ---
+
 ### 4. Initial Database Content
-Navigate to the directory containing your database seeding functions (replace `path/to/functions` with the actual path):
-```
+
+Navigate to the seeding script directory:
+
+```bash
 cd path/to/functions
 npx tsx index.ts
 ```
-> This command runs the seeding script to populate the database with initial content.
+
+> This seeds the database with initial content.
+
 ---
 
 ### 5. Project Scripts
@@ -179,24 +222,37 @@ npx tsx index.ts
 ---
 
 ## Code Formatting
-#### General Rules
+
+### General Rules
+
 - Follow the component structure in `/lib/svelte` for reusable elements.
-- Pages use SvelteKit routing (file-based).
-- Forms and modals should follow accessible standards.
-- Use TailwindCSS conventions (see `app.css` for base styles).
-#### Component Structure
-- All reusable components (e.g., modals, inputs, dropdowns) should be placed in `/src/lib/svelte/`.
-- Static files (PDFs, logos) should go into `/static/`.
+- Pages follow SvelteKit’s file-based routing.
+- Use accessible forms and modal practices.
+- TailwindCSS is used for styling (see `app.css` for base styles).
+
+### Component Structure
+
+- Place all reusable components in `/src/lib/svelte/`.
+- Place static assets like PDFs and logos in `/static/`.
 
 ---
 
 ## System Documentation
-The drive contains notes for future developers, which includes the files
+
+The shared drive contains helpful files for ongoing development:
+
 - [Use Testing Guide](https://docs.google.com/document/d/1VloF-rOJdO7rOtoSL0kSPsUfCJsUgHuEo5Py41jiqpw/edit?usp=sharing)
 - [Hosting Recommendations](https://docs.google.com/document/d/1N7fU2h90BoAdvVCj2UImusdpQUR7XyVJNUeuquwUC68/edit?usp=sharing)
 - [System Database](https://docs.google.com/document/d/1o9Lm8PC0MO2EzU67zN0sGB9MdoIXEIePkpDzDZWEPXE/edit?usp=sharing)
-- [Future Developments Recommendations](https://docs.google.com/document/d/1o9Lm8PC0MO2EzU67zN0sGB9MdoIXEIePkpDzDZWEPXE/edit?usp=sharing)
+- [Future Developments Recommendations](https://docs.google.com/document/d/1tXkw-koFvxvg6SrjHSzPCQbnXtDYNp6tqNFYVDv4Tn0/edit?usp=sharing)
 
+---
+
+## Contact the Developers
+
+- [Lorraine Gwen Castrillon](mailto:lmcastrillon@up.edu.ph) : [Facebook](https://www.facebook.com/lorrainegwen.castrillon/)  
+- [Gavril Benedict Coronel](mailto:glcoronel@up.edu.ph) : [Facebook](https://www.facebook.com/gavrilcoronel)  
+- [Jacky John Abucay](mailto:jdabucay@up.edu.ph) : [Facebook](https://www.facebook.com/jacky.johnD)
 <!-- # sv
 
 Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
