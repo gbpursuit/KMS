@@ -202,8 +202,7 @@ npx prisma migrate dev     # Run and apply migrations
 Navigate to the seeding script directory:
 
 ```bash
-cd path/to/functions
-npx tsx index.ts
+npm run kmsdb:init
 ```
 
 > This seeds the database with initial content.
