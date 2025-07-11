@@ -29,5 +29,5 @@
 {:else if style === "pdf"}
     <iframe src={filePath} title="Uploaded PDF" class="{styleValue} {addStyle}"></iframe>
 {:else if style === 'csv'}
-    <EvaluationSelect filePath={filePath}/>
+    <EvaluationSelect bind:filePath={filePath} />
 {/if}

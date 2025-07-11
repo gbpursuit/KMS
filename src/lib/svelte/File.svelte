@@ -18,5 +18,5 @@
 </script>
 
 <div class={style} {...props}>
-    <Media style={type} filePath={filePath}></Media>
+    <Media style={type} bind:filePath={filePath} />
 </div>
