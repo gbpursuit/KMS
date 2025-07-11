@@ -2,6 +2,8 @@
     import '@fortawesome/fontawesome-svg-core/styles.css';
     import type { PageProps } from './$types';
     import { onMount } from 'svelte';
+
+	import Button from "$lib/svelte/Button.svelte";
 	import Tab from '$lib/svelte/professional-development/Tab.svelte';
 	import TabContent from '$lib/svelte/professional-development/TabContent.svelte';
 	import GenerateContent from '$lib/svelte/professional-development/GenerateContent.svelte';
@@ -11,7 +13,9 @@
 	import { getData } from '$lib/functions/database';
 	import HeroBanner from '$lib/svelte/professional-development/HeroBanner.svelte';
 	import { VIEW_CLIENT } from '$lib/functions/env';
-	
+	import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
+	import { faQuestion } from '@fortawesome/free-solid-svg-icons';
+
     let { data }: PageProps = $props();
 	let pageLoaded = $state(false)
     
@@ -80,6 +84,8 @@
 		return temp.content;						// Return the items inside database
 	}
 
+	let showContainer : boolean = $state(false);
+
 </script>
 
 <svelte:head>
@@ -118,12 +124,24 @@
 					</div>
 				{:else}
 					<TabContent bind:activeTab data={data} bind:item bind:tabContent bind:recentlyEdited bind:recentlySaved bind:allAccounts/>
+
 				{/if}
 			</div>
 			<div>
 				<GenerateContent bind:tabContent bind:selectedItem = {data.selectedItem} bind:training = {data.training}/>
 			</div>
 		</div>
+
+		<!-- <div class="fixed bottom-20 right-3 flex flex-col items-end gap-2">
+			<div class='w-20 h-40 bg-[var(--font-green)] rounded shadow transition-all duration-300 ease-in-out 
+			{showContainer ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-5 pointer-events-none'}'>
+				hi
+			</div>
+
+			<Button style="pdf" onclick={() => showContainer = !showContainer} addStyle = 'contentShow buttonShow {showContainer ? 'tooltip-disabled' : ''}' data-tooltip="Tools">
+				<FontAwesomeIcon icon={faQuestion} class = 'text-lg'/>
+			</Button>
+		</div> -->
 
 		<!-- Comment Section -->
 		<!-- <div class="w-full max-w-[900px] px-6">

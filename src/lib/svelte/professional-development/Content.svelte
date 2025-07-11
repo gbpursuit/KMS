@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
 	import { faPlus, faMinus, faList } from "@fortawesome/free-solid-svg-icons";
+    import { tooltip as tooltipv1 } from '$lib/functions/tooltip.v1';
+
 	import { type EditableContent } from "$lib/functions/tab-content";
 	import TextArea from "../TextArea.svelte";
     import UploadFile from "../Upload.svelte";
@@ -71,13 +73,13 @@
         displayTextTypes = !displayTextTypes;
     }
 
-    let addToolTip = `Add item\n(Ctrl + Click to insert above)`;
+    let addToolTip = 'Add Item\n(Ctrl + Click to insert above) '
 
 </script>
 
 {#if currentContent}
     <div class="flex flex-col gap-2">
-        <div class="flex flex-row w-full items-center gap-2 relative">
+        <div class="flex flex-row w-full items-center gap-2">
             <!-- {JSON.stringify(currentContent)} -->
             {#if currentContent.type === 'plain' || currentContent.type === 'heading'}
                 <TextArea type="text" bind:style={currentContent.type} disabled={!editable || currentContent.disabled} bind:text={currentContent.content} />
@@ -90,8 +92,10 @@
             {/if}
             {#if !currentContent.disabled && currentContent.type != 'select-leader'}
             <div class="flex flex-row gap-2 transition-width duration-700 ease-in-out {editable? 'w-[60px]' : 'w-0'} overflow-hidden">
-                <Button addStyle="transition duration-100 hover:text-green-500 cursor-pointer  {editable? 'opacity-100': 'opacity-0'} addShow buttonShow" data-tooltip={addToolTip} onclick={addItem} disabled={!editable}>
-                    <FontAwesomeIcon icon={faPlus}/>
+                <Button addStyle="transition duration-100 hover:text-green-500 cursor-pointer {editable? 'opacity-100': 'opacity-0'}" onclick={addItem} disabled={!editable}>
+                    <span title={addToolTip} use:tooltipv1>
+                        <FontAwesomeIcon icon={faPlus} />
+                    </span>
                 </Button>
                 <div class="flex">
                     <div class="absolute w-[75px] mt-5 shadow-lg" hidden={!displayTextTypes}>
@@ -108,12 +112,16 @@
                         </div>
                     </div>
                     
-                    <Button addStyle="transition duration-500 hover:text-blue-500 cursor-pointer {editable? 'opacity-100': 'opacity-0'} optionShow buttonShow" data-tooltip="Options" onclick={() => {displayTextTypes = !displayTextTypes}} disabled={!editable}>
-                        <FontAwesomeIcon icon={faList}/>
+                    <Button addStyle="transition duration-500 hover:text-blue-500 cursor-pointer {editable? 'opacity-100': 'opacity-0'}" onclick={() => {displayTextTypes = !displayTextTypes}} disabled={!editable}>
+                        <span title="Options" use:tooltipv1>
+                            <FontAwesomeIcon icon={faList} />
+                        </span>
                     </Button>
                 </div>
-                <Button addStyle="transition duration-500 hover:text-red-500 cursor-pointer {editable && (currentContent.prev || currentContent.next)? 'opacity-100': 'opacity-0 pointer-events-none'} deleteShow buttonShow" data-tooltip="Remove Item" onclick={deleteItem} disabled={!editable && (currentContent.prev || currentContent.next)}>
-                    <FontAwesomeIcon icon={faMinus}/>
+                <Button addStyle="transition duration-500 hover:text-red-500 cursor-pointer {editable && (currentContent.prev || currentContent.next)? 'opacity-100': 'opacity-0 pointer-events-none'}" onclick={deleteItem} disabled={!editable && (currentContent.prev || currentContent.next)}>
+                    <span title="Remove Item" use:tooltipv1>
+                        <FontAwesomeIcon icon={faMinus} />
+                    </span>
                 </Button>
             </div>
             {/if}

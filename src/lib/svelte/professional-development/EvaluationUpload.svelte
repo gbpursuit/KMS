@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
-	import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+	import { faMinus } from "@fortawesome/free-solid-svg-icons";
+	import { tooltip as tooltipv1 } from '$lib/functions/tooltip.v1';
     import UploadFile from '../Upload.svelte';
 	import Button from "../Button.svelte";
 	import type { EditableContent } from '$lib/functions/tab-content';
@@ -28,7 +29,9 @@
 		<UploadFile title={title} style="csv" bind:filePath={currentContent.content} editable={editable} />
 		{#if currentContent.content}
 			<Button addStyle="transition duration-500 hover:text-red-500 {editable ? 'opacity-100': 'opacity-0 pointer-events-none'}" onclick={deleteItem} disabled={!editable && (currentContent.prev || currentContent.next)}>
-				<FontAwesomeIcon icon={faMinus}/>
+				<span title="Remove Evaluation CSV" use:tooltipv1>
+					<FontAwesomeIcon icon={faMinus} />
+				</span>
 			</Button>
 		{/if}
 	</div>
