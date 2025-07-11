@@ -25,7 +25,10 @@
         error = await getData(rawToken, 'pd/training').then((v: Array<any>) => { for(let i = 0; i < v.length; i++) allTraining[i] = v[i].type })
         if(error) console.error('Error: Failed to get all training types', error)
         
-        pageLoaded = true
+        pageLoaded = true;
+
+        let savedEditorState = localStorage.getItem('editor');
+        editable = savedEditorState === 'true';
     })
 
 	function handleDate(date: string) {
@@ -51,6 +54,11 @@
 			alert('An error occurred during deletion.');
 		}
 	}
+
+    async function toggleMode() {
+        editable = !editable;
+        localStorage.setItem('editor', editable.toString());
+    }
 
 </script>
 
@@ -95,7 +103,7 @@
 <!-- Editor Toggle Button -->
 <div class="{canEdit ? 'flex' : 'hidden'} flex flex-row w-full gap-2 mt-4 items-center justify-between">
     <div class="flex items-center w-22 h-5.5 px-1 rounded-full transition-colors duration-300 ease-in-out" class:bg-green-300={editable} class:bg-red-300={!editable}>
-        <Button style="editor-mode" onclick={() => editable = !editable} addStyle={editable? 'translate-x-4 bg-green-500': 'bg-red-500'}>
+        <Button style="editor-mode" onclick={toggleMode} addStyle={editable? 'translate-x-4 bg-green-500': 'bg-red-500'}>
             <div class="w-full h-full flex items-center justify-center text-[8px] font-bold text-white">
                 {editable ? 'EDITOR ON' : 'EDITOR OFF'}
             </div>
