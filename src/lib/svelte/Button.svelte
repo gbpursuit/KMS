@@ -75,6 +75,9 @@
         case 'modal-submit':
             styleValue = "bg-[#185A37] text-white font-semibold px-4 py-2 rounded-lg hover:bg-[#0C2D1C] transition-all duration-200"
             break;
+        case 'pdf':
+            styleValue = 'bg-[var(--font-green)] text-white fixed bottom-5 right-5 w-13 h-13 p-1 rounded-full border border-[var(--font-green)] cursor-pointer hover:scale-102 hover:bg-[var(--hover-green)] transition duration-300 ease-in-out'
+            break;
         case 'modules-view-more':
             styleValue = "flex h-full p-1 font-medium hover:text-[var(--font-green)] hover:tracking-wide transition-all duration-300 ease-in-out"
             break;
@@ -87,3 +90,6 @@
 <button type={toButtonType(type)} class="cursor-pointer {styleValue} {addStyle}" {...props}>
     {@render children()}
 </button>
+
+<style>
+</style>
