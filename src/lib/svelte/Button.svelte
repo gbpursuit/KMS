@@ -90,6 +90,3 @@
 <button type={toButtonType(type)} class="cursor-pointer {styleValue} {addStyle}" {...props}>
     {@render children()}
 </button>
-
-<style>
-</style>

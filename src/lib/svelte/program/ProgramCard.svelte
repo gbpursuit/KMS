@@ -20,6 +20,7 @@
     let moduleCount = program._count?.[countKey] ?? 0;
 
     let a = program.name.replace(' ', '-').toLowerCase();
+    let isDisabled = program.name.toLowerCase() !== 'professional development';
 
     function handleButton(e: Event, id: number, check: any) {
         e?.preventDefault();
@@ -32,13 +33,19 @@
     }
 </script>
 
-<Button style='program-card' onclick={(e: Event) => handleButton(e, program.id, data.user)}>
+<Button style='program-card' onclick={(e: Event) => handleButton(e, program.id, data.user)} disabled={isDisabled} addStyle={isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}>
     <div class="flex flex-col w-full h-[100%] gap-2 justify-center items-center">
         <FontAwesomeIcon icon={program.icon} class="text-xl lg:text-2xl xl:text-3xl text-[var(--font-green)]"/>
         <div class="flex flex-col text-black group-hover:text-[var(--font-green)] transition duration-400 ease-in-out justify-center items-center w-[80%] text-center">
             <h1 class="lg:text-lg xl:text-xl font-semibold">{program.name}</h1>
             <p class="text-xs lg:text-sm">
-                {moduleCount === 0 ? 'No Modules' : moduleCount === 1 ? '1 Module' : `${moduleCount} Modules`}
+                {#if program.name.toLowerCase() !== 'professional development'} <em >Coming Soon!</em>
+                {:else if moduleCount === 0} No Modules
+                {:else if moduleCount === 1} 1 Module
+                {:else} {moduleCount} Modules
+                {/if}
+                <!-- {program.name.toLowerCase() !== 'professional development' ? <em>Coming Soon!</em> : 
+                moduleCount === 0 ? 'No Modules' : moduleCount === 1 ? '1 Module' : `${moduleCount} Modules`} -->
             </p>
         </div>
     </div>
