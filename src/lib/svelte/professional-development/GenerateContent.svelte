@@ -87,7 +87,7 @@
 <!-- PDF Preview & Actions -->
 {#if !hideContent}
 	<div
-		class="fixed inset-0 z-20 bg-black/20 flex items-center justify-center p-5"
+		class="fixed inset-0 z-20 flex items-center justify-center p-5 bg-[#030B07]/70 transition-opacity duration-300 ease-in-out"
 		role="dialog"
 		tabindex="-1"
 		onclick={(e) => {
