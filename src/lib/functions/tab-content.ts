@@ -1,3 +1,9 @@
+import { writable, type Writable } from "svelte/store";
+
+export var summarizedTable: Writable<CSVSummary> = writable({})
+
+export type CSVSummary = Record<string, Record<string, { averageLabel: string; rawCount: number; totalCount: number }>>
+
 export interface Style {
     type: string;       // heading, paragraph, etc..
     size: string,
