@@ -14,7 +14,8 @@
 		"lint": "prettier --check .",
 		"test:e2e": "playwright test",
 		"test": "npm run test:e2e && npm run test:unit -- --run",
-		"test:unit": "vitest"
+		"test:unit": "vitest",
+		"kmsdb:init": "npx tsx ./src/lib/functions/index.ts"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.49.1",

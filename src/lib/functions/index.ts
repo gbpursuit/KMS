@@ -4,7 +4,6 @@ const prisma = data.PRISMA
 
 async function createPrograms(programs: string[]) {
   for(let i = 0; i < programs.length; i++) {
-    console.log('name:', programs[i])
     try {
       await prisma.program.create({
         data: {
@@ -12,7 +11,9 @@ async function createPrograms(programs: string[]) {
           name: programs[i]
         }
       })
+      console.log('[SUCCESS] name:', programs[i])
     } catch {
+      console.log('[ERROR] name:', programs[i])
       continue
     }
   }
@@ -20,15 +21,16 @@ async function createPrograms(programs: string[]) {
 
 async function createPerms(perms: string[]) {
   for(let i = 0; i < perms.length; i++) {
-    console.log('perm_type:', perms[i])
     try {
-        await prisma.permission.create({
-          data: {
-            id: i + 1,
-            perm_type: perms[i]
-          }
-        })
+      await prisma.permission.create({
+        data: {
+          id: i + 1,
+          perm_type: perms[i]
+        }
+      })
+      console.log('[SUCCESS] perm_type:', perms[i])
     } catch {
+      console.log('[ERROR] perm_type:', perms[i])
       continue
     }
   }
@@ -36,15 +38,16 @@ async function createPerms(perms: string[]) {
 
 async function createRoles(roles: string[]) {
   for(let i = 0; i < roles.length; i++) {
-    console.log('name:', roles[i])
     try {
-        await prisma.role.create({
-          data: {
-            id: i + 1,
-            name: roles[i]
-          }
-        })
+      await prisma.role.create({
+        data: {
+          id: i + 1,
+          name: roles[i]
+        }
+      })
+      console.log('[SUCCESS] name:', roles[i])
     } catch {
+      console.log('[ERROR] name:', roles[i])
       continue
     }
   }
@@ -53,7 +56,6 @@ async function createRoles(roles: string[]) {
 async function createRolePerms(rolePerms: number[][]) {
   
   for(let i = 0; i < rolePerms.length; i++) {
-    console.log('roleId:', rolePerms[i][0],'permId:', rolePerms[i][1])
     try {
       await prisma.rolePermission.create({
         data: {
@@ -61,7 +63,9 @@ async function createRolePerms(rolePerms: number[][]) {
           permId: rolePerms[i][1]
         }
       })
+    console.log('[SUCCESS] roleId:', rolePerms[i][0],'permId:', rolePerms[i][1])
     } catch {
+    console.log('[ERROR] roleId:', rolePerms[i][0],'permId:', rolePerms[i][1])
       continue
     }
   }
@@ -69,7 +73,6 @@ async function createRolePerms(rolePerms: number[][]) {
 
 async function createTraining(trainings: string[]) {
   for(let i = 0; i < trainings.length; i++) {
-    console.log('type:', trainings[i])
     try {
         await prisma.training.create({
           data: {
@@ -77,7 +80,9 @@ async function createTraining(trainings: string[]) {
             type: trainings[i]
           }
         })
+      console.log('[SUCCESS] type:', trainings[i])
     } catch {
+      console.log('[ERROR] type:', trainings[i])
       continue
     }
   }
@@ -90,8 +95,6 @@ async function main() {
   const allRolePerms = await prisma.rolePermission.findMany()
   const allTraining = await prisma.training.findMany()
 
-  const allAccounts = await prisma.account.deleteMany()
-
   const PROGRAMS = ['Research', 'Curriculum Development', 'Professional Development', 'Extension']
   const PERMISSIONS = ['can_view', 'can_add', 'can_edit', 'can_delete', 'can_assign']
   const ROLES = ['User', 'Admin', 'Super User']
@@ -103,7 +106,6 @@ async function main() {
   console.log('Roles:', allRoles.length, allRoles)
   console.log('Role Permissions:', allRolePerms.length, allRolePerms)
   console.log('Training Types:', allTraining.length, allTraining)
-  console.log('All Accounts', allAccounts)
 
   if(allPrograms.length < PROGRAMS.length) await createPrograms(PROGRAMS)
   if(allPerms.length < PERMISSIONS.length) await createPerms(PERMISSIONS)
