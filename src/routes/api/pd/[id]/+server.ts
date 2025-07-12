@@ -33,7 +33,6 @@ export const PUT: RequestHandler = async({ params, request }) => {
             data: item
         });
 
-        console.dir(updated, { depth: null });
         return data.json(updated);
 
     } catch (err: any) {

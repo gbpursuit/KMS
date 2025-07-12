@@ -51,7 +51,6 @@
         if(error) console.error('Error: Failed to get all accounts', error)
 
 		pageLoaded = true
-		console.log(tabContent);
 	});
 
 	
@@ -76,10 +75,6 @@
 		if(!data.selectedItem) return;
 
 		let temp = await getData(rawToken, 'pd', fetch, data.selectedItem.id);
-
-		console.log("amp",temp.content);
-		console.log("amp2",tabContentJSON);
-
 		if (!temp?.content) return tabContentJSON;	// Return defaults if database is empty
 		return temp.content;						// Return the items inside database
 	}
