@@ -7,7 +7,7 @@
 	import Heading from "../Heading.svelte";
 	import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
 
-	let { tabContent = $bindable(), selectedItem = $bindable(), training = $bindable() }: {
+	let { tabContent = $bindable(), selectedItem, training }: {
 		tabContent: TabInterface,
 		selectedItem: Record<string, any>,
 		training: Training[]

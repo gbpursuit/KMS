@@ -123,7 +123,7 @@
 				{/if}
 			</div>
 			<div>
-				<GenerateContent bind:tabContent bind:selectedItem = {data.selectedItem} bind:training = {data.training}/>
+				<GenerateContent bind:tabContent selectedItem={data.selectedItem} training={data.training}/>
 			</div>
 		</div>
 
