@@ -1,6 +1,7 @@
 <script lang="ts">
     import EvaluationSelect from './professional-development/EvaluationSelect.svelte'
-    let { style = $bindable(), filePath = $bindable(), addStyle = '', ...props } = $props()
+    import ParticipantSelect from './professional-development/ParticipantSelect.svelte'
+    let { style = $bindable(), filePath = $bindable(), addStyle = '', activeTab = $bindable(), ...props } = $props()
     let styleValue = $state('');
 
     $effect(() => {
@@ -29,5 +30,9 @@
 {:else if style === "pdf"}
     <iframe src={filePath} title="Uploaded PDF" class="{styleValue} {addStyle}"></iframe>
 {:else if style === 'csv'}
-    <EvaluationSelect bind:filePath={filePath} />
+    {#if activeTab.toLowerCase() === 'evaluation'}
+        <EvaluationSelect filePath={filePath}/>
+    {:else if activeTab.toLowerCase() === 'participants'}
+        <ParticipantSelect filePath={filePath}/>
+    {/if}
 {/if}

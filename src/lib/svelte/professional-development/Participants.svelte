@@ -1,16 +1,38 @@
 <script lang="ts">
-	import Heading from "../Heading.svelte";
-	import type { EditableContent } from "$lib/functions/tab-content";
-	import Content from "./Content.svelte";
+	import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
+	import { faMinus } from "@fortawesome/free-solid-svg-icons";
+	import { tooltip as tooltipv1 } from '$lib/functions/tooltip.v1';
+    import UploadFile from '../Upload.svelte';
+	import Button from "../Button.svelte";
+	import type { EditableContent } from '$lib/functions/tab-content';
+	let { editable, currentContent = $bindable(), initContent = $bindable(), title, activeTab = $bindable() }: { editable: boolean, currentContent: EditableContent | null, initContent: EditableContent | null, title: string, activeTab: string } = $props();
 
-	let { editable } = $props();
-	let content: EditableContent = $state({type: 'plain', prev: false, content: '', next: null})
+	$effect(() => {
+		if (currentContent && currentContent.type !== 'csv') {
+			currentContent.type = 'csv';
+			if (initContent) {
+				initContent.type = 'csv';
+			}
+		}
+	});
+
+	function deleteItem(e: PointerEvent) {
+		if (editable && currentContent) {
+			currentContent.content = '';
+		}
+	}
+
 </script>
 
-<div class="flex w-full">
-	<div class="w-full text-sm text-[#0F3923] space-y-6 bg-white p-6 rounded-lg border border-[#AFAFAF] shadow-md">
-		<Heading style="tab-content">Training Participants</Heading>
-		<div class="h-[1px] bg-[#AFAFAF] mb-4"></div>
-		<Content editable={editable} bind:currentContent={content}/>
-    </div>
-</div>
+{#if currentContent}
+	<div class="flex flex-row w-full items-start">
+		<UploadFile bind:activeTab title={title} style="csv" bind:filePath={currentContent.content} editable={editable} />
+		{#if currentContent.content}
+			<Button addStyle="transition duration-500 hover:text-red-500 {editable ? 'opacity-100': 'opacity-0 pointer-events-none'}" onclick={deleteItem} disabled={!editable && (currentContent.prev || currentContent.next)}>
+				<span title="Remove Participant CSV" use:tooltipv1>
+					<FontAwesomeIcon icon={faMinus} />
+				</span>
+			</Button>
+		{/if}
+	</div>
+{/if}

@@ -7,7 +7,7 @@
 	import FileType from '$lib/svelte/File.svelte';
     import { addImageData, removeFile, uploadFileWithProgress } from '$lib/functions/media';
 
-    let { style = $bindable(), editable = false, addStyle = '', filePath = $bindable(), title, ...props } = $props()
+    let { style = $bindable(), editable = false, addStyle = '', filePath = $bindable(), title, activeTab = $bindable(), ...props} = $props()
     let textDescription = $state('');
 	let originalDescription = '';
     let styleIcon = $state(faArrowUpFromBracket);
@@ -160,7 +160,7 @@
 <div class="relative w-full group">
 	<!-- Display Media -->
 	{#if (selectedFile && !uploading) || filePath} 
-		<FileType style="upload" bind:filePath={filePath} type={style} />
+		<FileType style="upload" bind:activeTab filePath={filePath} type={style}></FileType>
 
 	<!-- Upload Media -->
 	{:else if editable && !selectedFile}
