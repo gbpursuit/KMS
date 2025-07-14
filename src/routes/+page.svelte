@@ -16,11 +16,6 @@
   import { VIEW_CLIENT } from '$lib/functions/env';
 
   let { data } : PageProps = $props();
-	let accounts: Account[] = $state([]); // REMOVE AFTER TESTING
-  let button1Text = $state('SWITCH TO USER') // REMOVE AFTER TESTING
-  let button2Text = $state('SWITCH TO ADMIN') // REMOVE AFTER TESTING
-  let button3Text = $state('SWITCH TO SUPER USER') // REMOVE AFTER TESTING
-  let roleId = $state(1) // REMOVE AFTER TESTING
 
   let pageLoaded = $state(false)
   let programList: ProgramAll[] = $state([]);
@@ -38,55 +33,15 @@
     programList = data.programs.map((p) => ({...p, icon: iconMap[p.name]}));
     pageLoaded = true
     
-    accounts = await getData(rawToken, 'account'); // REMOVE AFTER USER TESTING
-
-    if(!data.user) return; // REMOVE AFTER TESTING
-    roleId = data.user.roleId // REMOVE AFTER TESTING
-    button1Text = roleId == 1? 'CURRENTLY A USER': 'SWITCH TO USER' // REMOVE AFTER TESTING
-    button2Text = roleId == 2? 'CURRENTLY AN ADMIN': 'SWITCH TO ADMIN' // REMOVE AFTER TESTING
-    button3Text = roleId == 3? 'CURRENTLY A SUPER USER': 'SWITCH TO SUPER USER' // REMOVE AFTER TESTING
   });
 
   $effect(() => {
     currentModule.set(null);
     selectedModuleItem.set(null);
-
-    if(!data.user) return;
-    button1Text = roleId == 1? 'CURRENTLY A USER': 'SWITCH TO USER' // REMOVE AFTER TESTING
-    button2Text = roleId == 2? 'CURRENTLY AN ADMIN': 'SWITCH TO ADMIN' // REMOVE AFTER TESTING
-    button3Text = roleId == 3? 'CURRENTLY A SUPER USER': 'SWITCH TO SUPER USER' // REMOVE AFTER TESTING
-
-    if(roleId == 3) window.location.pathname = '/manage' // REMOVE AFTER TESTING
   })
 
   function visitWebsite() {
     window.open('https://nismed.upd.edu.ph/')
-  }
-
-  // REMOVE AFTER USER TESTING
-
-  async function changeRole(id: number, targetRole: number) {
-      try {
-          const res = await fetch(`/api/account/${id}`, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ roleId: targetRole })
-          });
-
-          const temp = await res.json();
-
-          if (res.ok) {
-              roleId = targetRole
-              accounts = accounts.map(acc =>
-                  acc.id === id ? { ...acc, roleId: targetRole } : acc
-              );
-          } else {
-              alert(temp.error || 'Failed to change role.');
-          }
-      } catch (error) {
-          console.error('Error changing role:', error);
-          alert('An error occurred while changing role.');
-      }
   }
 
 </script>
@@ -140,26 +95,6 @@
                   <ProgramCard program={program} data={data}/>
               {/each}
           </div>
-          {#if data.user}
-            <div class="w-full h-[1.5px] bg-green-800 mb-4 mt-8"></div>
-            <div class="flex flex-col w-full gap-2 justify-center">
-                <Heading>Role Change Tester</Heading>
-                <Paragraph>
-                    Test user, admin, and superuser roles. This feature is for testing only and will be removed before deployment.
-                </Paragraph>
-            </div>
-            <div class="flex col w-full gap-8">
-              <Button style="submit" addStyle="bg-red-800 hover:bg-red-700 font-bold" onclick={() => {if(data.user) changeRole(data.user.id, 1)}}>
-                {button1Text}
-              </Button>
-              <Button style="submit" addStyle="bg-green-800 font-bold" onclick={() => {if(data.user) changeRole(data.user.id, 2)}}>
-                {button2Text}
-              </Button>
-              <Button style="submit" addStyle="bg-yellow-600 hover:bg-yellow-500 font-bold" onclick={() => {if(data.user) changeRole(data.user.id, 3)}}>
-                {button3Text}
-              </Button>
-            </div>
-          {/if}
         {/if}
     </div>
 </div>

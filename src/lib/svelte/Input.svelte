@@ -10,7 +10,7 @@
     $effect(() => {
         switch(style) {
             case 'error':
-                styleValue = "w-full py-1 px-3 border-2 border-red-500 animate-red-shake rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
+                styleValue = "w-full py-1 px-3 border-2 border-red-500 animate-red-shake rounded-lg"
                 break;
             case 'title':
                 styleValue = "flex w-full border-0 text-center text-2xl font-bold mb-2 text-[#1B663E]"
@@ -31,7 +31,7 @@
                 styleValue = "w-[23ch] text-sm text-black placeholder-gray-400 bg-transparent border-none focus:outline-none focus:ring-0"
                 break;
             default:
-                styleValue = "flex w-full py-1 px-3 border-2 border-[#C5C5C5] rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
+                styleValue = "flex w-full py-1 px-3 border-2 border-[#1B663E] rounded-lg focus:ring-[#1B663E]/50"
                 break;
         }
     })

@@ -2,8 +2,9 @@
     import Papa from 'papaparse';
     import Select from '../Select.svelte';
     import { onMount } from 'svelte';
-	import type { EditableContent } from '$lib/functions/tab-content';
-	let { filePath }: { filePath: string } = $props();
+	import { summarizedTable, type CSVSummary } from '$lib/functions/tab-content';
+	import SummaryTable from './SummaryTable.svelte';
+	let { filePath = $bindable() }: { filePath: string } = $props();
 
     let selectedName: string = $state("Summary"); // default summary
 
@@ -42,7 +43,12 @@
     $effect(() => {
 		if (filePath) {
 			parseCSV(filePath);
-		}
+		} else {
+            csvData = []
+            csvHeaders = []
+            nameGrouped = {}
+            summarizedTable.set({})
+        }
 	});
 
     function cleanRegex(headers: Record<string, Record<string, string>>) {
@@ -129,7 +135,7 @@
             }
         }
 
-        let summarized: Record<string, Record<string, { averageLabel: string; rawCount: number; totalCount: number }>> = {};
+        let summarized: CSVSummary = {};
 
         for (let [group, categories] of Object.entries(result)) {
             summarized[group] = {};
@@ -181,49 +187,19 @@
             }
         }
 
+        summarizedTable.set(summarized)
+
         return summarized;
     }
 
-    let summarizedTable = $derived(() => summarizeByLabelIndex(filteredCSV()));
+    let _summarizedTable = $derived(() => summarizeByLabelIndex(filteredCSV()));
 </script>
 
+{#if selectedName && filePath}
 <Select style = 'evaluation' options={selectOptions()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
 
-{#if selectedName}
     {#if selectedName === 'Summary'}
-        <div class="mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
-            {#each Object.entries(summarizedTable()) as [group, categories]}
-                <div class="overflow-x-auto scrollbarTheme border-l-4 border-[var(--font-green)] bg-gray-50 rounded-md p-4 shadow-sm transition-shadow">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-3">{group}</h2>
-                    <table class="w-full min-w-[500px]  table-fixed text-sm border rounded overflow-hidden shadow-md">
-                        <thead class="bg-[var(--font-green)] text-white">
-                            <tr>
-                                <th class="text-center p-2 w-1/2">Category</th>
-                                <th class="text-center p-2 w-1/4">Most Representative Answer</th>
-                                <th class="text-center p-2 w-1/4">Respondents</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {#each Object.entries(categories) as [category, data]}
-                                <tr class="odd:bg-white even:bg-gray-100 font-normal hover:text-[var(--hover-green)]
-                                    transition-all duration-300 ease-in-out ">
-                                    <td class="text-left px-4 py-2">{category}</td>
-                                    <td class="text-center p-2">
-                                        {data.averageLabel || ' - '}
-                                    </td>
-
-                                    <td class="text-center p-2">
-                                        {data.averageLabel !== 'All Tied'
-                                            ? `${data.rawCount} / ${data.totalCount}`
-                                            : ' - '}
-                                    </td>
-                                </tr>
-                            {/each}
-                        </tbody>
-                    </table>
-                </div>
-            {/each}
-        </div>
+        <SummaryTable summarizedTable={_summarizedTable()} />
     {:else}
         <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
 
@@ -266,14 +242,3 @@
         </div>
     {/if}
 {/if}
-
-<style>
-    .scrollbarTheme {
-        scrollbar-width: none; /* Firefox */
-    }
-
-    .scrollbarTheme:hover {
-        scrollbar-width: thin;
-        scrollbar-color: var(--font-green) transparent;
-    }
-</style>
