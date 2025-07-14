@@ -177,10 +177,14 @@
     }
 
     $effect(() => {
-		if (filePath) {
-			parseCSV(filePath);
-		}
-	});
+        if (filePath && !filePath.startsWith('blob:')) {
+            parseCSV(filePath);
+        } else {
+            csvData = [];
+            nameGrouped = {};
+            selectedName = "Summary";
+        }
+    });
 
     let selectOptions = $derived(() => ['Summary', ...Object.keys(nameGrouped).sort()]);
     let fullData = $derived(() => getSummaryData());
@@ -217,98 +221,103 @@
 
 </script>
 
-<Select style = 'evaluation' options={selectOptions()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
-
-{#if selectedName}
-    {#if selectedName === 'Summary'}
-        <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
-
-            <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2"> Total of {Object.keys(nameGrouped).length} Participants </h1>
-            <div class="space-y-6">
-                <table class="w-full min-w-[500px] table-fixed text-sm border rounded overflow-hidden shadow-md">
-                    <thead class="bg-[var(--font-green)] text-white">
-                        <tr>
-                            {#each Object.keys(detailedSummary()[0] ?? {}).filter(key => key !== 'degree') as key}
-                                <th class="text-center p-2 {key === 'name' ? 'w-[180px] min-w-[180px] text-left' : 
-                                    key === 'degreeProgram' ? 'w-[120px] min-w-[120px] text-left' : ''}">
-                                    <div class = "overflow-hidden truncate" title={summaryLabels[key as keyof typeof summaryLabels]}>
-                                        <span class="font-bold">{summaryLabels[key as keyof typeof summaryLabels]}</span>
-                                    </div>
-                                </th>
-                            {/each}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {#each detailedSummary() as row}
-                            <tr class="odd:bg-white even:bg-gray-100 font-normal hover:text-[var(--hover-green)] transition-all duration-300 ease-in-out">
-                                <td class="tdStyle">
-                                    <div class="tdClamp name" title={row.name}>
-                                        <span class="font-semibold">{row.name}</span>
-                                        <span class="text-gray-500 italic text-xs block"> ({row.degree})</span>
-                                    </div>
-                                </td>
-                                <td class="tdStyle">
-                                    <div class="tdClamp notName" title={row.degreeProgram}>{row.degreeProgram}</div>
-                                </td>
-                                <td class="tdStyle">
-                                    <div class="tdClamp notName" title={row.position}>{row.position}</div>
-                                </td>
-                                <td class="tdStyle">
-                                    <div class="tdClamp notName" title={row.gender}>{row.gender}</div>
-                                </td>
-                                <td class="tdStyle">
-                                    <div class="tdClamp notName" title={row.institution}>{row.institution}</div>
-                                </td>
-                                <td class="tdStyle">
-                                    <div class="tdClamp notName" title={(row.age).toString()}>{row.age}</div>
-                                </td>
-                                <td class="tdStyle">
-                                    <div class="tdClamp notName" title={row.yearsOfTeaching.toString()}>{row.yearsOfTeaching}</div>
-                                </td>
-                            </tr>
-                        {/each}
-                    </tbody>
-                </table>
-                <div class="flex flex-col gap-1 border-l-4 border-[var(--font-green)] bg-gray-50 rounded-md p-4 shadow-sm transition-shadow">
-                    <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2">
-                        In summary:
-                    </h1>
-                    {#each Object.entries(pdfSummary()) as [label, value]}
-                        <div class="flex items-center">
-                            <h2 class="text-base font-semibold p-2">
-                                {summaryLabels[label as keyof typeof summaryLabels]}:
-                            </h2>
-                            <p class="text-gray-900 py-2 rounded">{value}</p>
-                        </div>                        
-                    {/each}
-                </div>
-            </div>
+{#if selectedName && filePath}
+    {#if filePath.startsWith('blob:')}
+        <div class="max-w-3xl mx-auto p-5 bg-[rgba(27,102,62,0.05)] border border-[var(--font-green)] rounded-lg text-[var(--font-green)] italic text-center font-medium">
+            Save to parse the data!
         </div>
     {:else}
-        <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
+        <Select style = 'evaluation' options={selectOptions()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
+        {#if selectedName === 'Summary'}
+            <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
 
-            <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2"> {nameGrouped[selectedName]['Name']}'s Response </h1>
-
-            <div class="space-y-6">
-                <table class="w-full min-w-[500px]  table-fixed text-sm border rounded overflow-hidden shadow-md">
-                    <thead class="bg-[var(--font-green)] text-white">
-                        <tr>
-                            <th class="text-center p-2 w-1/2">Category</th>
-                            <th class="text-center p-2 w-1/2">Response</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {#each Object.entries(nameGrouped[selectedName]) as [group, items]}
-                            <tr class="odd:bg-white even:bg-gray-100 font-normal hover:text-[var(--hover-green)]
-                                transition-all duration-300 ease-in-out ">
-                                <td class="text-left border border-gray-200 px-4 py-2">{group}</td>
-                                <td class="text-center border border-gray-200 p-2">{items}</td>
-                            </tr> 
+                <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2"> Total of {Object.keys(nameGrouped).length} Participants </h1>
+                <div class="space-y-6">
+                    <table class="w-full min-w-[500px] table-fixed text-sm border rounded overflow-hidden shadow-md">
+                        <thead class="bg-[var(--font-green)] text-white">
+                            <tr>
+                                {#each Object.keys(detailedSummary()[0] ?? {}).filter(key => key !== 'degree') as key}
+                                    <th class="text-center p-2 {key === 'name' ? 'w-[180px] min-w-[180px] text-left' : 
+                                        key === 'degreeProgram' ? 'w-[120px] min-w-[120px] text-left' : ''}">
+                                        <div class = "overflow-hidden truncate" title={summaryLabels[key as keyof typeof summaryLabels]}>
+                                            <span class="font-bold">{summaryLabels[key as keyof typeof summaryLabels]}</span>
+                                        </div>
+                                    </th>
+                                {/each}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#each detailedSummary() as row}
+                                <tr class="odd:bg-white even:bg-gray-100 font-normal hover:text-[var(--hover-green)] transition-all duration-300 ease-in-out">
+                                    <td class="tdStyle">
+                                        <div class="tdClamp name" title={row.name}>
+                                            <span class="font-semibold">{row.name}</span>
+                                            <span class="text-gray-500 italic text-xs block"> ({row.degree})</span>
+                                        </div>
+                                    </td>
+                                    <td class="tdStyle">
+                                        <div class="tdClamp notName" title={row.degreeProgram}>{row.degreeProgram}</div>
+                                    </td>
+                                    <td class="tdStyle">
+                                        <div class="tdClamp notName" title={row.position}>{row.position}</div>
+                                    </td>
+                                    <td class="tdStyle">
+                                        <div class="tdClamp notName" title={row.gender}>{row.gender}</div>
+                                    </td>
+                                    <td class="tdStyle">
+                                        <div class="tdClamp notName" title={row.institution}>{row.institution}</div>
+                                    </td>
+                                    <td class="tdStyle">
+                                        <div class="tdClamp notName" title={(row.age).toString()}>{row.age}</div>
+                                    </td>
+                                    <td class="tdStyle">
+                                        <div class="tdClamp notName" title={row.yearsOfTeaching.toString()}>{row.yearsOfTeaching}</div>
+                                    </td>
+                                </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                    <div class="flex flex-col gap-1 border-l-4 border-[var(--font-green)] bg-gray-50 rounded-md p-4 shadow-sm transition-shadow">
+                        <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2">
+                            In summary:
+                        </h1>
+                        {#each Object.entries(pdfSummary()) as [label, value]}
+                            <div class="flex items-center">
+                                <h2 class="text-base font-semibold p-2">
+                                    {summaryLabels[label as keyof typeof summaryLabels]}:
+                                </h2>
+                                <p class="text-gray-900 py-2 rounded">{value}</p>
+                            </div>                        
                         {/each}
-                    </tbody>
-                </table>
+                    </div>
+                </div>
             </div>
-        </div>
+        {:else}
+            <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
+
+                <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2"> {nameGrouped[selectedName]['Name']}'s Response </h1>
+
+                <div class="space-y-6">
+                    <table class="w-full min-w-[500px]  table-fixed text-sm border rounded overflow-hidden shadow-md">
+                        <thead class="bg-[var(--font-green)] text-white">
+                            <tr>
+                                <th class="text-center p-2 w-1/2">Category</th>
+                                <th class="text-center p-2 w-1/2">Response</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#each Object.entries(nameGrouped[selectedName]) as [group, items]}
+                                <tr class="odd:bg-white even:bg-gray-100 font-normal hover:text-[var(--hover-green)]
+                                    transition-all duration-300 ease-in-out ">
+                                    <td class="text-left border border-gray-200 px-4 py-2">{group}</td>
+                                    <td class="text-center border border-gray-200 p-2">{items}</td>
+                                </tr> 
+                            {/each}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {/if}
     {/if}
 {/if}
 

@@ -5,9 +5,10 @@
     import Button from '$lib/svelte/Button.svelte';
 	import Border from '$lib/svelte/Border.svelte';
 	import FileType from '$lib/svelte/File.svelte';
-    import { addImageData, removeFile, uploadFileWithProgress } from '$lib/functions/media';
+    import { removeFile } from '$lib/functions/media';
+	import { onMount, onDestroy } from 'svelte';
 
-    let { style = $bindable(), editable = false, addStyle = '', filePath = $bindable(), title, activeTab = $bindable(), ...props} = $props()
+    let { style = $bindable(), editable = false, addStyle = '', filePath = $bindable(), title, activeTab = $bindable(), selectedFile = $bindable(), ...props} = $props()
     let textDescription = $state('');
 	let originalDescription = '';
     let styleIcon = $state(faArrowUpFromBracket);
@@ -40,7 +41,7 @@
     })
 
     let inputFile: HTMLInputElement | null = $state(null);
-    let selectedFile: File | null = $state(null);
+    // let selectedFile: File | null = $state(null);
     let uploadProgress: number = $state(0);
 	let uploading: boolean = $state(false);
 	let isError: boolean = $state(false);
@@ -104,7 +105,7 @@
 					}
 					break;
 				case 'video':
-					maxSizeMB = 50;
+					maxSizeMB = 75;
 					if (!file.type.startsWith('video/')) {
 						showError('Only video files are allowed');
 						return;
@@ -130,40 +131,67 @@
 				return;
 			}
 
-			selectedFile = file;
+			// selectedFile = file;
+			selectedFile.set(activeTab, file);
+			selectedFile = new Map(selectedFile);
 		}
 	}
 
+	// $effect(() => {
+		// if (_filePath !== '' && filePath === '') {
+		// 	console.log('REMOVING FILE:', selectedFile?.name);
+		// 	(async () => {
+		// 		await removeFile(selectedFile, title);
+		// 		_filePath = ''
+		// 		selectedFile = null
+		// 	})();
+		// } else if (selectedFile) {
+		// 	uploading = true;
+		// 	(async () => {
+		// 		let uploadedPath = await uploadFileWithProgress(selectedFile, title, (percent) => {
+		// 			console.log('Percent: ', percent);
+		// 			uploadProgress = percent;
+		// 		});
+		// 		filePath = uploadedPath;
+		// 		_filePath = uploadedPath;
+		// 		uploading = false;
+		// 	})();
+		// }
+	// });
+
+	let previewURL: string = '';
 	$effect(() => {
-		if (_filePath !== '' && filePath === '') {
-			console.log('REMOVING FILE:', selectedFile?.name);
-			(async () => {
-				await removeFile(selectedFile, title);
-				_filePath = ''
-				selectedFile = null
-			})();
-		} else if (selectedFile) {
-			uploading = true;
-			(async () => {
-				let uploadedPath = await uploadFileWithProgress(selectedFile, title, (percent) => {
-					console.log('Percent: ', percent);
-					uploadProgress = percent;
-				});
-				filePath = uploadedPath;
-				_filePath = uploadedPath;
-				uploading = false;
-			})();
+		if (!selectedFile.has(activeTab)) return;
+
+		const file = selectedFile.get(activeTab);
+		if (!file) return;
+		
+		if (previewURL) URL.revokeObjectURL(previewURL);
+
+		previewURL = URL.createObjectURL(file);
+		filePath = previewURL;
+	});
+
+	onDestroy(() => {
+		if (previewURL) URL.revokeObjectURL(previewURL);
+	});
+
+	$effect(() => {
+		if ((!filePath || filePath === '') && selectedFile.has(activeTab)) {
+			selectedFile.delete(activeTab);
+			selectedFile = new Map(selectedFile);
 		}
 	});
+
 </script>
 
 <div class="relative w-full group">
 	<!-- Display Media -->
-	{#if (selectedFile && !uploading) || filePath} 
+	{#if (selectedFile.has(activeTab) && !uploading) || filePath} 
 		<FileType style="upload" bind:activeTab filePath={filePath} type={style}></FileType>
 
 	<!-- Upload Media -->
-	{:else if editable && !selectedFile}
+	{:else if editable && (!selectedFile.has(activeTab) && !filePath)}
 		<input type="file" accept="image/*,video/*,application/pdf,text/csv,.csv" bind:this={inputFile} onchange={handleFileChange} class="hidden"/>
 		<Border style = "upload" uploadProgress={uploadProgress} isError={isError}></Border>
 		<Button style="upload" onclick={triggerFileSelect} ondragover={handleDragOver} 

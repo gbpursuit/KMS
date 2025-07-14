@@ -9,7 +9,7 @@
 	import Button from "../Button.svelte";
     import Content from "./Content.svelte";
 	import Select from "../Select.svelte";
-    let { editable, currentContent = $bindable(), title, leader = $bindable(), allAccounts = $bindable() }: { editable: boolean, currentContent: EditableContent | null, title: string, leader: string, allAccounts: Array<string>} = $props()
+    let { editable, currentContent = $bindable(), title, leader = $bindable(), allAccounts = $bindable(), pendingDeletes = $bindable(), selectedFile = $bindable(), activeTab = $bindable() }: { editable: boolean, currentContent: EditableContent | null, title: string, leader: string, allAccounts: Array<string>, pendingDeletes: Set<string>, selectedFile: Map<string, File>, activeTab: string } = $props()
     let displayTextTypes = $state(false)
 
     $effect(() => {
@@ -46,16 +46,35 @@
         }
 	}
 
-	function deleteItem(e: PointerEvent) {
-        if(currentContent)
-            if(currentContent.next) {
-                currentContent.next.prev = currentContent.prev
-                currentContent = currentContent.next
-            } else if(currentContent.prev && !currentContent.next) {
-                currentContent = null
-            } else {
-                console.log('NOPE')
-            }
+	async function deleteItem(e: PointerEvent) {
+        if (!currentContent) return;
+
+        if (
+            ['image', 'video', 'pdf', 'csv'].includes(currentContent.type) &&
+            typeof currentContent.content === 'string' &&
+            currentContent.content !== '' &&
+            !currentContent.content.startsWith('blob:')
+        ) {
+            pendingDeletes.add(currentContent.content);
+        }
+
+        if (currentContent.next) {
+            currentContent.next.prev = currentContent.prev;
+            currentContent = currentContent.next;
+        } else if (currentContent.prev && !currentContent.next) {
+            currentContent = null;
+        } else {
+            console.log('NOPE');
+        }
+        // if(currentContent)
+        //     if(currentContent.next) {
+        //         currentContent.next.prev = currentContent.prev
+        //         currentContent = currentContent.next
+        //     } else if(currentContent.prev && !currentContent.next) {
+        //         currentContent = null
+        //     } else {
+        //         console.log('NOPE')
+        //     }
 	}
 
     function verifyChange(currentType: EditableContent | null, changeType: string) {
@@ -73,7 +92,7 @@
         displayTextTypes = !displayTextTypes;
     }
 
-    let addToolTip = 'Add Item\n(Ctrl + Click to insert above) '
+    let addToolTip = 'Add Item\n(Ctrl + Click to insert above) ';
 
 </script>
 
@@ -88,7 +107,7 @@
             {:else if currentContent.type === 'select-account'}
                 <Select style="module-select" options={allAccounts} bind:selected={currentContent.content} disabled={!editable || currentContent.disabled} placeholder='a User'/>
             {:else}
-                <UploadFile title={title} bind:style={currentContent.type} disabled={!editable || currentContent.disabled} bind:filePath={currentContent.content} editable={editable} />
+                <UploadFile title={title} bind:style={currentContent.type} disabled={!editable || currentContent.disabled} bind:filePath={currentContent.content} editable={editable} bind:selectedFile={selectedFile} bind:activeTab />
             {/if}
             {#if !currentContent.disabled && currentContent.type != 'select-leader'}
             <div class="flex flex-row gap-2 transition-width duration-700 ease-in-out {editable? 'w-[60px]' : 'w-0'} overflow-hidden">
@@ -128,7 +147,7 @@
         </div>
 
         {#if currentContent.next}
-            <Content title={title} editable={editable} bind:currentContent={currentContent.next} bind:leader bind:allAccounts/>
+            <Content title={title} editable={editable} bind:currentContent={currentContent.next} bind:leader bind:allAccounts bind:pendingDeletes bind:selectedFile={selectedFile} bind:activeTab/>
         {/if}
     </div>
 {/if}

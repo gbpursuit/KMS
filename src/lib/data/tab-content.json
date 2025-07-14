@@ -25,7 +25,7 @@
       "index": 2,
       "content":
         {
-          "type": "plain",
+          "type": "csv",
           "disabled": false,
           "prev": false, 
           "content": "",
@@ -126,7 +126,7 @@
       "index": 5,
       "content":
         {
-          "type": "plain",
+          "type": "csv",
           "disabled": false,
           "prev": false, 
           "content": "", 

@@ -41,15 +41,19 @@
 	}
 
     $effect(() => {
-		if (filePath) {
-			parseCSV(filePath);
-		} else {
-            csvData = []
-            csvHeaders = []
-            nameGrouped = {}
-            summarizedTable.set({})
+        console.log('filePath changed:', filePath);
+    });
+
+    $effect(() => {
+        if (filePath && !filePath.startsWith('blob:')) {
+            parseCSV(filePath);
+        } else {
+            csvData = [];
+            csvHeaders = [];
+            nameGrouped = {};
+            summarizedTable.set({});
         }
-	});
+    });
 
     function cleanRegex(headers: Record<string, Record<string, string>>) {
         let grouped: Record<string, Record<string, Record<string, string>>> = {};
@@ -196,49 +200,55 @@
 </script>
 
 {#if selectedName && filePath}
-<Select style = 'evaluation' options={selectOptions()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
-
-    {#if selectedName === 'Summary'}
-        <SummaryTable summarizedTable={_summarizedTable()} />
+    {#if filePath.startsWith('blob:')}
+        <div class="max-w-3xl mx-auto p-5 bg-[rgba(27,102,62,0.05)] border border-[var(--font-green)] rounded-lg text-[var(--font-green)] italic text-center font-medium">
+            Save to parse the data!
+        </div>
     {:else}
-        <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
+    <Select style = 'evaluation' options={selectOptions()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
 
-            <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2">
-                {selectedName}'s Response
-            </h1>
+        {#if selectedName === 'Summary'}
+            <SummaryTable summarizedTable={_summarizedTable()} />
+        {:else}
+            <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
 
-            <div class="space-y-6">
-                {#each Object.entries(filteredCSV()[selectedName]) as [group, items]}
-                    <div class="border-l-4 border-[var(--font-green)] bg-gray-50 rounded-md p-4 shadow-sm transition-shadow">
+                <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2">
+                    {selectedName}'s Response
+                </h1>
 
-                        <h2 class="text-lg font-semibold text-gray-800 mb-3">
-                            {group}
-                        </h2>
+                <div class="space-y-6">
+                    {#each Object.entries(filteredCSV()[selectedName]) as [group, items]}
+                        <div class="border-l-4 border-[var(--font-green)] bg-gray-50 rounded-md p-4 shadow-sm transition-shadow">
 
-                        <div class="flex flex-col gap-5">
-                            {#each Object.entries(items) as [category, value]}
-                                {#if category !== '--'}
-                                    <div class="flex flex-col md:flex-row md:items-start justify-between gap-3 p-3 border border-transparent rounded-md transition-all duration-200
-                                        hover:border-[var(--font-green)] hover:bg-[rgba(27,102,62,0.05)]">
+                            <h2 class="text-lg font-semibold text-gray-800 mb-3">
+                                {group}
+                            </h2>
 
-                                        <div class="md:w-1/2 font-semibold text-[var(--font-green)]">
-                                            {category}
+                            <div class="flex flex-col gap-5">
+                                {#each Object.entries(items) as [category, value]}
+                                    {#if category !== '--'}
+                                        <div class="flex flex-col md:flex-row md:items-start justify-between gap-3 p-3 border border-transparent rounded-md transition-all duration-200
+                                            hover:border-[var(--font-green)] hover:bg-[rgba(27,102,62,0.05)]">
+
+                                            <div class="md:w-1/2 font-semibold text-[var(--font-green)]">
+                                                {category}
+                                            </div>
+
+                                            <div class="md:w-1/2 text-gray-900 bg-[rgba(0,0,0,0.04)] px-3 py-2 rounded">
+                                                {value}
+                                            </div>
                                         </div>
-
-                                        <div class="md:w-1/2 text-gray-900 bg-[rgba(0,0,0,0.04)] px-3 py-2 rounded">
+                                    {:else}
+                                        <div class="italic text-gray-600 text-sm px-2 py-1">
                                             {value}
                                         </div>
-                                    </div>
-                                {:else}
-                                    <div class="italic text-gray-600 text-sm px-2 py-1">
-                                        {value}
-                                    </div>
-                                {/if}
-                            {/each}
+                                    {/if}
+                                {/each}
+                            </div>
                         </div>
-                    </div>
-                {/each}
+                    {/each}
+                </div>
             </div>
-        </div>
+        {/if}
     {/if}
 {/if}

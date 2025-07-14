@@ -4,6 +4,13 @@ import { data } from '$lib/functions/prisma';
 import { getFileType } from '$lib/functions/media';
 import path from 'path';
 
+const mimeMap: Record<string, string[]> = {
+	image: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+	video: ['video/mp4', 'video/mov', 'video/webm', 'video/avi'],
+	pdf: ['application/pdf'],
+	csv: ['text/csv', 'application/vnd.ms-excel'],
+};
+
 export const POST: RequestHandler = async ({ request }) => {
     let form = await request.formData();
     let file = form.get('file') as File | null;
@@ -21,6 +28,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (type === 'other') {
       return data.json({ error: 'Unsupported file type' }, { status: 415 });
+    }
+
+    const allowedTypes = mimeMap[type] || [];
+    if (!allowedTypes.includes(file.type)) {
+      return data.json({ error: `Invalid MIME type (${file.type}) for ${type}` }, { status: 415 });
     }
 
     let buffer = Buffer.from(await file.arrayBuffer());    // file binary data to be saved
