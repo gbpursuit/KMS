@@ -4,40 +4,23 @@
     import { onMount } from 'svelte';
 	import { summarizedTable, type CSVSummary } from '$lib/functions/tab-content';
 	import SummaryTable from './SummaryTable.svelte';
-	let { filePath = $bindable() }: { filePath: string } = $props();
+	let { filePath = $bindable(), parsedCSV = [] }: { filePath: string, parsedCSV: Record<string, string>[] } = $props();
 
     let selectedName: string = $state("Summary"); // default summary
 
     let csvData: Record<string, string>[] = $state([]); // or $state<Record<string, string>[]>([]);
-    let csvHeaders: string[] = $state([]);
     let nameGrouped: Record<string, Record<string, string>> = $state({});
 
-	async function parseCSV(path: string) {
-		try {
-			let res = await fetch(path);
-			let text = await res.text();
-
-			let parsed = Papa.parse<Record<string, string>>(text, {
-				header: true,
-				skipEmptyLines: true,
-			});
-
-			csvData = parsed.data;
-            csvData.forEach(entry => {
-                let nameField = "Name (Last Name, First Name, Middle Initial) ";
-                let  name = entry[nameField];
-                if (name) {
-                    let { [nameField]: _, ...rest } = entry;
-                    nameGrouped[name] = rest;
-                }
-            });
-            csvHeaders = parsed.meta.fields ?? [];
-
-			console.log(csvData); 
-            console.log(nameGrouped);
-		} catch (err) {
-			console.error('Failed to parse CSV:', err);
-		}
+	function parseCSV() {
+        csvData = parsedCSV;
+        csvData.forEach(entry => {
+            let nameField = "Name (Last Name, First Name, Middle Initial) ";
+            let  name = entry[nameField];
+            if (name) {
+                let { [nameField]: _, ...rest } = entry;
+                nameGrouped[name] = rest;
+            }
+        });
 	}
 
     $effect(() => {
@@ -45,11 +28,10 @@
     });
 
     $effect(() => {
-        if (filePath && !filePath.startsWith('blob:')) {
-            parseCSV(filePath);
+        if (filePath) {
+            parseCSV();
         } else {
             csvData = [];
-            csvHeaders = [];
             nameGrouped = {};
             summarizedTable.set({});
         }
@@ -200,55 +182,49 @@
 </script>
 
 {#if selectedName && filePath}
-    {#if filePath.startsWith('blob:')}
-        <div class="max-w-3xl mx-auto p-5 bg-[rgba(27,102,62,0.05)] border border-[var(--font-green)] rounded-lg text-[var(--font-green)] italic text-center font-medium">
-            Save to parse the data!
-        </div>
-    {:else}
     <Select style = 'evaluation' options={selectOptions()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
 
-        {#if selectedName === 'Summary'}
-            <SummaryTable summarizedTable={_summarizedTable()} />
-        {:else}
-            <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
+    {#if selectedName === 'Summary'}
+        <SummaryTable summarizedTable={_summarizedTable()} />
+    {:else}
+        <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
 
-                <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2">
-                    {selectedName}'s Response
-                </h1>
+            <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2">
+                {selectedName}'s Response
+            </h1>
 
-                <div class="space-y-6">
-                    {#each Object.entries(filteredCSV()[selectedName]) as [group, items]}
-                        <div class="border-l-4 border-[var(--font-green)] bg-gray-50 rounded-md p-4 shadow-sm transition-shadow">
+            <div class="space-y-6">
+                {#each Object.entries(filteredCSV()[selectedName]) as [group, items]}
+                    <div class="border-l-4 border-[var(--font-green)] bg-gray-50 rounded-md p-4 shadow-sm transition-shadow">
 
-                            <h2 class="text-lg font-semibold text-gray-800 mb-3">
-                                {group}
-                            </h2>
+                        <h2 class="text-lg font-semibold text-gray-800 mb-3">
+                            {group}
+                        </h2>
 
-                            <div class="flex flex-col gap-5">
-                                {#each Object.entries(items) as [category, value]}
-                                    {#if category !== '--'}
-                                        <div class="flex flex-col md:flex-row md:items-start justify-between gap-3 p-3 border border-transparent rounded-md transition-all duration-200
-                                            hover:border-[var(--font-green)] hover:bg-[rgba(27,102,62,0.05)]">
+                        <div class="flex flex-col gap-5">
+                            {#each Object.entries(items) as [category, value]}
+                                {#if category !== '--'}
+                                    <div class="flex flex-col md:flex-row md:items-start justify-between gap-3 p-3 border border-transparent rounded-md transition-all duration-200
+                                        hover:border-[var(--font-green)] hover:bg-[rgba(27,102,62,0.05)]">
 
-                                            <div class="md:w-1/2 font-semibold text-[var(--font-green)]">
-                                                {category}
-                                            </div>
-
-                                            <div class="md:w-1/2 text-gray-900 bg-[rgba(0,0,0,0.04)] px-3 py-2 rounded">
-                                                {value}
-                                            </div>
+                                        <div class="md:w-1/2 font-semibold text-[var(--font-green)]">
+                                            {category}
                                         </div>
-                                    {:else}
-                                        <div class="italic text-gray-600 text-sm px-2 py-1">
+
+                                        <div class="md:w-1/2 text-gray-900 bg-[rgba(0,0,0,0.04)] px-3 py-2 rounded">
                                             {value}
                                         </div>
-                                    {/if}
-                                {/each}
-                            </div>
+                                    </div>
+                                {:else}
+                                    <div class="italic text-gray-600 text-sm px-2 py-1">
+                                        {value}
+                                    </div>
+                                {/if}
+                            {/each}
                         </div>
-                    {/each}
-                </div>
+                    </div>
+                {/each}
             </div>
-        {/if}
+        </div>
     {/if}
 {/if}

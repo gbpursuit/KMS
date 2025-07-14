@@ -3,7 +3,7 @@
     import Select from '../Select.svelte';
     import { onMount } from 'svelte';
 	import type { EditableContent } from '$lib/functions/tab-content';
-	let { filePath }: { filePath: string } = $props();
+	let { filePath, parsedCSV = []}: { filePath: string, parsedCSV: Record<string, string>[]  } = $props();
 
     let selectedName: string = $state("Summary"); // default summary
 
@@ -15,57 +15,45 @@
         return matchedKey ? entry[matchedKey]?.trim() ?? "" : "";
     }
 
-    async function parseCSV(path: string) {
-        try {
-            let res = await fetch(path);
-            let text = await res.text();
+    async function parseCSV() {
+        // Keys we want to extract (excluding first/middle/last name now)
+        const fieldMap: Record<string, string> = {
+            "Institution/School (please spell out, e.g. Del Pilar Elementary School)": "School/Organization",
+            "Position/Designation": "Position/Designation",
+            "Degree Program": "Program",
+            "Do you have a Master's Degree or units earned?" : "isMaster",
+            "Do you have a Doctoral Degree or units earned?" : "isDoctoral",
+            "Sex assigned at birth": "Gender",
+            "Age": "Age",
+            "Number of years of teaching experience": "Years",
+        };
 
-            let parsed = Papa.parse<Record<string, string>>(text, {
-                header: true,
-                skipEmptyLines: true,
-            });
+        csvData = parsedCSV;
+        csvData.forEach(entry => {
+            const email = entry["Email Address"];
+            if (!email) return;
 
-            // Keys we want to extract (excluding first/middle/last name now)
-            const fieldMap: Record<string, string> = {
-                "Institution/School (please spell out, e.g. Del Pilar Elementary School)": "School/Organization",
-                "Position/Designation": "Position/Designation",
-                "Degree Program": "Program",
-                "Do you have a Master's Degree or units earned?" : "isMaster",
-                "Do you have a Doctoral Degree or units earned?" : "isDoctoral",
-                "Sex assigned at birth": "Gender",
-                "Age": "Age",
-                "Number of years of teaching experience": "Years",
-            };
+            let cleanedEntry: Record<string, string> = {};
 
-            csvData = parsed.data;
-            csvData.forEach(entry => {
-                const email = entry["Email Address"];
-                if (!email) return;
+            // Construct fullName
+            const firstName = getTrimmedValue(entry, "First Name");
+            const middleInitial = getTrimmedValue(entry, "Middle Initial");
+            const lastName = getTrimmedValue(entry, "Last Name");
+            const fullName = [firstName, middleInitial, lastName].filter(Boolean).join(" ");
 
-                let cleanedEntry: Record<string, string> = {};
+            cleanedEntry['Name'] = getTrimmedValue(entry, "NAME (Please type your name as you would like it to appear on your certificate)");
+            cleanedEntry["Full Name"] = fullName;
 
-                // Construct fullName
-                const firstName = getTrimmedValue(entry, "First Name");
-                const middleInitial = getTrimmedValue(entry, "Middle Initial");
-                const lastName = getTrimmedValue(entry, "Last Name");
-                const fullName = [firstName, middleInitial, lastName].filter(Boolean).join(" ");
-
-                cleanedEntry['Name'] = getTrimmedValue(entry, "NAME (Please type your name as you would like it to appear on your certificate)");
-                cleanedEntry["Full Name"] = fullName;
-
-                // Add other fields
-                for (const [originalKey, newKey] of Object.entries(fieldMap)) {
-                    const matchedKey = Object.keys(entry).find(k => k.trim() === originalKey.trim());
-                    if (matchedKey) {
-                        cleanedEntry[newKey] = entry[matchedKey]?.trim() ?? '';
-                    }
+            // Add other fields
+            for (const [originalKey, newKey] of Object.entries(fieldMap)) {
+                const matchedKey = Object.keys(entry).find(k => k.trim() === originalKey.trim());
+                if (matchedKey) {
+                    cleanedEntry[newKey] = entry[matchedKey]?.trim() ?? '';
                 }
+            }
 
-                nameGrouped[email] = cleanedEntry;
-            });
-        } catch (err) {
-            console.error("Failed to parse CSV:", err);
-        }
+            nameGrouped[email] = cleanedEntry;
+        });
     }
 
     function getAgeRange(age: number): string {
@@ -177,8 +165,8 @@
     }
 
     $effect(() => {
-        if (filePath && !filePath.startsWith('blob:')) {
-            parseCSV(filePath);
+        if (filePath) {
+            parseCSV();
         } else {
             csvData = [];
             nameGrouped = {};
@@ -222,102 +210,96 @@
 </script>
 
 {#if selectedName && filePath}
-    {#if filePath.startsWith('blob:')}
-        <div class="max-w-3xl mx-auto p-5 bg-[rgba(27,102,62,0.05)] border border-[var(--font-green)] rounded-lg text-[var(--font-green)] italic text-center font-medium">
-            Save to parse the data!
+    <Select style = 'evaluation' options={selectOptions()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
+    {#if selectedName === 'Summary'}
+        <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
+
+            <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2"> Total of {Object.keys(nameGrouped).length} Participants </h1>
+            <div class="space-y-6">
+                <table class="w-full min-w-[500px] table-fixed text-sm border rounded overflow-hidden shadow-md">
+                    <thead class="bg-[var(--font-green)] text-white">
+                        <tr>
+                            {#each Object.keys(detailedSummary()[0] ?? {}).filter(key => key !== 'degree') as key}
+                                <th class="text-center p-2 {key === 'name' ? 'w-[180px] min-w-[180px] text-left' : 
+                                    key === 'degreeProgram' ? 'w-[120px] min-w-[120px] text-left' : ''}">
+                                    <div class = "overflow-hidden truncate" title={summaryLabels[key as keyof typeof summaryLabels]}>
+                                        <span class="font-bold">{summaryLabels[key as keyof typeof summaryLabels]}</span>
+                                    </div>
+                                </th>
+                            {/each}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each detailedSummary() as row}
+                            <tr class="odd:bg-white even:bg-gray-100 font-normal hover:text-[var(--hover-green)] transition-all duration-300 ease-in-out">
+                                <td class="tdStyle">
+                                    <div class="tdClamp name" title={row.name}>
+                                        <span class="font-semibold">{row.name}</span>
+                                        <span class="text-gray-500 italic text-xs block"> ({row.degree})</span>
+                                    </div>
+                                </td>
+                                <td class="tdStyle">
+                                    <div class="tdClamp notName" title={row.degreeProgram}>{row.degreeProgram}</div>
+                                </td>
+                                <td class="tdStyle">
+                                    <div class="tdClamp notName" title={row.position}>{row.position}</div>
+                                </td>
+                                <td class="tdStyle">
+                                    <div class="tdClamp notName" title={row.gender}>{row.gender}</div>
+                                </td>
+                                <td class="tdStyle">
+                                    <div class="tdClamp notName" title={row.institution}>{row.institution}</div>
+                                </td>
+                                <td class="tdStyle">
+                                    <div class="tdClamp notName" title={(row.age).toString()}>{row.age}</div>
+                                </td>
+                                <td class="tdStyle">
+                                    <div class="tdClamp notName" title={row.yearsOfTeaching.toString()}>{row.yearsOfTeaching}</div>
+                                </td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+                <div class="flex flex-col gap-1 border-l-4 border-[var(--font-green)] bg-gray-50 rounded-md p-4 shadow-sm transition-shadow">
+                    <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2">
+                        In summary:
+                    </h1>
+                    {#each Object.entries(pdfSummary()) as [label, value]}
+                        <div class="flex items-center">
+                            <h2 class="text-base font-semibold p-2">
+                                {summaryLabels[label as keyof typeof summaryLabels]}:
+                            </h2>
+                            <p class="text-gray-900 py-2 rounded">{value}</p>
+                        </div>                        
+                    {/each}
+                </div>
+            </div>
         </div>
     {:else}
-        <Select style = 'evaluation' options={selectOptions()} disabled={false} bind:selected={selectedName} placeholder="a respondent" />
-        {#if selectedName === 'Summary'}
-            <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
+        <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
 
-                <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2"> Total of {Object.keys(nameGrouped).length} Participants </h1>
-                <div class="space-y-6">
-                    <table class="w-full min-w-[500px] table-fixed text-sm border rounded overflow-hidden shadow-md">
-                        <thead class="bg-[var(--font-green)] text-white">
-                            <tr>
-                                {#each Object.keys(detailedSummary()[0] ?? {}).filter(key => key !== 'degree') as key}
-                                    <th class="text-center p-2 {key === 'name' ? 'w-[180px] min-w-[180px] text-left' : 
-                                        key === 'degreeProgram' ? 'w-[120px] min-w-[120px] text-left' : ''}">
-                                        <div class = "overflow-hidden truncate" title={summaryLabels[key as keyof typeof summaryLabels]}>
-                                            <span class="font-bold">{summaryLabels[key as keyof typeof summaryLabels]}</span>
-                                        </div>
-                                    </th>
-                                {/each}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {#each detailedSummary() as row}
-                                <tr class="odd:bg-white even:bg-gray-100 font-normal hover:text-[var(--hover-green)] transition-all duration-300 ease-in-out">
-                                    <td class="tdStyle">
-                                        <div class="tdClamp name" title={row.name}>
-                                            <span class="font-semibold">{row.name}</span>
-                                            <span class="text-gray-500 italic text-xs block"> ({row.degree})</span>
-                                        </div>
-                                    </td>
-                                    <td class="tdStyle">
-                                        <div class="tdClamp notName" title={row.degreeProgram}>{row.degreeProgram}</div>
-                                    </td>
-                                    <td class="tdStyle">
-                                        <div class="tdClamp notName" title={row.position}>{row.position}</div>
-                                    </td>
-                                    <td class="tdStyle">
-                                        <div class="tdClamp notName" title={row.gender}>{row.gender}</div>
-                                    </td>
-                                    <td class="tdStyle">
-                                        <div class="tdClamp notName" title={row.institution}>{row.institution}</div>
-                                    </td>
-                                    <td class="tdStyle">
-                                        <div class="tdClamp notName" title={(row.age).toString()}>{row.age}</div>
-                                    </td>
-                                    <td class="tdStyle">
-                                        <div class="tdClamp notName" title={row.yearsOfTeaching.toString()}>{row.yearsOfTeaching}</div>
-                                    </td>
-                                </tr>
-                            {/each}
-                        </tbody>
-                    </table>
-                    <div class="flex flex-col gap-1 border-l-4 border-[var(--font-green)] bg-gray-50 rounded-md p-4 shadow-sm transition-shadow">
-                        <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2">
-                            In summary:
-                        </h1>
-                        {#each Object.entries(pdfSummary()) as [label, value]}
-                            <div class="flex items-center">
-                                <h2 class="text-base font-semibold p-2">
-                                    {summaryLabels[label as keyof typeof summaryLabels]}:
-                                </h2>
-                                <p class="text-gray-900 py-2 rounded">{value}</p>
-                            </div>                        
+            <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2"> {nameGrouped[selectedName]['Name']}'s Response </h1>
+
+            <div class="space-y-6">
+                <table class="w-full min-w-[500px]  table-fixed text-sm border rounded overflow-hidden shadow-md">
+                    <thead class="bg-[var(--font-green)] text-white">
+                        <tr>
+                            <th class="text-center p-2 w-1/2">Category</th>
+                            <th class="text-center p-2 w-1/2">Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each Object.entries(nameGrouped[selectedName]) as [group, items]}
+                            <tr class="odd:bg-white even:bg-gray-100 font-normal hover:text-[var(--hover-green)]
+                                transition-all duration-300 ease-in-out ">
+                                <td class="text-left border border-gray-200 px-4 py-2">{group}</td>
+                                <td class="text-center border border-gray-200 p-2">{items}</td>
+                            </tr> 
                         {/each}
-                    </div>
-                </div>
+                    </tbody>
+                </table>
             </div>
-        {:else}
-            <div class="max-w-3xl mx-auto mt-6 p-5 bg-white border border-gray-300 rounded-lg shadow-sm space-y-6">
-
-                <h1 class="text-2xl font-bold text-[var(--font-green)] border-b border-gray-200 pb-2"> {nameGrouped[selectedName]['Name']}'s Response </h1>
-
-                <div class="space-y-6">
-                    <table class="w-full min-w-[500px]  table-fixed text-sm border rounded overflow-hidden shadow-md">
-                        <thead class="bg-[var(--font-green)] text-white">
-                            <tr>
-                                <th class="text-center p-2 w-1/2">Category</th>
-                                <th class="text-center p-2 w-1/2">Response</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {#each Object.entries(nameGrouped[selectedName]) as [group, items]}
-                                <tr class="odd:bg-white even:bg-gray-100 font-normal hover:text-[var(--hover-green)]
-                                    transition-all duration-300 ease-in-out ">
-                                    <td class="text-left border border-gray-200 px-4 py-2">{group}</td>
-                                    <td class="text-center border border-gray-200 p-2">{items}</td>
-                                </tr> 
-                            {/each}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        {/if}
+        </div>
     {/if}
 {/if}
 

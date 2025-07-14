@@ -7,6 +7,8 @@
 	import FileType from '$lib/svelte/File.svelte';
     import { removeFile } from '$lib/functions/media';
 	import { onMount, onDestroy } from 'svelte';
+	import Papa from 'papaparse';
+	import { getSampleHeaders, arraysMatch } from '$lib/functions/csv';
 
     let { style = $bindable(), editable = false, addStyle = '', filePath = $bindable(), title, activeTab = $bindable(), selectedFile = $bindable(), ...props} = $props()
     let textDescription = $state('');
@@ -89,7 +91,9 @@
 		}, 3000); 
 	}
 
-	function handleFileChange(event: Event): void {
+	let parsedCSV: Map<string, Record<string, string>[]> = $state(new Map());
+
+	async function handleFileChange(event: Event): Promise<void> {
 		const target = event.target as HTMLInputElement;
 		if (target.files && target.files.length > 0) {
 		    let file = target.files[0];
@@ -124,7 +128,27 @@
 						showError('Only CSV files are allowed');
 						return;
 					}
-			}
+
+					try {
+						const text = await file.text();
+						const parsed = Papa.parse<Record<string, string>>(text, { header: true, skipEmptyLines: true });
+						const uploadedHeaders = parsed.meta.fields?.map(h => h.trim()) ?? [];
+
+						let path = activeTab === 'Participants' ? '/uploads/standardCSVFile/registration.csv' : '/uploads/standardCSVFile/evaluation.csv';
+
+						const expectedHeaders = await getSampleHeaders(path);
+						const headersMatch = arraysMatch(uploadedHeaders, expectedHeaders);
+						if (!headersMatch) {
+							showError('CSV headers do not match the required format.');
+							return;
+						}
+
+						const parsedData = parsed.data;
+						parsedCSV.set(activeTab, parsedData);
+					} catch(err) {
+						console.error('Failed to parse csv', err);
+					}
+				}
 
 			if (sizeMB > maxSizeMB) {
 				showError(`File too large. (${Math.round(sizeMB)}MB) Max allowed is ${maxSizeMB}MB.`);
@@ -187,8 +211,8 @@
 
 <div class="relative w-full group">
 	<!-- Display Media -->
-	{#if (selectedFile.has(activeTab) && !uploading) || filePath} 
-		<FileType style="upload" bind:activeTab filePath={filePath} type={style}></FileType>
+	{#if (selectedFile.has(activeTab) && !uploading) || filePath}
+		<FileType style="upload" bind:activeTab filePath={filePath} type={style} parsedCSV={parsedCSV}  />
 
 	<!-- Upload Media -->
 	{:else if editable && (!selectedFile.has(activeTab) && !filePath)}

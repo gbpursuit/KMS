@@ -1,7 +1,7 @@
 <script lang="ts">
     import Media from '$lib/svelte/Media.svelte';
 
-    let { style = $bindable(), filePath = $bindable(), type = $bindable(), addStyle = '', activeTab = $bindable(), ...props } = $props()
+    let { style = $bindable(), filePath = $bindable(), type = $bindable(), addStyle = '', activeTab = $bindable(), parsedCSV = $bindable(), ...props } = $props()
     let styleValue = $state('');
 
 
@@ -18,5 +18,5 @@
 </script>
 
 <div class={style} {...props}>
-    <Media style={type} bind:activeTab filePath={filePath}></Media>
+    <Media style={type} bind:activeTab filePath={filePath} parsedCSV={parsedCSV} />
 </div>

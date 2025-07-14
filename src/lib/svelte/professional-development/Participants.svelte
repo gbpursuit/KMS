@@ -28,8 +28,8 @@
 </script>
 
 {#if currentContent}
-	<div class="flex flex-row w-full items-start">
-		<UploadFile bind:activeTab title={title} style="csv" bind:filePath={currentContent.content} editable={editable} bind:selectedFile={selectedFile} />
+	<div class="flex flex-row w-full items-start ">
+	<UploadFile bind:activeTab title={title} style="csv" bind:filePath={currentContent.content} editable={editable} bind:selectedFile={selectedFile}/>
 		{#if currentContent.content}
 			<Button addStyle="transition duration-500 hover:text-red-500 {editable ? 'opacity-100': 'opacity-0 pointer-events-none'}" onclick={deleteItem} disabled={!editable && (currentContent.prev || currentContent.next)}>
 				<span title="Remove Participant CSV" use:tooltipv1>
