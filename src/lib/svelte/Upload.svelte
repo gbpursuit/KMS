@@ -139,7 +139,7 @@
 						const expectedHeaders = await getSampleHeaders(path);
 						const headersMatch = arraysMatch(uploadedHeaders, expectedHeaders);
 						if (!headersMatch) {
-							showError('CSV headers do not match the required format.');
+							showError('The uploaded CSV is incorrect. Please try again.');
 							return;
 						}
 
@@ -212,7 +212,7 @@
 <div class="relative w-full group">
 	<!-- Display Media -->
 	{#if (selectedFile.has(activeTab) && !uploading) || filePath}
-		<FileType style="upload" bind:activeTab filePath={filePath} type={style} parsedCSV={parsedCSV}  />
+		<FileType style="upload" bind:activeTab filePath={filePath} type={style} parsedCSV={parsedCSV.get(activeTab)}  />
 
 	<!-- Upload Media -->
 	{:else if editable && (!selectedFile.has(activeTab) && !filePath)}

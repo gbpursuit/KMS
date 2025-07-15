@@ -7,7 +7,7 @@
 
     let selectedName: string = $state("Summary"); // default summary
 
-    let csvData: Record<string, string>[] = $state([]); // or $state<Record<string, string>[]>([]);
+    let csvData: Record<string, string>[] = [] 
     let nameGrouped: Record<string, Record<string, string>> = $state({});
 
     function getTrimmedValue(entry: Record<string, string>, target: string) {

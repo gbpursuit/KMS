@@ -90,8 +90,8 @@
 </svelte:head>
 
 {#if data.selectedItem}
-<div class="flex flex-col w-full min-h-[calc(100dvh-120px)] mt-[120px] items-center">
-	<div class="flex flex-col justify-center w-full h-[245px] bg-cover bg-center bg-no-reoeat text-white px-6 py-4 mb-10 bg-[#1B663E]">
+<div class="flex flex-col w-full min-h-[calc(100dvh-120px)] mt-[120px] items-center overflow-hidden">
+	<div class="flex flex-col justify-center w-full h-[245px] bg-cover bg-center bg-no-repeat text-white px-6 py-4 mb-10 bg-[#1B663E]">
 	<!-- <div class="flex flex-col justify-center w-full h-[245px] bg-cover bg-center bg-no-reoeat text-white px-6 py-4 mb-10" style="{data.selectedItem.imageUrl ? `background-image: url(${data.selectedItem.imageUrl})` : 'background-color: #1B663E;'}"> -->
 		<!-- Progress Bar -->
 		<!-- This is still fixed -->

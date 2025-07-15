@@ -1,7 +1,7 @@
 import Papa from 'papaparse';
 
 export async function getSampleHeaders(path: string): Promise<string[]> {
-    const res = await fetch(path); // Adjust if needed KMS\static\uploads\standardCSVFile\registration.csv
+    const res = await fetch(path); 
     const text = await res.text();
 
     const parsed = Papa.parse<Record<string, string>>(text, {

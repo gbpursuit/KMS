@@ -4,11 +4,11 @@
     import { onMount } from 'svelte';
 	import { summarizedTable, type CSVSummary } from '$lib/functions/tab-content';
 	import SummaryTable from './SummaryTable.svelte';
-	let { filePath = $bindable(), parsedCSV = [] }: { filePath: string, parsedCSV: Record<string, string>[] } = $props();
+	let { filePath = $bindable(), parsedCSV = []}: { filePath: string, parsedCSV: Record<string, string>[] } = $props();
 
     let selectedName: string = $state("Summary"); // default summary
 
-    let csvData: Record<string, string>[] = $state([]); // or $state<Record<string, string>[]>([]);
+    let csvData: Record<string, string>[] = []; // or $state<Record<string, string>[]>([]);
     let nameGrouped: Record<string, Record<string, string>> = $state({});
 
 	function parseCSV() {
