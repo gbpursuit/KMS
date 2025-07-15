@@ -47,6 +47,8 @@ export const POST: RequestHandler = async ({ request }) => {
 	const selectedItem = req.selectedItem ?? {};
 	const trainingTypes = req.trainingTypes ?? [];
 	const summarizedTable = req.summarizedTable ?? {}
+	const pdfSummary = req.pdfSummary ?? {}
+	const summaryLabels = req.summaryLabels ?? {}
 	const window = req.window ?? {};
 
 	console.log
@@ -108,7 +110,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		tocItems,
 		sections: sectionData,
 		origin: window.origin,
-		summarizedTable
+		summarizedTable,
+		pdfSummary,
+		summaryLabels
 	};
 
 	// console.log('Generating PDF with:', props);

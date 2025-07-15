@@ -2,9 +2,9 @@
   import TitlePage from './TitlePage.svelte';
   import TableOfContents from './TableOfContents.svelte';
   import Section from './Section.svelte';
-	import type { CSVSummary, EditableContent } from '$lib/functions/tab-content';
+	import type { CSVSummary, EditableContent, PDFSummary } from '$lib/functions/tab-content';
 
-  let { moduleTitle, dateStart, dateEnd, leader, numParticipants, trainingType, tocItems, sections, origin, summarizedTable }: {
+  let { moduleTitle, dateStart, dateEnd, leader, numParticipants, trainingType, tocItems, sections, origin, summarizedTable, pdfSummary, summaryLabels }: {
     moduleTitle: string, 
     dateStart: string, 
     dateEnd: string
@@ -15,6 +15,8 @@
     sections: { index: number, title: string, content: EditableContent }[]
     origin: string
     summarizedTable: CSVSummary
+    pdfSummary: PDFSummary
+    summaryLabels: {}
   } = $props()
 
   const tocWithPages = tocItems.map((item, i) => ({
@@ -154,7 +156,7 @@
 
     {#each sections as section}
       <div class="section page-break" id={"section-" + section.index}>
-        <Section origin={origin} summarizedTable={summarizedTable} {...section} />
+        <Section origin={origin} summarizedTable={summarizedTable} pdfSummary={pdfSummary} summaryLabels={summaryLabels} {...section} />
       </div>
     {/each}
   </body>

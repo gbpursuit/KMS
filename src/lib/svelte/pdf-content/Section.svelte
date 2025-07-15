@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { EditableContent } from "$lib/functions/tab-content";
 	import SummaryTable from "../professional-development/SummaryTable.svelte";
-  let { origin, index, title, content, summarizedTable } = $props()
+  let { origin, index, title, content, summarizedTable, pdfSummary, summaryLabels } = $props()
 
 </script>
 
@@ -19,6 +19,15 @@
 <h1>{index}. {title}</h1>
 {#if title == 'Evaluation'}
 <SummaryTable summarizedTable={summarizedTable} />
+{:else if title == 'Training Participants'}
+  {#if JSON.stringify(pdfSummary) != '{}'}
+    <h2>In Summary</h2>
+    {#each Object.entries(pdfSummary) as [label, value]}
+        <div class="flex items-center">
+            <p> {summaryLabels[label as keyof typeof summaryLabels]}: {value}</p>
+        </div>                        
+    {/each}
+  {/if}
 {:else}
 {@render CONTENT(content)}
 {/if}

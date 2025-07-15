@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { summarizedTable, type EditableContent, type TabInterface } from "$lib/functions/tab-content";
+	import { fullData, summarizedTable, summaryLabels, type TabInterface } from "$lib/functions/tab-content";
     import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 	import type { Training } from '@prisma/client';
 
@@ -32,6 +32,8 @@
 				selectedItem,
 				trainingTypes: training,
 				summarizedTable: $summarizedTable,
+				pdfSummary: $fullData.pdfSummary,
+				summaryLabels: $summaryLabels,
 				window: window.location
 			})
 		});

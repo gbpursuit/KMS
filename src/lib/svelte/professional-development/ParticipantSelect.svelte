@@ -2,18 +2,13 @@
     import Papa from 'papaparse';
     import Select from '../Select.svelte';
     import { onMount } from 'svelte';
-	import type { EditableContent } from '$lib/functions/tab-content';
+	import { fullData, initFullData, summaryLabels } from '$lib/functions/tab-content';
 	let { filePath, parsedCSV = []}: { filePath: string, parsedCSV: Record<string, string>[]  } = $props();
 
     let selectedName: string = $state("Summary"); // default summary
 
     let csvData: Record<string, string>[] = [] 
     let nameGrouped: Record<string, Record<string, string>> = $state({});
-
-    function getTrimmedValue(entry: Record<string, string>, target: string) {
-        const matchedKey = Object.keys(entry).find(k => k.trim() === target);
-        return matchedKey ? entry[matchedKey]?.trim() ?? "" : "";
-    }
 
     async function parseCSV() {
         // Keys we want to extract (excluding first/middle/last name now)
@@ -56,30 +51,47 @@
         });
     }
 
-    function getAgeRange(age: number): string {
-        if (age < 20) return "Below 20";
-        if (age < 30) return "20–29";
-        if (age < 40) return "30–39";
-        if (age < 50) return "40–49";
-        if (age < 60) return "50–59";
-        return "60+";
-    }
+    $effect(() => {
+        if(JSON.stringify($summaryLabels) != JSON.stringify(_summaryLabels)) summaryLabels.set(_summaryLabels)
+        if (filePath) {
+            parseCSV();
+        } else {
+            csvData = [];
+            nameGrouped = {};
+            fullData.set(initFullData)
+            selectedName = "Summary";
+        }
+    });
 
-    function getDegree([hasMasters, hasDoctoral]: [string, string]): string {
-        if (hasDoctoral.toLowerCase() === 'yes') return "Doctoral Degree";
-        if (hasMasters.toLowerCase() === 'yes') return "Master's Degree";
-        return "Bachelor's Degree";
-    }
+function getTrimmedValue(entry: Record<string, string>, target: string) {
+    const matchedKey = Object.keys(entry).find(k => k.trim() === target);
+    return matchedKey ? entry[matchedKey]?.trim() ?? "" : "";
+}
 
-	function getYearsRange(years: number): string {
-		if (years < 1) return "Less than 1 year";
-		if (years < 5) return "1–4 years";
-		if (years < 10) return "5–9 years";
-		if (years < 20) return "10–19 years";
-		return "20+ years";
-	}
+function getAgeRange(age: number): string {
+    if (age < 20) return "Below 20";
+    if (age < 30) return "20–29";
+    if (age < 40) return "30–39";
+    if (age < 50) return "40–49";
+    if (age < 60) return "50–59";
+    return "60+";
+}
 
-    function getSummaryData() {
+function getDegree([hasMasters, hasDoctoral]: [string, string]): string {
+    if (hasDoctoral.toLowerCase() === 'yes') return "Doctoral Degree";
+    if (hasMasters.toLowerCase() === 'yes') return "Master's Degree";
+    return "Bachelor's Degree";
+}
+
+function getYearsRange(years: number): string {
+    if (years < 1) return "Less than 1 year";
+    if (years < 5) return "1–4 years";
+    if (years < 10) return "5–9 years";
+    if (years < 20) return "10–19 years";
+    return "20+ years";
+}
+
+function getSummaryData(nameGrouped: Record<string, Record<string, string>>) {
         const rows: {
             name: string;
             degree: string;
@@ -158,26 +170,18 @@
             yearsRange
         };
 
+        fullData.set({rows, pdfSummary})
+
         return {
             rows,
             pdfSummary
         };
     }
 
-    $effect(() => {
-        if (filePath) {
-            parseCSV();
-        } else {
-            csvData = [];
-            nameGrouped = {};
-            selectedName = "Summary";
-        }
-    });
-
     let selectOptions = $derived(() => ['Summary', ...Object.keys(nameGrouped).sort()]);
-    let fullData = $derived(() => getSummaryData());
-    let pdfSummary = $derived(() => fullData().pdfSummary);
-    let detailedSummary = $derived(() => fullData().rows);
+    let _fullData = $derived(() => getSummaryData(nameGrouped))
+    let pdfSummary = $derived(() => _fullData().pdfSummary);
+    let detailedSummary = $derived(() => _fullData().rows);
 
     type SummaryReturn = ReturnType<typeof detailedSummary>; 
     type Summary = SummaryReturn[number];                    
@@ -201,10 +205,7 @@
         yearsRange: "Years of Teaching"
     };
 
-    const summaryLabels = {
-        ...detailedLabels,
-        ...pdfLabels
-    };
+    const _summaryLabels = {...pdfLabels, ...detailedLabels}
 
 
 </script>
@@ -222,7 +223,7 @@
                             {#each Object.keys(detailedSummary()[0] ?? {}).filter(key => key !== 'degree') as key}
                                 <th class="text-center p-2 {key === 'name' ? 'w-[180px] min-w-[180px] text-left' : 
                                     key === 'degreeProgram' ? 'w-[120px] min-w-[120px] text-left' : ''}">
-                                    <div class = "overflow-hidden truncate" title={summaryLabels[key as keyof typeof summaryLabels]}>
+                                    <div class = "overflow-hidden truncate" title={_summaryLabels[key as keyof typeof _summaryLabels]}>
                                         <span class="font-bold">{summaryLabels[key as keyof typeof summaryLabels]}</span>
                                     </div>
                                 </th>
@@ -267,7 +268,7 @@
                     {#each Object.entries(pdfSummary()) as [label, value]}
                         <div class="flex items-center">
                             <h2 class="text-base font-semibold p-2">
-                                {summaryLabels[label as keyof typeof summaryLabels]}:
+                                {_summaryLabels[label as keyof typeof _summaryLabels]}:
                             </h2>
                             <p class="text-gray-900 py-2 rounded">{value}</p>
                         </div>                        
