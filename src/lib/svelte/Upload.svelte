@@ -134,7 +134,7 @@
 						const parsed = Papa.parse<Record<string, string>>(text, { header: true, skipEmptyLines: true });
 						const uploadedHeaders = parsed.meta.fields?.map(h => h.trim()) ?? [];
 
-						let path = activeTab === 'Participants' ? '/uploads/standardCSVFile/registration.csv' : '/uploads/standardCSVFile/evaluation.csv';
+						let path = activeTab === 'Participants' ? '/standardCSVFile/registration.csv' : '/standardCSVFile/evaluation.csv';
 
 						const expectedHeaders = await getSampleHeaders(path);
 						const headersMatch = arraysMatch(uploadedHeaders, expectedHeaders);
